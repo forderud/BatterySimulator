@@ -8,6 +8,11 @@ WMI classes:
 Tutorials:
 * [Writing Battery Miniclass Drivers](https://learn.microsoft.com/en-us/windows-hardware/drivers/battery/writing-battery-miniclass-drivers)
 
+## Test instructions
+Commands:
+* Run `INSTALL.bat` with admin privileges to install the driver and create a simulated battery pack. Run the script multiple times to create additional battery packs.
+* Run `UNINSTALL.bat` with admin privileges to uninstall the driver and delete simulated battery packs.
+
 ## Registry flags
 `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\ROOT\BATTERY\<DeviceNumber>\Device Parameters`
 
