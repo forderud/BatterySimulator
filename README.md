@@ -1,4 +1,4 @@
-Mock battery driver to simulate multi-battery scenarios and failure modes
+Mock driver to simulate multi-battery scenarios and failure modes on Windows. Based on the Microsoft [Simulated Battery Driver Sample](https://github.com/microsoft/Windows-driver-samples/tree/main/simbatt) sample with minor modifications.
 
 WMI classes:
 * [Win32_Battery](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery) WMI class
@@ -7,8 +7,9 @@ WMI classes:
 
 Tutorials:
 * [Writing Battery Miniclass Drivers](https://learn.microsoft.com/en-us/windows-hardware/drivers/battery/writing-battery-miniclass-drivers)
-* Microsoft [Simulated Battery Driver Sample](https://github.com/microsoft/Windows-driver-samples/tree/main/simbatt)
-* [Supplying Data to WMI by Writing a Provider](https://learn.microsoft.com/en-us/windows/win32/wmisdk/supplying-data-to-wmi-by-writing-a-provider) in C++
+
+## Registry flags
+`HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\ROOT\BATTERY\<DeviceNumber>\Device Parameters`
 
 ## Query battery status
 From PowerShell: `Get-CimInstance -Namespace root\CIMV2 Win32_Battery`
