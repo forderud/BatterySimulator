@@ -11,4 +11,4 @@ Tutorials:
 * [Supplying Data to WMI by Writing a Provider](https://learn.microsoft.com/en-us/windows/win32/wmisdk/supplying-data-to-wmi-by-writing-a-provider) in C++
 
 ## Query battery status
-From PowerShell: `Get-WmiObject -class Win32_Battery -namespace "root\CIMV2"`
+From PowerShell: `Get-CimInstance -Namespace root\CIMV2 Win32_Battery`
