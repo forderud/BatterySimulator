@@ -1,28 +1,101 @@
+#define INITGUID
 #include <iostream>
 #include <Windows.h>
-#include <wbemcli.h>
-#include <wbemprov.h>
+#include <Cfgmgr32.h>
+#pragma comment(lib, "Cfgmgr32.lib")
+#include <Devpropdef.h>
+#include <Devpkey.h> // for DEVPKEY_Device_PDOName
+#include <wrl/wrappers/corewrappers.h>
+#include <vector>
 
-using namespace std;
+#include "../simbatt/simbattdriverif.h"
+#include <poclass.h>
+
+using FileHandle = Microsoft::WRL::Wrappers::FileHandle;
 
 
 int main() {
-    HRESULT hr = CoInitializeEx (0, COINIT_MULTITHREADED);
+    wchar_t deviceInstancePath[] = L"ROOT\\BATTERY\\0000"; // first simulated battery
 
-    hr = CoInitializeSecurity (NULL, 
-        -1, 
-        NULL, 
-        NULL,
-        RPC_C_AUTHN_LEVEL_DEFAULT,
-        RPC_C_IMP_LEVEL_IMPERSONATE,
-        NULL, 
-        EOAC_DYNAMIC_CLOAKING, 
-        NULL);
-    if (FAILED(hr)) {
-        CoUninitialize();
-        cout << "Failed to initialize security. Error code = 0x" << hex << hr << endl;
+    std::wstring fileNAme;
+    {
+        DEVINST dnDevInst = 0;
+        CONFIGRET res = CM_Locate_DevNodeW(&dnDevInst, deviceInstancePath, CM_LOCATE_DEVNODE_NORMAL);
+        if (res != CR_SUCCESS) {
+            printf("ERROR: CM_Locate_DevNodeW (res=%i).\n", res);
+            return -1;
+        }
+
+        DEVPROPTYPE PropertyType = 0;
+        std::vector<BYTE> buffer(1024, 0);
+        ULONG buffer_size = (ULONG)buffer.size();
+        // DEVPKEY_Device_PDOName matches CM_DRP_PHYSICAL_DEVICE_OBJECT_NAME and SPDRP_PHYSICAL_DEVICE_OBJECT_NAME
+        res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_PDOName, &PropertyType, buffer.data(), &buffer_size, 0);
+        if (res != CR_SUCCESS) {
+            printf("ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
+            return -1;
+        }
+        buffer.resize(buffer_size);
+
+        const std::wstring prefix = L"\\\\?\\Global\\GLOBALROOT";
+        fileNAme = prefix + reinterpret_cast<wchar_t*>(buffer.data()); // append PDO name
+    }
+
+    FileHandle battery(CreateFileW(fileNAme.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
+    if (!battery.IsValid()) {
+        DWORD err = GetLastError();
+        printf("ERROR: CreateFileW (err=%i).\n", err);
         return -1;
     }
 
-    // TODO..
+    printf("First simulated battery opened...\n");
+
+    BATTERY_STATUS status = {};
+    BATTERY_INFORMATION info = {};
+    {
+        ULONG battery_tag = 0;
+        ULONG wait = 0;
+        DWORD bytes_returned = 0;
+        BOOL ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_TAG, &wait, sizeof(wait), &battery_tag, sizeof(battery_tag), &bytes_returned, nullptr);
+        if (!ok) {
+            DWORD err = GetLastError();
+            printf("ERROR: DeviceIoControl (err=%i).\n", err);
+            return -1;
+        }
+
+        // query BATTERY_STATUS status 
+        BATTERY_WAIT_STATUS wait_status = {};
+        wait_status.BatteryTag = battery_tag;
+        ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_STATUS, &wait_status, sizeof(wait_status), &status, sizeof(status), &bytes_returned, nullptr);
+        if (!ok) {
+            DWORD err = GetLastError();
+            printf("ERROR: DeviceIoControl (err=%i).\n", err);
+            return -1;
+        }
+
+        // query BATTERY_INFORMATION info 
+        BATTERY_QUERY_INFORMATION bqi = {};
+        bqi.InformationLevel = BatteryInformation;
+        bqi.BatteryTag = battery_tag;
+        ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &info, sizeof(info), &bytes_returned, nullptr);
+        if (!ok) {
+            DWORD err = GetLastError();
+            printf("ERROR: DeviceIoControl (err=%i).\n", err);
+            return -1;
+        }
+    }
+
+    // Send IOCTL calls to battery driver
+    status.PowerState = BATTERY_CHARGING; // was 0;
+    status.Capacity = 50; // "gas gauge" display by dividing it by FullChargedCapacity
+    //status.Rate = 0;
+    //status.Voltage = BATTERY_UNKNOWN_VOLTAGE;
+    BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_STATUS, &status, sizeof(status), nullptr, 0, nullptr, nullptr);
+    if (!ok) {
+        DWORD err = GetLastError();
+        printf("ERROR: DeviceIoControl (err=%i).\n", err);
+        return -1;
+    }
+
+    return 0;
 }
