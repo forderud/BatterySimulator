@@ -85,7 +85,27 @@ int main() {
         }
     }
 
+    {
+        printf("Battery information:\n");
+        printf("  Capabilities=%i\n", info.Capabilities);
+        printf("  Chemistry=%s\n", std::string((char*)info.Chemistry, 4).c_str()); // not null-terminated
+        printf("  CriticalBias=%i\n", info.CriticalBias);
+        printf("  CycleCount=%i\n", info.CycleCount);
+        printf("  DefaultAlert1=%i\n", info.DefaultAlert1);
+        printf("  DefaultAlert2=%i\n", info.DefaultAlert2);
+        printf("  DesignedCapacity=%i\n", info.DesignedCapacity);
+        printf("  FullChargedCapacity=%i\n", info.FullChargedCapacity);
+        printf("  Technology=%i\n", info.Technology);
+
+        printf("Battery status:\n");
+        printf("  Capacity=%i\n", status.Capacity);
+        printf("  PowerState=%i\n", status.PowerState);
+        printf("  Rate=%i\n", status.Rate);
+        printf("  Voltage=%i\n", status.Voltage);
+    }
+
     // Send IOCTL calls to battery driver
+#if 0
     status.PowerState = BATTERY_CHARGING; // was 0;
     status.Capacity = 50; // "gas gauge" display by dividing it by FullChargedCapacity
     //status.Rate = 0;
@@ -96,6 +116,7 @@ int main() {
         printf("ERROR: DeviceIoControl (err=%i).\n", err);
         return -1;
     }
+#endif
 
     return 0;
 }
