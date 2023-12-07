@@ -23,8 +23,14 @@ Prerequisites for the _target_ computer:
 * Run `BatteryConfig.exe <N> <Charge>`, where `<N>` is the simulated battery index and `<Charge>` is the new charge level, to modify the battery state. Example: `BatteryConfig.exe 0 90` to set the charge level of the first battery to 90%.
 * Run `UNINSTALL.bat` with admin privileges to uninstall the driver and delete simulated batteries.
 
-Example Windows 10 screenshot of a simulated 6-battery pack setup:  
+### Examples
+Screenshots taken from Windows 10 21H2 (LTSC 2021). The on-screen appearance will be slightly different on Windows 11.
+
+Simulate a 6 battery-pack setup:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/fce5172f-8125-495b-ab06-864e079c19c7)
+
+Warning displayed when simulating low battery conditions:  
+![image](https://github.com/forderud/BatterySimulator/assets/2671400/80707d03-8ffc-4209-bfff-8bfaa1c4181c)
 
 ## Implementation details
 This section is only intended for internal bookkeeping. Testers doesn't need to care about this.
