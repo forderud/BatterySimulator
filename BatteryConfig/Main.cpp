@@ -133,6 +133,18 @@ int wmain(int argc, wchar_t* argv[]) {
         wprintf(L"\n");
     }
 
+#if 0
+    // update battery information
+    {
+        BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_INFORMATION, &info, sizeof(info), nullptr, 0, nullptr, nullptr);
+        if (!ok) {
+            DWORD err = GetLastError();
+            wprintf(L"ERROR: IOCTL_SIMBATT_SET_INFORMATION (err=%i).\n", err);
+            return -1;
+        }
+    }
+#endif
+
     // update battery charge level
     {
         // toggle between charge and dischage
@@ -150,7 +162,7 @@ int wmain(int argc, wchar_t* argv[]) {
         BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_STATUS, &status, sizeof(status), nullptr, 0, nullptr, nullptr);
         if (!ok) {
             DWORD err = GetLastError();
-            wprintf(L"ERROR: DeviceIoControl (err=%i).\n", err);
+            wprintf(L"ERROR: IOCTL_SIMBATT_SET_STATUS (err=%i).\n", err);
             return -1;
         }
     }
