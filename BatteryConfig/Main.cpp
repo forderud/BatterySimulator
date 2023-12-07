@@ -115,7 +115,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
     {
         wprintf(L"Battery information:\n");
-        wprintf(L"  Capabilities=%i\n", info.Capabilities);
+        wprintf(L"  Capabilities=%x\n", info.Capabilities);
         wprintf(L"  Chemistry=%hs\n", std::string((char*)info.Chemistry, 4).c_str()); // not null-terminated
         wprintf(L"  CriticalBias=%i\n", info.CriticalBias);
         wprintf(L"  CycleCount=%i\n", info.CycleCount);
@@ -128,7 +128,7 @@ int wmain(int argc, wchar_t* argv[]) {
         wprintf(L"Battery status (before update):\n");
         wprintf(L"  Capacity=%i\n", status.Capacity);
         wprintf(L"  PowerState=%i\n", status.PowerState);
-        wprintf(L"  Rate=%i\n", status.Rate);
+        wprintf(L"  Rate=%x\n", status.Rate);
         wprintf(L"  Voltage=%i\n", status.Voltage);
         wprintf(L"\n");
     }
