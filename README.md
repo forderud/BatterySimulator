@@ -29,8 +29,11 @@ Screenshots taken from Windows 10 21H2 (LTSC 2021). The on-screen appearance wil
 Simulate 6 battery-packs:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/fce5172f-8125-495b-ab06-864e079c19c7)
 
-Warning displayed when simulating low battery conditions:  
+Warning displayed when simulating low-battery conditions:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/80707d03-8ffc-4209-bfff-8bfaa1c4181c)
+
+Windows handling of low-battery situations can be configured through "Power Options":  
+![image](https://github.com/forderud/BatterySimulator/assets/2671400/c98a64a4-1c29-43d8-9376-3feca6ce1130)
 
 ## Implementation details
 This section is only intended for internal bookkeeping. Testers doesn't need to care about this.
