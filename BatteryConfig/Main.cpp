@@ -1,15 +1,15 @@
 #define INITGUID
-#include <iostream>
 #include <Windows.h>
 #include <Cfgmgr32.h>
 #pragma comment(lib, "Cfgmgr32.lib")
-#include <Devpropdef.h>
 #include <Devpkey.h> // for DEVPKEY_Device_PDOName
-#include <wrl/wrappers/corewrappers.h>
+#include <poclass.h>
+#include <wrl/wrappers/corewrappers.h> // for FileHandle
+
+#include <string>
 #include <vector>
 
 #include "../simbatt/simbattdriverif.h"
-#include <poclass.h>
 
 using FileHandle = Microsoft::WRL::Wrappers::FileHandle;
 
