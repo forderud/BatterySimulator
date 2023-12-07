@@ -21,7 +21,7 @@ Prerequisites for the _target_ computer:
 * Copy `BatteryConfig.exe` and the `simbatt` folder to the target machine.
 * Run `INSTALL.bat` with admin privileges to install the drivers. Run the script multiple times to simulate additional batteries.
 * Run `BatteryConfig.exe <N> <Charge>`, where `<N>` is the simulated battery index and `<Charge>` is the new charge level, to modify the battery state. Example: `BatteryConfig.exe 0 90` to set the charge level of the first battery to 90%.
-* Run `INSTALL.bat` with admin privileges to uninstall the driver and delete simulated batteries.
+* Run `UNINSTALL.bat` with admin privileges to uninstall the driver and delete simulated batteries.
 
 Example Windows 10 screenshot of a simulated 6-battery pack setup:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/fce5172f-8125-495b-ab06-864e079c19c7)
