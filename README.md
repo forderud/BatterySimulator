@@ -23,6 +23,9 @@ Prerequisites for the _target_ computer:
 * Run `BatteryConfig.exe <N>` where `<N>` is the simulated battery index to modify the battery charge level. Example: `BatteryConfig.exe 0`.
 * Run `INSTALL.bat` with admin privileges to uninstall the driver and delete simulated batteries.
 
+Example Windows 10 screenshot of a simulated 5-battery pack setup:  
+![image](https://github.com/forderud/BatterySimulator/assets/2671400/fce5172f-8125-495b-ab06-864e079c19c7)
+
 ## Implementation details
 Registry flags used: `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\ROOT\BATTERY\<DeviceNumber>\Device Parameters`
 
