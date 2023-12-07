@@ -19,7 +19,7 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
     DEVINST dnDevInst = 0;
     CONFIGRET res = CM_Locate_DevNodeW(&dnDevInst, deviceInstancePath, CM_LOCATE_DEVNODE_NORMAL);
     if (res != CR_SUCCESS) {
-        printf("ERROR: CM_Locate_DevNodeW (res=%i).\n", res);
+        wprintf(L"ERROR: CM_Locate_DevNodeW (res=%i).\n", res);
         return {};
     }
 
@@ -28,7 +28,7 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
     ULONG buffer_size = (ULONG)buffer.size();
     res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_PDOName, &PropertyType, buffer.data(), &buffer_size, 0);
     if (res != CR_SUCCESS) {
-        printf("ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
+        wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
         return {};
     }
     buffer.resize(buffer_size);
@@ -45,14 +45,15 @@ int main() {
     if (fileName.empty())
         return -1;
 
+    wprintf(L"Attempting to open %s\n", fileName.c_str());
     FileHandle battery(CreateFileW(fileName.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
         DWORD err = GetLastError();
-        printf("ERROR: CreateFileW (err=%i).\n", err);
+        wprintf(L"ERROR: CreateFileW (err=%i).\n", err);
         return -1;
     }
 
-    printf("Simulated battery opened...\n");
+    wprintf(L"Simulated battery opened...\n");
 
     BATTERY_STATUS status = {};
     BATTERY_INFORMATION info = {};
@@ -63,7 +64,7 @@ int main() {
         BOOL ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_TAG, &wait, sizeof(wait), &battery_tag, sizeof(battery_tag), &bytes_returned, nullptr);
         if (!ok) {
             DWORD err = GetLastError();
-            printf("ERROR: DeviceIoControl (err=%i).\n", err);
+            wprintf(L"ERROR: DeviceIoControl (err=%i).\n", err);
             return -1;
         }
 
@@ -73,7 +74,7 @@ int main() {
         ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_STATUS, &wait_status, sizeof(wait_status), &status, sizeof(status), &bytes_returned, nullptr);
         if (!ok) {
             DWORD err = GetLastError();
-            printf("ERROR: DeviceIoControl (err=%i).\n", err);
+            wprintf(L"ERROR: DeviceIoControl (err=%i).\n", err);
             return -1;
         }
 
@@ -84,29 +85,29 @@ int main() {
         ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &info, sizeof(info), &bytes_returned, nullptr);
         if (!ok) {
             DWORD err = GetLastError();
-            printf("ERROR: DeviceIoControl (err=%i).\n", err);
+            wprintf(L"ERROR: DeviceIoControl (err=%i).\n", err);
             return -1;
         }
     }
 
     {
-        printf("Battery information:\n");
-        printf("  Capabilities=%i\n", info.Capabilities);
-        printf("  Chemistry=%s\n", std::string((char*)info.Chemistry, 4).c_str()); // not null-terminated
-        printf("  CriticalBias=%i\n", info.CriticalBias);
-        printf("  CycleCount=%i\n", info.CycleCount);
-        printf("  DefaultAlert1=%i\n", info.DefaultAlert1);
-        printf("  DefaultAlert2=%i\n", info.DefaultAlert2);
-        printf("  DesignedCapacity=%i\n", info.DesignedCapacity);
-        printf("  FullChargedCapacity=%i\n", info.FullChargedCapacity);
-        printf("  Technology=%i\n", info.Technology);
-        printf("\n");
-        printf("Battery status (before update):\n");
-        printf("  Capacity=%i\n", status.Capacity);
-        printf("  PowerState=%i\n", status.PowerState);
-        printf("  Rate=%i\n", status.Rate);
-        printf("  Voltage=%i\n", status.Voltage);
-        printf("\n");
+        wprintf(L"Battery information:\n");
+        wprintf(L"  Capabilities=%i\n", info.Capabilities);
+        wprintf(L"  Chemistry=%hs\n", std::string((char*)info.Chemistry, 4).c_str()); // not null-terminated
+        wprintf(L"  CriticalBias=%i\n", info.CriticalBias);
+        wprintf(L"  CycleCount=%i\n", info.CycleCount);
+        wprintf(L"  DefaultAlert1=%i\n", info.DefaultAlert1);
+        wprintf(L"  DefaultAlert2=%i\n", info.DefaultAlert2);
+        wprintf(L"  DesignedCapacity=%i\n", info.DesignedCapacity);
+        wprintf(L"  FullChargedCapacity=%i\n", info.FullChargedCapacity);
+        wprintf(L"  Technology=%i\n", info.Technology);
+        wprintf(L"\n");
+        wprintf(L"Battery status (before update):\n");
+        wprintf(L"  Capacity=%i\n", status.Capacity);
+        wprintf(L"  PowerState=%i\n", status.PowerState);
+        wprintf(L"  Rate=%i\n", status.Rate);
+        wprintf(L"  Voltage=%i\n", status.Voltage);
+        wprintf(L"\n");
     }
 
     // Send IOCTL calls to battery driver
@@ -117,15 +118,15 @@ int main() {
     BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_STATUS, &status, sizeof(status), nullptr, 0, nullptr, nullptr);
     if (!ok) {
         DWORD err = GetLastError();
-        printf("ERROR: DeviceIoControl (err=%i).\n", err);
+        wprintf(L"ERROR: DeviceIoControl (err=%i).\n", err);
         return -1;
     }
 
-    printf("Battery status (after update):\n");
-    printf("  Capacity=%i\n", status.Capacity);
-    printf("  PowerState=%i\n", status.PowerState);
-    printf("  Rate=%i\n", status.Rate);
-    printf("  Voltage=%i\n", status.Voltage);
+    wprintf(L"Battery status (after update):\n");
+    wprintf(L"  Capacity=%i\n", status.Capacity);
+    wprintf(L"  PowerState=%i\n", status.PowerState);
+    wprintf(L"  Rate=%i\n", status.Rate);
+    wprintf(L"  Voltage=%i\n", status.Voltage);
 
     return 0;
 }
