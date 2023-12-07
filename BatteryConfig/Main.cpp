@@ -101,17 +101,18 @@ int main() {
         printf("  DesignedCapacity=%i\n", info.DesignedCapacity);
         printf("  FullChargedCapacity=%i\n", info.FullChargedCapacity);
         printf("  Technology=%i\n", info.Technology);
-
-        printf("Battery status:\n");
+        printf("\n");
+        printf("Battery status (before update):\n");
         printf("  Capacity=%i\n", status.Capacity);
         printf("  PowerState=%i\n", status.PowerState);
         printf("  Rate=%i\n", status.Rate);
         printf("  Voltage=%i\n", status.Voltage);
+        printf("\n");
     }
 
     // Send IOCTL calls to battery driver
     status.PowerState = BATTERY_CHARGING; // was 0;
-    status.Capacity = (status.Capacity + 10) % info.FullChargedCapacity; // increase charge by 10%
+    status.Capacity = (status.Capacity - 10 + info.FullChargedCapacity) % info.FullChargedCapacity; // decrease charge by 10%
     //status.Rate = BATTERY_UNKNOWN_RATE; // was 0
     //status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was 0
     BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_STATUS, &status, sizeof(status), nullptr, 0, nullptr, nullptr);
@@ -120,6 +121,12 @@ int main() {
         printf("ERROR: DeviceIoControl (err=%i).\n", err);
         return -1;
     }
+
+    printf("Battery status (after update):\n");
+    printf("  Capacity=%i\n", status.Capacity);
+    printf("  PowerState=%i\n", status.PowerState);
+    printf("  Rate=%i\n", status.Rate);
+    printf("  Voltage=%i\n", status.Voltage);
 
     return 0;
 }
