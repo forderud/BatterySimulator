@@ -14,41 +14,46 @@
 using FileHandle = Microsoft::WRL::Wrappers::FileHandle;
 
 
-int main() {
-    wchar_t deviceInstancePath[] = L"ROOT\\BATTERY\\0000"; // first simulated battery
-
-    std::wstring fileNAme;
-    {
-        DEVINST dnDevInst = 0;
-        CONFIGRET res = CM_Locate_DevNodeW(&dnDevInst, deviceInstancePath, CM_LOCATE_DEVNODE_NORMAL);
-        if (res != CR_SUCCESS) {
-            printf("ERROR: CM_Locate_DevNodeW (res=%i).\n", res);
-            return -1;
-        }
-
-        DEVPROPTYPE PropertyType = 0;
-        std::vector<BYTE> buffer(1024, 0);
-        ULONG buffer_size = (ULONG)buffer.size();
-        // DEVPKEY_Device_PDOName matches CM_DRP_PHYSICAL_DEVICE_OBJECT_NAME and SPDRP_PHYSICAL_DEVICE_OBJECT_NAME
-        res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_PDOName, &PropertyType, buffer.data(), &buffer_size, 0);
-        if (res != CR_SUCCESS) {
-            printf("ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
-            return -1;
-        }
-        buffer.resize(buffer_size);
-
-        const std::wstring prefix = L"\\\\?\\Global\\GLOBALROOT";
-        fileNAme = prefix + reinterpret_cast<wchar_t*>(buffer.data()); // append PDO name
+/** Get the virtual file physical device object (PDO) path of a device driver instance. */
+static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
+    DEVINST dnDevInst = 0;
+    CONFIGRET res = CM_Locate_DevNodeW(&dnDevInst, deviceInstancePath, CM_LOCATE_DEVNODE_NORMAL);
+    if (res != CR_SUCCESS) {
+        printf("ERROR: CM_Locate_DevNodeW (res=%i).\n", res);
+        return {};
     }
 
-    FileHandle battery(CreateFileW(fileNAme.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
+    DEVPROPTYPE PropertyType = 0;
+    std::vector<BYTE> buffer(1024, 0);
+    ULONG buffer_size = (ULONG)buffer.size();
+    // DEVPKEY_Device_PDOName matches CM_DRP_PHYSICAL_DEVICE_OBJECT_NAME and SPDRP_PHYSICAL_DEVICE_OBJECT_NAME
+    res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_PDOName, &PropertyType, buffer.data(), &buffer_size, 0);
+    if (res != CR_SUCCESS) {
+        printf("ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
+        return {};
+    }
+    buffer.resize(buffer_size);
+
+    const std::wstring prefix = L"\\\\?\\Global\\GLOBALROOT";
+    std::wstring fileName = prefix + reinterpret_cast<wchar_t*>(buffer.data()); // append PDO name
+    return fileName;
+}
+
+
+int main() {
+    wchar_t deviceInstancePath[] = L"ROOT\\BATTERY\\0000"; // first simulated battery
+    std::wstring fileName = GetPDOPath(deviceInstancePath);
+    if (fileName.empty())
+        return -1;
+
+    FileHandle battery(CreateFileW(fileName.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
         DWORD err = GetLastError();
         printf("ERROR: CreateFileW (err=%i).\n", err);
         return -1;
     }
 
-    printf("First simulated battery opened...\n");
+    printf("Simulated battery opened...\n");
 
     BATTERY_STATUS status = {};
     BATTERY_INFORMATION info = {};
