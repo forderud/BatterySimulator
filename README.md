@@ -20,7 +20,7 @@ Prerequisites for the _target_ computer:
 You can with the driver **make Windows believe that it’s being powered by one or more battery packs** – even if running from a AC-powered VM.
 
 Steps:
-* Build solution in Visual Studio.
+* Build solution in Visual Studio or download binaries from [releases](../../releases).
 * Copy `BatteryConfig.exe` and the `simbatt` folder to the target machine.
 * Run `INSTALL.bat` with admin privileges to install the drivers. Run the script multiple times to simulate additional batteries.
 * Run `BatteryConfig.exe <N> <Charge>`, where `<N>` is the simulated battery index and `<Charge>` is the new charge level, to modify the battery state. Example: `BatteryConfig.exe 0 90` to set the charge level of the first battery to 90%.
