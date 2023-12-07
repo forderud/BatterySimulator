@@ -27,9 +27,12 @@ Example Windows 10 screenshot of a simulated 6-battery pack setup:
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/fce5172f-8125-495b-ab06-864e079c19c7)
 
 ## Implementation details
+This section is only intended for internal bookkeeping. Testers doesn't need to care about this.
+
+### Persistent state
 Registry flags used: `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\ROOT\BATTERY\<DeviceNumber>\Device Parameters`
 
-## simbatt modifications
+### simbatt modifications
 Changes to the Microsoft [`simbatt`](https://github.com/microsoft/Windows-driver-samples/tree/main/simbatt) sample:
 * Switch to default output folder.
 * Disable faulty read-back of state from registry through `GetSimBattStateFromRegistry` function.
