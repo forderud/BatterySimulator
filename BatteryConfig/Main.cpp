@@ -40,10 +40,13 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
 
 
 int wmain(int argc, wchar_t* argv[]) {
-    unsigned int batteryIdx = 0; // default to first battery
-    if (argc >= 2) {
-        batteryIdx = _wtoi(argv[1]);
+    if (argc < 3) {
+        wprintf(L"USAGE: \"BatteryConfig.exe <N> <Charge>\" where <N> is the battery index and <Charge> is the new charge.\n");
+        return 1;
     }
+
+    const unsigned int batteryIdx = _wtoi(argv[1]); // 0 is first battery
+    const unsigned int newCharge = _wtoi(argv[2]);
 
     wchar_t deviceInstancePath[] = L"ROOT\\BATTERY\\????"; // first simulated battery
     swprintf_s(deviceInstancePath, L"ROOT\\BATTERY\\%04i", batteryIdx); // replace ???? with a 4-digit integer 
@@ -148,13 +151,13 @@ int wmain(int argc, wchar_t* argv[]) {
     // update battery charge level
     {
         // toggle between charge and dischage
-        if (status.PowerState == BATTERY_DISCHARGING)
+        if (newCharge > status.Capacity)
             status.PowerState = BATTERY_CHARGING;
         else
             status.PowerState = BATTERY_DISCHARGING;
 
         // decrease charge by 10%
-        status.Capacity = (status.Capacity - 10 + info.FullChargedCapacity) % info.FullChargedCapacity;
+        status.Capacity = newCharge % info.FullChargedCapacity;
 
         status.Rate = BATTERY_UNKNOWN_RATE; // was 0
         status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was -1
