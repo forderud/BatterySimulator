@@ -111,7 +111,7 @@ int main() {
 
     // Send IOCTL calls to battery driver
     status.PowerState = BATTERY_CHARGING; // was 0;
-    status.Capacity += 10; // "gas gauge" display by dividing it by FullChargedCapacity
+    status.Capacity = (status.Capacity + 10) % info.FullChargedCapacity; // increase charge by 10%
     //status.Rate = BATTERY_UNKNOWN_RATE; // was 0
     //status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was 0
     BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_STATUS, &status, sizeof(status), nullptr, 0, nullptr, nullptr);
