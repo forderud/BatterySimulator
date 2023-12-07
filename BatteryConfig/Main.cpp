@@ -26,7 +26,6 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
     DEVPROPTYPE PropertyType = 0;
     std::vector<BYTE> buffer(1024, 0);
     ULONG buffer_size = (ULONG)buffer.size();
-    // DEVPKEY_Device_PDOName matches CM_DRP_PHYSICAL_DEVICE_OBJECT_NAME and SPDRP_PHYSICAL_DEVICE_OBJECT_NAME
     res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_PDOName, &PropertyType, buffer.data(), &buffer_size, 0);
     if (res != CR_SUCCESS) {
         printf("ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
@@ -34,9 +33,9 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
     }
     buffer.resize(buffer_size);
 
-    const std::wstring prefix = L"\\\\?\\Global\\GLOBALROOT";
-    std::wstring fileName = prefix + reinterpret_cast<wchar_t*>(buffer.data()); // append PDO name
-    return fileName;
+    std::wstring pdoPath = L"\\\\?\\Global\\GLOBALROOT"; // PDO prefix
+    pdoPath += reinterpret_cast<wchar_t*>(buffer.data()); // append PDO name
+    return pdoPath;
 }
 
 
