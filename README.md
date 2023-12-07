@@ -18,7 +18,7 @@ Prerequisites for the _target_ computer:
 
 ### Test instruction
 * Build solution in Visual Studio.
-* Copy the `BatteryConfig.exe` and `simbatt` folder to the target machine.
+* Copy `BatteryConfig.exe` and the `simbatt` folder to the target machine.
 * Run `INSTALL.bat` with admin privileges to install the drivers. Run the script multiple times to simulate additional batteries.
 * Run `BatteryConfig.exe <N>` where `<N>` is the simulated battery index to modify the battery charge level. Example: BatteryConfig.exe 0`.
 * Run `INSTALL.bat` with admin privileges to uninstall the driver and delete simulated batteries.
