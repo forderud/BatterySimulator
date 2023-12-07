@@ -47,4 +47,4 @@ Changes to the Microsoft [`simbatt`](https://github.com/microsoft/Windows-driver
 * Switch to default output folder.
 * Disable faulty read-back of state from registry through `GetSimBattStateFromRegistry` function.
 * Remove `simbatt-wdfcoinstall.inx` that's no longer needed since Windows 10: https://github.com/microsoft/Windows-driver-samples/pull/1062
-* Clear BATTERY_INFORMATION `BATTERY_CAPACITY_RELATIVE` field to enable per-battery charge display in Windows Settings.
+* Clear BATTERY_INFORMATION `BATTERY_CAPACITY_RELATIVE` field to enable per-battery charge display in Windows Settings: https://github.com/microsoft/Windows-driver-samples/pull/1063
