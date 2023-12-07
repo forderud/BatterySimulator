@@ -39,8 +39,15 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
 }
 
 
-int main() {
-    wchar_t deviceInstancePath[] = L"ROOT\\BATTERY\\0000"; // first simulated battery
+int wmain(int argc, wchar_t* argv[]) {
+    unsigned int batteryIdx = 0; // default to first battery
+    if (argc >= 2) {
+        batteryIdx = _wtoi(argv[1]);
+    }
+
+    wchar_t deviceInstancePath[] = L"ROOT\\BATTERY\\????"; // first simulated battery
+    swprintf_s(deviceInstancePath, L"ROOT\\BATTERY\\%04i", batteryIdx); // replace ???? with a 4-digit integer 
+
     std::wstring fileName = GetPDOPath(deviceInstancePath);
     if (fileName.empty()) {
         wprintf(L"ERROR: Unable to locate battery %s\n", deviceInstancePath);
