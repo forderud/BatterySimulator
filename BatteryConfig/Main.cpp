@@ -97,6 +97,20 @@ int wmain(int argc, wchar_t* argv[]) {
             wprintf(L"ERROR: BatteryInformation (err=%i).\n", err);
             return -1;
         }
+
+#if 0
+        // query BATTERY_REPORTING_SCALE scale (fails with error 1 "Incorrect function")
+        bqi = {};
+        bqi.InformationLevel = BatteryGranularityInformation;
+        bqi.BatteryTag = battery_tag;
+        BATTERY_REPORTING_SCALE scale[4] = {};
+        ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &scale, sizeof(scale), &bytes_returned, nullptr);
+        if (!ok) {
+            DWORD err = GetLastError();
+            wprintf(L"ERROR: BatteryGranularityInformation (err=%i).\n", err);
+            return -1;
+        }
+#endif
     }
 
     {
