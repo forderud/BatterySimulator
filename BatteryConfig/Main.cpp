@@ -156,8 +156,8 @@ int wmain(int argc, wchar_t* argv[]) {
         else
             status.PowerState = BATTERY_DISCHARGING;
 
-        // decrease charge by 10%
-        status.Capacity = newCharge % info.FullChargedCapacity;
+        // update charge level
+        status.Capacity = newCharge;
 
         status.Rate = BATTERY_UNKNOWN_RATE; // was 0
         status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was -1
