@@ -32,7 +32,7 @@ Simulate 6 battery-packs:
 Warning displayed when simulating low-battery conditions:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/80707d03-8ffc-4209-bfff-8bfaa1c4181c)
 
-Windows handling of low-battery situations can be configured through "Power Options":  
+Windows handling of low-battery situations can be configured through "Power Options" (or using [Powercfg](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options)):  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/c98a64a4-1c29-43d8-9376-3feca6ce1130)
 
 ## Implementation details
