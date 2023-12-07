@@ -20,7 +20,7 @@ Prerequisites for the _target_ computer:
 * Build solution in Visual Studio.
 * Copy `BatteryConfig.exe` and the `simbatt` folder to the target machine.
 * Run `INSTALL.bat` with admin privileges to install the drivers. Run the script multiple times to simulate additional batteries.
-* Run `BatteryConfig.exe <N>` where `<N>` is the simulated battery index to modify the battery charge level. Example: `BatteryConfig.exe 0`.
+* Run `BatteryConfig.exe <N>` where `<N>` is the simulated battery index to modify the battery charge level. The script will decrease the charge by 10% for each run while alternating between charge and discharge mode. Example: `BatteryConfig.exe 0`.
 * Run `INSTALL.bat` with admin privileges to uninstall the driver and delete simulated batteries.
 
 Example Windows 10 screenshot of a simulated 6-battery pack setup:  
