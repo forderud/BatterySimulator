@@ -30,3 +30,4 @@ Registry flags used: `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\ROOT\BATT
 Changes to the Microsoft `simbatt` sample:
 * Switch to default output folder.
 * Disable faulty read-back of state from registry through `GetSimBattStateFromRegistry` function.
+* Remove `simbatt-wdfcoinstall.inx` that's no longer needed since Windows 10.
