@@ -42,8 +42,10 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
 int main() {
     wchar_t deviceInstancePath[] = L"ROOT\\BATTERY\\0000"; // first simulated battery
     std::wstring fileName = GetPDOPath(deviceInstancePath);
-    if (fileName.empty())
+    if (fileName.empty()) {
+        wprintf(L"ERROR: Unable to locate battery %s\n", deviceInstancePath);
         return -1;
+    }
 
     wprintf(L"Attempting to open %s\n", fileName.c_str());
     FileHandle battery(CreateFileW(fileName.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
@@ -53,7 +55,7 @@ int main() {
         return -1;
     }
 
-    wprintf(L"Simulated battery opened...\n");
+    wprintf(L"Battery opened...\n");
 
     BATTERY_STATUS status = {};
     BATTERY_INFORMATION info = {};
@@ -110,23 +112,34 @@ int main() {
         wprintf(L"\n");
     }
 
-    // Send IOCTL calls to battery driver
-    status.PowerState = BATTERY_CHARGING; // was 0;
-    status.Capacity = (status.Capacity - 10 + info.FullChargedCapacity) % info.FullChargedCapacity; // decrease charge by 10%
-    //status.Rate = BATTERY_UNKNOWN_RATE; // was 0
-    //status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was 0
-    BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_STATUS, &status, sizeof(status), nullptr, 0, nullptr, nullptr);
-    if (!ok) {
-        DWORD err = GetLastError();
-        wprintf(L"ERROR: DeviceIoControl (err=%i).\n", err);
-        return -1;
+    // update battery charge level
+    {
+        // toggle between charge and dischage
+        if (status.PowerState == BATTERY_DISCHARGING)
+            status.PowerState = BATTERY_CHARGING;
+        else
+            status.PowerState = BATTERY_DISCHARGING;
+
+        // decrease charge by 10%
+        status.Capacity = (status.Capacity - 10 + info.FullChargedCapacity) % info.FullChargedCapacity;
+
+        //status.Rate = BATTERY_UNKNOWN_RATE; // was 0
+        //status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was 0
+
+        BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_STATUS, &status, sizeof(status), nullptr, 0, nullptr, nullptr);
+        if (!ok) {
+            DWORD err = GetLastError();
+            wprintf(L"ERROR: DeviceIoControl (err=%i).\n", err);
+            return -1;
+        }
     }
 
-    wprintf(L"Battery status (after update):\n");
-    wprintf(L"  Capacity=%i\n", status.Capacity);
-    wprintf(L"  PowerState=%i\n", status.PowerState);
-    wprintf(L"  Rate=%i\n", status.Rate);
-    wprintf(L"  Voltage=%i\n", status.Voltage);
-
+    {
+        wprintf(L"Battery status (after update):\n");
+        wprintf(L"  Capacity=%i\n", status.Capacity);
+        wprintf(L"  PowerState=%i\n", status.PowerState);
+        wprintf(L"  Rate=%i\n", status.Rate);
+        wprintf(L"  Voltage=%i\n", status.Voltage);
+    }
     return 0;
 }
