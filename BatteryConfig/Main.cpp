@@ -156,8 +156,8 @@ int wmain(int argc, wchar_t* argv[]) {
         // decrease charge by 10%
         status.Capacity = (status.Capacity - 10 + info.FullChargedCapacity) % info.FullChargedCapacity;
 
-        //status.Rate = BATTERY_UNKNOWN_RATE; // was 0
-        //status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was 0
+        status.Rate = BATTERY_UNKNOWN_RATE; // was 0
+        status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was -1
 
         BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_STATUS, &status, sizeof(status), nullptr, 0, nullptr, nullptr);
         if (!ok) {
@@ -171,7 +171,7 @@ int wmain(int argc, wchar_t* argv[]) {
         wprintf(L"Battery status (after update):\n");
         wprintf(L"  Capacity=%i\n", status.Capacity);
         wprintf(L"  PowerState=%i\n", status.PowerState);
-        wprintf(L"  Rate=%i\n", status.Rate);
+        wprintf(L"  Rate=%x\n", status.Rate);
         wprintf(L"  Voltage=%i\n", status.Voltage);
     }
     return 0;
