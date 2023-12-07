@@ -24,8 +24,6 @@ Prerequisites for the _target_ computer:
 * Run `UNINSTALL.bat` with admin privileges to uninstall the driver and delete simulated batteries.
 
 ### Examples
-Screenshots taken from Windows 10 21H2 (LTSC 2021). The on-screen appearance will be slightly different on Windows 11.
-
 Simulate 6 battery-packs:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/fce5172f-8125-495b-ab06-864e079c19c7)
 
