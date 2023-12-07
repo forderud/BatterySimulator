@@ -110,18 +110,16 @@ int main() {
     }
 
     // Send IOCTL calls to battery driver
-#if 0
     status.PowerState = BATTERY_CHARGING; // was 0;
-    status.Capacity = 50; // "gas gauge" display by dividing it by FullChargedCapacity
-    //status.Rate = 0;
-    //status.Voltage = BATTERY_UNKNOWN_VOLTAGE;
+    status.Capacity += 10; // "gas gauge" display by dividing it by FullChargedCapacity
+    //status.Rate = BATTERY_UNKNOWN_RATE; // was 0
+    //status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was 0
     BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_STATUS, &status, sizeof(status), nullptr, 0, nullptr, nullptr);
     if (!ok) {
         DWORD err = GetLastError();
         printf("ERROR: DeviceIoControl (err=%i).\n", err);
         return -1;
     }
-#endif
 
     return 0;
 }
