@@ -18,3 +18,8 @@ Commands:
 
 ## Query battery status
 From PowerShell: `Get-CimInstance -Namespace root\CIMV2 Win32_Battery`
+
+## simbatt modifications
+Changes to the Microsoft `simbatt` sample:
+* Switch to default output folder.
+* Disable faulty read-back of state from registry through `GetSimBattStateFromRegistry` function.

@@ -106,14 +106,6 @@ SimBattGetBatteryMaxChargingCurrent (
     _Out_ PULONG MaxChargingCurrent
     );
 
-_Must_inspect_result_
-_Success_(return==STATUS_SUCCESS)
-NTSTATUS
-GetSimBattStateFromRegistry (
-    _In_ WDFDEVICE Device,
-    _Out_ PSIMBATT_STATE State
-    );
-
 _Success_(return==STATUS_SUCCESS)
 NTSTATUS
 SaveSimBattStateToRegistry (
@@ -140,7 +132,6 @@ SaveSimBattStateToRegistry (
 #pragma alloc_text(PAGE, SimBattSetBatteryTemperature)
 #pragma alloc_text(PAGE, SimBattSetBatteryString)
 #pragma alloc_text(PAGE, SimBattGetBatteryMaxChargingCurrent)
-#pragma alloc_text(PAGE, GetSimBattStateFromRegistry)
 #pragma alloc_text(PAGE, SaveSimBattStateToRegistry)
 
 //------------------------------------------------------------ Battery Interface
@@ -171,12 +162,7 @@ Return Value:
 --*/
 
 {
-
     PSIMBATT_FDO_DATA DevExt;
-    WDF_OBJECT_ATTRIBUTES MemoryAttributes;
-    WDFMEMORY MemoryObject;
-    PSIMBATT_STATE RegState;
-    NTSTATUS Status;
 
     DebugEnter();
     PAGED_CODE();
@@ -184,54 +170,10 @@ Return Value:
     DevExt = GetDeviceExtension(Device);
 
     //
-    // Get this battery's state stored in the registry, otherwise use defaults.
+    // Get this battery's state - use defaults.
     //
 
-    RegState = NULL;
-    WDF_OBJECT_ATTRIBUTES_INIT(&MemoryAttributes);
-    MemoryAttributes.ParentObject = Device;
-    Status = WdfMemoryCreate(&MemoryAttributes,
-                             PagedPool,
-                             SIMBATT_TAG,
-                             sizeof(SIMBATT_STATE),
-                             &MemoryObject,
-                             &((PVOID)(RegState)));
-
-    if (!NT_SUCCESS(Status)) {
-        goto SimBattPrepareHardwareEnd;
-    }
-
-    Status = GetSimBattStateFromRegistry(Device, RegState);
-    if (!NT_SUCCESS(Status)) {
-
-        RtlZeroMemory(RegState, sizeof(SIMBATT_STATE));
-        WdfWaitLockAcquire(DevExt->StateLock, NULL);
-        SimBattUpdateTag(DevExt);
-        DevExt->State.Version = RegState->Version;
-        DevExt->State.BatteryStatus.PowerState = RegState->BatteryStatus.PowerState;
-        DevExt->State.BatteryStatus.Capacity = RegState->BatteryStatus.Capacity;
-        DevExt->State.BatteryStatus.Voltage = RegState->BatteryStatus.Voltage;
-        DevExt->State.BatteryStatus.Rate = RegState->BatteryStatus.Rate;
-        DevExt->State.BatteryInfo.Capabilities = RegState->BatteryInfo.Capabilities;
-        DevExt->State.BatteryInfo.Technology = RegState->BatteryInfo.Technology;
-        DevExt->State.BatteryInfo.Chemistry[0] = RegState->BatteryInfo.Chemistry[0];
-        DevExt->State.BatteryInfo.Chemistry[1] = RegState->BatteryInfo.Chemistry[1];
-        DevExt->State.BatteryInfo.Chemistry[2] = RegState->BatteryInfo.Chemistry[2];
-        DevExt->State.BatteryInfo.Chemistry[3] = RegState->BatteryInfo.Chemistry[3];
-        DevExt->State.BatteryInfo.DesignedCapacity = RegState->BatteryInfo.DesignedCapacity;
-        DevExt->State.BatteryInfo.FullChargedCapacity = RegState->BatteryInfo.FullChargedCapacity;
-        DevExt->State.BatteryInfo.DefaultAlert1 = RegState->BatteryInfo.DefaultAlert1;
-        DevExt->State.BatteryInfo.DefaultAlert2 = RegState->BatteryInfo.DefaultAlert2;
-        DevExt->State.BatteryInfo.CriticalBias = RegState->BatteryInfo.CriticalBias;
-        DevExt->State.BatteryInfo.CycleCount = RegState->BatteryInfo.CycleCount;
-        DevExt->State.MaxCurrentDraw = RegState->MaxCurrentDraw;
-        SimBattSetBatteryString(RegState->DeviceName, DevExt->State.DeviceName);
-        SimBattSetBatteryString(RegState->ManufacturerName, DevExt->State.ManufacturerName);
-        SimBattSetBatteryString(RegState->SerialNumber, DevExt->State.SerialNumber);
-        SimBattSetBatteryString(RegState->UniqueId, DevExt->State.UniqueId);
-        WdfWaitLockRelease(DevExt->StateLock);
-
-    } else {
+    {
         WdfWaitLockAcquire(DevExt->StateLock, NULL);
         SimBattUpdateTag(DevExt);
         DevExt->State.Version = SIMBATT_STATE_VERSION;
@@ -271,12 +213,6 @@ Return Value:
         SaveSimBattStateToRegistry(Device, &DevExt->State);
     }
 
-    if (RegState != NULL) {
-        WdfObjectDelete(MemoryObject);
-    }
-
-SimBattPrepareHardwareEnd:
-    DebugExitStatus(Status);
     return;
 }
 
@@ -1453,91 +1389,6 @@ Return Value:
     return Status;
 }
 
-_Use_decl_annotations_
-NTSTATUS
-GetSimBattStateFromRegistry (
-    WDFDEVICE Device,
-    PSIMBATT_STATE State
-    )
-
-/*
- Routine Description:
-
-    Called to return simbatt state data from the registry if it exists.
-
-Arguments:
-
-    Device - Supplies WDF device handle.
-
-    State - Supplies the pointer to return the simbatt state.
-
-Return Value:
-
-    NTSTATUS
-
---*/
-
-{
-
-    ULONG BufSize;
-    WDFKEY  KeyHandle;
-    DECLARE_CONST_UNICODE_STRING(SimbattStateRegNameStr, SIMBATT_STATE_REG_NAME);
-    NTSTATUS Status;
-    ULONG ValueType;
-
-    PAGED_CODE();
-
-    Status = WdfDeviceOpenRegistryKey(
-        Device,
-        PLUGPLAY_REGKEY_DEVICE,
-        KEY_READ,
-        NULL,
-        &KeyHandle
-        );
-
-    if (!NT_SUCCESS (Status)) {
-        goto GetSimBattStateFromRegistryEnd;
-    }
-
-    Status = WdfRegistryQueryValue(
-        KeyHandle,
-        &SimbattStateRegNameStr,
-        sizeof(SIMBATT_STATE),
-        State,
-        &BufSize,
-        &ValueType
-        );
-
-    WdfRegistryClose(KeyHandle);
-
-    if (!NT_SUCCESS (Status)) {
-        goto GetSimBattStateFromRegistryEnd;
-    }
-
-    if (ValueType != REG_BINARY) {
-        Status = STATUS_INVALID_INFO_CLASS;
-        goto GetSimBattStateFromRegistryEnd;
-    }
-
-    if (BufSize != sizeof(SIMBATT_STATE)) {
-
-        //
-        // WdfRegistryQueryValue will fail if the buffer was too small.
-        // This check is validating if the data is smaller than the buffer.
-        //
-
-        Status = STATUS_INFO_LENGTH_MISMATCH;
-        goto GetSimBattStateFromRegistryEnd;
-    }
-
-    if (State->Version != SIMBATT_STATE_VERSION) {
-        Status = STATUS_REVISION_MISMATCH;
-        goto GetSimBattStateFromRegistryEnd;
-    }
-
-GetSimBattStateFromRegistryEnd:
-    return Status;
-}
 
 _Use_decl_annotations_
 NTSTATUS
