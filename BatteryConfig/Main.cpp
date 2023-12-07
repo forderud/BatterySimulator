@@ -73,28 +73,28 @@ int wmain(int argc, wchar_t* argv[]) {
         BOOL ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_TAG, &wait, sizeof(wait), &battery_tag, sizeof(battery_tag), &bytes_returned, nullptr);
         if (!ok) {
             DWORD err = GetLastError();
-            wprintf(L"ERROR: DeviceIoControl (err=%i).\n", err);
+            wprintf(L"ERROR: IOCTL_BATTERY_QUERY_TAG (err=%i).\n", err);
             return -1;
         }
 
-        // query BATTERY_STATUS status 
+        // query BATTERY_STATUS status
         BATTERY_WAIT_STATUS wait_status = {};
         wait_status.BatteryTag = battery_tag;
         ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_STATUS, &wait_status, sizeof(wait_status), &status, sizeof(status), &bytes_returned, nullptr);
         if (!ok) {
             DWORD err = GetLastError();
-            wprintf(L"ERROR: DeviceIoControl (err=%i).\n", err);
+            wprintf(L"ERROR: IOCTL_BATTERY_QUERY_STATUS (err=%i).\n", err);
             return -1;
         }
 
-        // query BATTERY_INFORMATION info 
+        // query BATTERY_INFORMATION info
         BATTERY_QUERY_INFORMATION bqi = {};
         bqi.InformationLevel = BatteryInformation;
         bqi.BatteryTag = battery_tag;
         ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &info, sizeof(info), &bytes_returned, nullptr);
         if (!ok) {
             DWORD err = GetLastError();
-            wprintf(L"ERROR: DeviceIoControl (err=%i).\n", err);
+            wprintf(L"ERROR: BatteryInformation (err=%i).\n", err);
             return -1;
         }
     }
