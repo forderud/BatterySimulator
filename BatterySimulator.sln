@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BatteryConfig", "BatteryCon
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simbatt", "simbatt\simbatt.vcxproj", "{49F35704-9A04-4CCF-A290-BBE79906C901}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BatteryMonitor", "BatteryMonitor\BatteryMonitor.vcxproj", "{C4C362F7-890A-4957-9CAC-084FCFA9BDC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,6 +25,10 @@ Global
 		{49F35704-9A04-4CCF-A290-BBE79906C901}.Release|x64.ActiveCfg = Release|x64
 		{49F35704-9A04-4CCF-A290-BBE79906C901}.Release|x64.Build.0 = Release|x64
 		{49F35704-9A04-4CCF-A290-BBE79906C901}.Release|x64.Deploy.0 = Release|x64
+		{C4C362F7-890A-4957-9CAC-084FCFA9BDC6}.Debug|x64.ActiveCfg = Debug|x64
+		{C4C362F7-890A-4957-9CAC-084FCFA9BDC6}.Debug|x64.Build.0 = Debug|x64
+		{C4C362F7-890A-4957-9CAC-084FCFA9BDC6}.Release|x64.ActiveCfg = Release|x64
+		{C4C362F7-890A-4957-9CAC-084FCFA9BDC6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
