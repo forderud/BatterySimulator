@@ -4,7 +4,7 @@
 
 
 /** Process WM_POWERBROADCAST events. */
-void ProcessPowerEvent(WPARAM wParam) {
+void ProcessPowerEvent(WPARAM wParam, LPARAM lParam) {
     wprintf(L"Power broadcast message:\n");
 
     if (wParam == PBT_APMPOWERSTATUSCHANGE) {
@@ -27,6 +27,9 @@ void ProcessPowerEvent(WPARAM wParam) {
     } else if (wParam == PBT_APMRESUMESUSPEND) {
         // only delivered if resume is triggered by user interaction 
         wprintf(L"  Resumed operation after being suspended.\n");
+    } else if (wParam == PBT_POWERSETTINGCHANGE) {
+        auto * settings = reinterpret_cast<POWERBROADCAST_SETTING *>(lParam);
+        wprintf(L"  PBT_POWERSETTINGCHANGE\n");
     } else {
         // other power event
         wprintf(L"  wParam=0x%x\n", (unsigned int)wParam);
@@ -42,7 +45,7 @@ LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         return 0;
 
     case WM_POWERBROADCAST:
-        ProcessPowerEvent(wParam);
+        ProcessPowerEvent(wParam, lParam);
         break;
 #if 0
     case WM_DEVICECHANGE:
@@ -84,6 +87,14 @@ int WINAPI wmain () {
         HPOWERNOTIFY hp = RegisterSuspendResumeNotification(wnd, DEVICE_NOTIFY_WINDOW_HANDLE);
         assert(hp);
         // unregister with UnregisterSuspendResumeNotification(hp);
+    }
+
+    {
+        // GUID doc: https://learn.microsoft.com/en-us/windows/win32/power/power-setting-guids
+        HPOWERNOTIFY h1 = RegisterPowerSettingNotification(wnd, &GUID_ACDC_POWER_SOURCE, DEVICE_NOTIFY_WINDOW_HANDLE);
+        assert(h1);
+        HPOWERNOTIFY h2 = RegisterPowerSettingNotification(wnd, &GUID_BATTERY_PERCENTAGE_REMAINING, DEVICE_NOTIFY_WINDOW_HANDLE);
+        assert(h2);
     }
 
     // don't call ShowWindow to keep the window hidden
