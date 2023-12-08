@@ -1,7 +1,26 @@
 #include <windows.h>
+#include <powrprof.h>
+#pragma comment(lib, "Powrprof.lib")
 #include <cassert>
 #include <iostream>
 
+
+/** Power event callback that's called when entering sleep or resuming. */
+ULONG SuspendResumeEvent(void* context, ULONG type, void* setting) {
+    wprintf(L"SuspendResumeEvent:\n");
+    assert(context == nullptr);
+
+    if (type == PBT_APMSUSPEND)
+        wprintf(L"  PBT_APMSUSPEND\n");
+    else if (type == PBT_APMRESUMESUSPEND)
+        wprintf(L"  PBT_APMRESUMESUSPEND\n");
+    else if (type == PBT_APMRESUMEAUTOMATIC)
+        wprintf(L"  PBT_APMRESUMEAUTOMATIC\n");
+    else
+        wprintf(L"  type=0x%x\n", (unsigned int)type);
+
+    return ERROR_SUCCESS;
+}
 
 /** Process WM_POWERBROADCAST events. */
 void ProcessPowerEvent(WPARAM wParam) {
@@ -75,6 +94,17 @@ int WINAPI wmain () {
         NULL       // additional data
     );
     assert(wnd);
+
+    {
+        // register to suspend and resume events
+        DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS nsp = {};
+        nsp.Callback = SuspendResumeEvent;
+        nsp.Context = nullptr;
+        HPOWERNOTIFY hsr = 0; 
+        DWORD err = PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &nsp, &hsr);
+        assert(err == ERROR_SUCCESS);
+        // unregister with PowerUnregisterSuspendResumeNotification(hsr);
+    }
 
     // don't call ShowWindow to keep the window hidden
 
