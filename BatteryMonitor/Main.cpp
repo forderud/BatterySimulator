@@ -56,7 +56,7 @@ int WINAPI wmain () {
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = instance;
     wc.lpszClassName = CLASS_NAME;
-    RegisterClass(&wc);
+    RegisterClassW(&wc);
 
     // create offscreen window 
     HWND wnd = CreateWindowExW(0, // optional window styles
@@ -72,6 +72,7 @@ int WINAPI wmain () {
     assert(wnd);
 
     // don't call ShowWindow to keep the window hidden
+    ShowWindow(wnd, SW_SHOWNORMAL);
 
     // run message loop
     MSG msg = {};
