@@ -39,8 +39,7 @@ Windows handling of low-battery situations can be configured through "Power Opti
 
 ### Windows power events
 All Windows applications with a message-pump will receive [`WM_POWERBROADCAST`](https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast) events when the machine transitions between AC and battery power, as well as when suspening or resuming from low-power modes. Applications can also call [`GetSystemPowerStatus`](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getsystempowerstatus) to retrieve details about the power state and aggregated battery charge level. Take a look at the `BatteryMonitor` project for sample code.  
-![image](https://github.com/forderud/BatterySimulator/assets/2671400/5d5a7c7b-fb6f-4e90-901a-49cb3b0a8818)
-
+![image](https://github.com/forderud/BatterySimulator/assets/2671400/69d5572d-8a7f-49bf-8b2b-bf1cd32e5e14)
 
 ## Implementation details
 This section is only intended for internal bookkeeping. Testers doesn't need to care about this.
