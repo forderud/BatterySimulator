@@ -72,7 +72,6 @@ int WINAPI wmain () {
     assert(wnd);
 
     // don't call ShowWindow to keep the window hidden
-    ShowWindow(wnd, SW_SHOWNORMAL);
 
     // run message loop
     MSG msg = {};
