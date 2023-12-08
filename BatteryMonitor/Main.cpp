@@ -5,8 +5,10 @@
 
 /** Process WM_POWERBROADCAST events. */
 void ProcessPowerEvent(WPARAM wParam) {
+    wprintf(L"Power broadcast message:\n");
+
     if (wParam == PBT_APMPOWERSTATUSCHANGE) {
-        wprintf(L"Power status change:\n");
+        wprintf(L"  Power status change.\n");
 
         SYSTEM_POWER_STATUS status = {};
         BOOL ok = GetSystemPowerStatus(&status);
@@ -18,10 +20,13 @@ void ProcessPowerEvent(WPARAM wParam) {
         else
             wprintf(L"  On battery power: %i%%.\n", status.BatteryLifePercent);
     } else if (wParam == PBT_APMSUSPEND) {
-        wprintf(L"Suspending to low-power state.\n");
+        wprintf(L"  Suspending to low-power state.\n");
     } else if (wParam == PBT_APMRESUMEAUTOMATIC) {
         // followed by PBT_APMRESUMESUSPEND if triggered by user interaction
-        wprintf(L"Resuming from low-power state.");
+        wprintf(L"  Resuming from low-power state.");
+    } else {
+        // other power events
+        wprintf(L"  wParam=0x%x\n", (unsigned int)wParam);
     }
 }
 
