@@ -40,11 +40,13 @@ void ProcessPowerEvent(WPARAM wParam) {
             wprintf(L"  On battery power: %i%%.\n", status.BatteryLifePercent);
     } else if (wParam == PBT_APMSUSPEND) {
         wprintf(L"  Suspending to low-power state.\n");
+        // TODO: Figure out why this is never called.
     } else if (wParam == PBT_APMRESUMEAUTOMATIC) {
         // followed by PBT_APMRESUMESUSPEND if triggered by user interaction
         wprintf(L"  Resuming from low-power state.");
+        // TODO: Figure out why this is never called.
     } else {
-        // other power events
+        // other power event
         wprintf(L"  wParam=0x%x\n", (unsigned int)wParam);
     }
 }
