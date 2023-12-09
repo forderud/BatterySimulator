@@ -22,10 +22,11 @@ void ProcessPowerEvent(WPARAM wParam) {
     } else if (wParam == PBT_APMSUSPEND) {
         wprintf(L"  Suspending to low-power state.\n");
     } else if (wParam == PBT_APMRESUMEAUTOMATIC) {
-        // followed by PBT_APMRESUMESUSPEND if triggered by user interaction
         wprintf(L"  Resuming from low-power state.\n");
+        // followed by PBT_APMRESUMESUSPEND _if_ triggered by user interaction
     } else if (wParam == PBT_APMRESUMESUSPEND) {
-        wprintf(L"  PBT_APMRESUMESUSPEND.\n");
+        // only delivered if resume is triggered by user interaction 
+        wprintf(L"  Resumed operation after being suspended.\n");
     } else {
         // other power event
         wprintf(L"  wParam=0x%x\n", (unsigned int)wParam);
