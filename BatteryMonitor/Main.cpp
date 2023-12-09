@@ -79,7 +79,7 @@ int WINAPI wmain () {
     assert(wnd);
 
     {
-        // register to suspend and resume events that are not broadcasted by default
+        // subscribe to PBT_APMSUSPEND, PBT_APMRESUMEAUTOMATIC & PBT_APMRESUMESUSPEND events
         HPOWERNOTIFY hp = RegisterSuspendResumeNotification(wnd, DEVICE_NOTIFY_WINDOW_HANDLE);
         assert(hp);
         // unregister with UnregisterSuspendResumeNotification(hp);
