@@ -1,26 +1,7 @@
 #include <windows.h>
-#include <powrprof.h>
-#pragma comment(lib, "Powrprof.lib")
 #include <cassert>
 #include <iostream>
 
-
-/** Power event callback that's called when entering sleep or resuming. */
-ULONG SuspendResumeEvent(void* context, ULONG type, void* setting) {
-    wprintf(L"SuspendResumeEvent:\n");
-    assert(context == nullptr);
-
-    if (type == PBT_APMSUSPEND)
-        wprintf(L"  PBT_APMSUSPEND\n");
-    else if (type == PBT_APMRESUMESUSPEND)
-        wprintf(L"  PBT_APMRESUMESUSPEND\n");
-    else if (type == PBT_APMRESUMEAUTOMATIC)
-        wprintf(L"  PBT_APMRESUMEAUTOMATIC\n");
-    else
-        wprintf(L"  type=0x%x\n", (unsigned int)type);
-
-    return ERROR_SUCCESS;
-}
 
 /** Process WM_POWERBROADCAST events. */
 void ProcessPowerEvent(WPARAM wParam) {
@@ -40,11 +21,9 @@ void ProcessPowerEvent(WPARAM wParam) {
             wprintf(L"  On battery power: %i%%.\n", status.BatteryLifePercent);
     } else if (wParam == PBT_APMSUSPEND) {
         wprintf(L"  Suspending to low-power state.\n");
-        // TODO: Figure out why this is never called.
     } else if (wParam == PBT_APMRESUMEAUTOMATIC) {
         // followed by PBT_APMRESUMESUSPEND if triggered by user interaction
-        wprintf(L"  Resuming from low-power state.");
-        // TODO: Figure out why this is never called.
+        wprintf(L"  Resuming from low-power state.\n");
     } else {
         // other power event
         wprintf(L"  wParam=0x%x\n", (unsigned int)wParam);
@@ -98,14 +77,10 @@ int WINAPI wmain () {
     assert(wnd);
 
     {
-        // register to suspend and resume events
-        DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS nsp = {};
-        nsp.Callback = SuspendResumeEvent;
-        nsp.Context = nullptr;
-        HPOWERNOTIFY hsr = 0; 
-        DWORD err = PowerRegisterSuspendResumeNotification(DEVICE_NOTIFY_CALLBACK, &nsp, &hsr);
-        assert(err == ERROR_SUCCESS);
-        // unregister with PowerUnregisterSuspendResumeNotification(hsr);
+        // register to suspend and resume events that are not broadcasted by default
+        HPOWERNOTIFY hp = RegisterSuspendResumeNotification(wnd, DEVICE_NOTIFY_WINDOW_HANDLE);
+        assert(hp);
+        // unregister with UnregisterSuspendResumeNotification(hp);
     }
 
     // don't call ShowWindow to keep the window hidden
