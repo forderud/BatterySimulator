@@ -33,7 +33,7 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
     }
     buffer.resize(buffer_size);
 
-    std::wstring pdoPath = L"\\\\?\\Global\\GLOBALROOT"; // PDO prefix
+    std::wstring pdoPath = L"\\\\?\\GLOBALROOT"; // PDO prefix
     pdoPath += reinterpret_cast<wchar_t*>(buffer.data()); // append PDO name
     return pdoPath;
 }
