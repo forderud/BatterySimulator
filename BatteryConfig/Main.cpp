@@ -6,6 +6,7 @@
 #include <poclass.h>
 #include <wrl/wrappers/corewrappers.h> // for FileHandle
 
+#include <cassert>
 #include <string>
 #include <vector>
 
@@ -23,18 +24,55 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
         return {};
     }
 
-    DEVPROPTYPE PropertyType = 0;
-    std::vector<BYTE> buffer(1024, 0);
-    ULONG buffer_size = (ULONG)buffer.size();
-    res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_PDOName, &PropertyType, buffer.data(), &buffer_size, 0);
-    if (res != CR_SUCCESS) {
-        wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
-        return {};
-    }
-    buffer.resize(buffer_size);
+    {
+        // get driver version
+        DEVPROPTYPE PropertyType = 0;
+        std::vector<BYTE> buffer(1024, 0);
+        ULONG buffer_size = (ULONG)buffer.size();
+        res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_DriverVersion, &PropertyType, buffer.data(), &buffer_size, 0);
+        if (res != CR_SUCCESS) {
+            wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
+            return {};
+        }
+        assert(PropertyType == DEVPROP_TYPE_STRING);
+        buffer.resize(buffer_size+1); // +1 for null-termination
 
-    std::wstring pdoPath = L"\\\\?\\GLOBALROOT"; // PDO prefix
-    pdoPath += reinterpret_cast<wchar_t*>(buffer.data()); // append PDO name
+        wprintf(L"Driver version: %s.\n", reinterpret_cast<wchar_t*>(buffer.data()));
+    }
+    {
+        // get driver date
+        DEVPROPTYPE PropertyType = 0;
+        std::vector<BYTE> buffer(1024, 0);
+        ULONG buffer_size = (ULONG)buffer.size();
+        res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_DriverDate, &PropertyType, buffer.data(), &buffer_size, 0);
+        if (res != CR_SUCCESS) {
+            wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
+            return {};
+        }
+        assert(PropertyType == DEVPROP_TYPE_FILETIME);
+        buffer.resize(buffer_size);
+
+        // TODO: Convert FILETIME to string and print to console
+    }
+
+    std::wstring pdoPath;
+    {
+        // get PDO path
+        DEVPROPTYPE PropertyType = 0;
+        std::vector<BYTE> buffer(1024, 0);
+        ULONG buffer_size = (ULONG)buffer.size();
+        res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_PDOName, &PropertyType, buffer.data(), &buffer_size, 0);
+        if (res != CR_SUCCESS) {
+            wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
+            return {};
+        }
+        assert(PropertyType == DEVPROP_TYPE_STRING);
+        buffer.resize(buffer_size + 1); // +1 for null-termination
+
+        pdoPath = L"\\\\?\\GLOBALROOT"; // PDO prefix
+        pdoPath += reinterpret_cast<wchar_t*>(buffer.data()); // append PDO name
+    }
+
     return pdoPath;
 }
 
