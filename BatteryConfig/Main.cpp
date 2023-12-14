@@ -52,7 +52,18 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
         assert(PropertyType == DEVPROP_TYPE_FILETIME);
         buffer.resize(buffer_size);
 
-        // TODO: Convert FILETIME to string and print to console
+        SYSTEMTIME time = {};
+        BOOL ok = FileTimeToSystemTime(reinterpret_cast<FILETIME*>(buffer.data()), &time);
+        if (!ok) {
+            DWORD err = GetLastError();
+            wprintf(L"ERROR: FileTimeToSystemTime failure (res=%i).\n", err);
+            return {};
+        }
+
+        std::vector<wchar_t> dateString(128, L'\0');
+        int char_count = GetDateFormatW(LOCALE_SYSTEM_DEFAULT, NULL, &time, NULL, dateString.data(), (int)dateString.size());
+        dateString.resize(char_count);
+        wprintf(L"Driver date: %s.\n", dateString.data());
     }
 
     std::wstring pdoPath;
