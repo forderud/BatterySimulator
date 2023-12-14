@@ -35,7 +35,7 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
             return {};
         }
         assert(PropertyType == DEVPROP_TYPE_STRING);
-        buffer.resize(buffer_size+1); // +1 for null-termination
+        buffer.resize(buffer_size);
 
         wprintf(L"Driver version: %s.\n", reinterpret_cast<wchar_t*>(buffer.data()));
     }
@@ -67,7 +67,7 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
             return {};
         }
         assert(PropertyType == DEVPROP_TYPE_STRING);
-        buffer.resize(buffer_size + 1); // +1 for null-termination
+        buffer.resize(buffer_size);
 
         pdoPath = L"\\\\?\\GLOBALROOT"; // PDO prefix
         pdoPath += reinterpret_cast<wchar_t*>(buffer.data()); // append PDO name
