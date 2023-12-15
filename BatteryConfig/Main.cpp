@@ -171,7 +171,7 @@ int wmain(int argc, wchar_t* argv[]) {
         wprintf(L"\n");
         wprintf(L"Battery status (before update):\n");
         wprintf(L"  Capacity=%i\n", status.Capacity);
-        wprintf(L"  PowerState=%i\n", status.PowerState);
+        wprintf(L"  PowerState=%x\n", status.PowerState);
         wprintf(L"  Rate=%x\n", status.Rate);
         wprintf(L"  Voltage=%i\n", status.Voltage);
         wprintf(L"\n");
@@ -216,7 +216,7 @@ int wmain(int argc, wchar_t* argv[]) {
     {
         wprintf(L"Battery status (after update):\n");
         wprintf(L"  Capacity=%i\n", status.Capacity);
-        wprintf(L"  PowerState=%i\n", status.PowerState);
+        wprintf(L"  PowerState=%x\n", status.PowerState);
         wprintf(L"  Rate=%x\n", status.Rate);
         wprintf(L"  Voltage=%i\n", status.Voltage);
     }
