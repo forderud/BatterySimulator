@@ -23,7 +23,9 @@ ULONG GetBatteryTag(HANDLE device) {
 
 /** Convenience C++ wrapper for BATTERY_STATUS. */
 struct BatteryStausWrap : BATTERY_STATUS {
-    BatteryStausWrap() : BATTERY_STATUS{} {
+    BatteryStausWrap(HANDLE device = INVALID_HANDLE_VALUE) : BATTERY_STATUS{} {
+        if (device != INVALID_HANDLE_VALUE)
+            Get(device);
     }
 
     void Get(HANDLE device) {
@@ -58,7 +60,9 @@ static_assert(sizeof(BatteryStausWrap) == sizeof(BATTERY_STATUS));
 
 /** Convenience C++ wrapper for BATTERY_INFORMATION. */
 struct BatteryInformationWrap : BATTERY_INFORMATION {
-    BatteryInformationWrap() : BATTERY_INFORMATION{} {
+    BatteryInformationWrap(HANDLE device = INVALID_HANDLE_VALUE) : BATTERY_INFORMATION{} {
+        if (device != INVALID_HANDLE_VALUE)
+            Get(device);
     }
 
     void Get(HANDLE device) {

@@ -101,14 +101,12 @@ int wmain(int argc, wchar_t* argv[]) {
 
     wprintf(L"Battery opened...\n");
 
-    BatteryInformationWrap info;
-    info.Get(battery.Get());
+    BatteryInformationWrap info(battery.Get());
     wprintf(L"Battery information:\n");
     info.Print();
     wprintf(L"\n");
 
-    BatteryStausWrap status;
-    status.Get(battery.Get());
+    BatteryStausWrap status(battery.Get());
     wprintf(L"Battery status (before update):\n");
     status.Print();
     wprintf(L"\n");
