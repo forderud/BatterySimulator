@@ -20,6 +20,20 @@ std::vector<BYTE> GetDevInstProperty(DEVINST dnDevInst, const DEVPROPKEY& proper
     return buffer;
 }
 
+std::wstring FileTimeToDateStr(FILETIME& fileTime) {
+    SYSTEMTIME time = {};
+    BOOL ok = FileTimeToSystemTime(&fileTime, &time);
+    if (!ok) {
+        DWORD err = GetLastError();
+        wprintf(L"ERROR: FileTimeToSystemTime failure (res=%i).\n", err);
+        return {};
+    }
+
+    std::wstring dateString(128, L'\0');
+    int char_count = GetDateFormatW(LOCALE_SYSTEM_DEFAULT, NULL, &time, NULL, dateString.data(), (int)dateString.size());
+    dateString.resize(char_count-1); // exclude zero-termination
+    return dateString;
+}
 
 
 /** Get the virtual file physical device object (PDO) path of a device driver instance. */
@@ -43,19 +57,7 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
         DEVPROPTYPE PropertyType = 0;
         std::vector<BYTE> buffer = GetDevInstProperty(dnDevInst, DEVPKEY_Device_DriverDate, PropertyType);
         assert(PropertyType == DEVPROP_TYPE_FILETIME);
-
-        SYSTEMTIME time = {};
-        BOOL ok = FileTimeToSystemTime(reinterpret_cast<FILETIME*>(buffer.data()), &time);
-        if (!ok) {
-            DWORD err = GetLastError();
-            wprintf(L"ERROR: FileTimeToSystemTime failure (res=%i).\n", err);
-            return {};
-        }
-
-        std::vector<wchar_t> dateString(128, L'\0');
-        int char_count = GetDateFormatW(LOCALE_SYSTEM_DEFAULT, NULL, &time, NULL, dateString.data(), (int)dateString.size());
-        dateString.resize(char_count);
-        wprintf(L"Driver date: %s.\n", dateString.data());
+        wprintf(L"Driver date: %s.\n", FileTimeToDateStr(*reinterpret_cast<FILETIME*>(buffer.data())).c_str());
     }
 
     std::wstring pdoPath;
