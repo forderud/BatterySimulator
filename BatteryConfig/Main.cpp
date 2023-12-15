@@ -8,9 +8,6 @@
 #include <vector>
 
 
-using FileHandle = Microsoft::WRL::Wrappers::FileHandle;
-
-
 std::vector<BYTE> GetDevInstProperty(DEVINST dnDevInst, const DEVPROPKEY& propertyKey, /*out*/DEVPROPTYPE& propertyType) {
     std::vector<BYTE> buffer(1024, 0);
     ULONG buffer_size = (ULONG)buffer.size();
@@ -95,7 +92,7 @@ int wmain(int argc, wchar_t* argv[]) {
     }
 
     wprintf(L"Attempting to open %s\n", fileName.c_str());
-    FileHandle battery(CreateFileW(fileName.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
+    Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(fileName.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
         DWORD err = GetLastError();
         wprintf(L"ERROR: CreateFileW (err=%i).\n", err);
