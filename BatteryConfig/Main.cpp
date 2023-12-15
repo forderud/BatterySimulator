@@ -28,14 +28,29 @@ std::vector<BYTE> GetDevInstProperty(DEVINST dnDevInst, const DEVPROPKEY& proper
     return buffer;
 }
 
+
+ULONG GetBatteryTag(HANDLE device) {
+    // get battery tag (needed in later calls)
+    ULONG battery_tag = 0;
+    ULONG wait = 0;
+    DWORD bytes_returned = 0;
+    BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_TAG, &wait, sizeof(wait), &battery_tag, sizeof(battery_tag), &bytes_returned, nullptr);
+    if (!ok) {
+        DWORD err = GetLastError();
+        wprintf(L"ERROR: IOCTL_BATTERY_QUERY_TAG (err=%i).\n", err);
+        return -1;
+    }
+    return battery_tag;
+}
+
 struct BatteryStausWrap : BATTERY_STATUS {
     BatteryStausWrap() : BATTERY_STATUS{} {
     }
 
-    void Get(HANDLE device, ULONG battery_tag) {
+    void Get(HANDLE device) {
         // query BATTERY_STATUS status
         BATTERY_WAIT_STATUS wait_status = {};
-        wait_status.BatteryTag = battery_tag;
+        wait_status.BatteryTag = GetBatteryTag(device);
         DWORD bytes_returned = 0;
         BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_STATUS, &wait_status, sizeof(wait_status), this, sizeof(*this), &bytes_returned, nullptr);
         if (!ok) {
@@ -66,10 +81,10 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
     BatteryInformationWrap() : BATTERY_INFORMATION{} {
     }
 
-    void Get(HANDLE device, ULONG battery_tag) {
+    void Get(HANDLE device) {
         BATTERY_QUERY_INFORMATION bqi = {};
         bqi.InformationLevel = BatteryInformation;
-        bqi.BatteryTag = battery_tag;
+        bqi.BatteryTag = GetBatteryTag(device);
         DWORD bytes_returned = 0;
         BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), this, sizeof(*this), &bytes_returned, nullptr);
         if (!ok) {
@@ -180,35 +195,17 @@ int wmain(int argc, wchar_t* argv[]) {
 
     wprintf(L"Battery opened...\n");
 
-    BatteryStausWrap status;
     BatteryInformationWrap info;
-    {
-        // get battery tag (needed in later calls)
-        ULONG battery_tag = 0;
-        ULONG wait = 0;
-        DWORD bytes_returned = 0;
-        BOOL ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_TAG, &wait, sizeof(wait), &battery_tag, sizeof(battery_tag), &bytes_returned, nullptr);
-        if (!ok) {
-            DWORD err = GetLastError();
-            wprintf(L"ERROR: IOCTL_BATTERY_QUERY_TAG (err=%i).\n", err);
-            return -1;
-        }
+    info.Get(battery.Get());
+    wprintf(L"Battery information:\n");
+    info.Print();
+    wprintf(L"\n");
 
-        // query BATTERY_STATUS status
-        status.Get(battery.Get(), battery_tag);
-
-        // query BATTERY_INFORMATION info
-        info.Get(battery.Get(), battery_tag);
-    }
-
-    {
-        wprintf(L"Battery information:\n");
-        info.Print();
-        wprintf(L"\n");
-        wprintf(L"Battery status (before update):\n");
-        status.Print();
-        wprintf(L"\n");
-    }
+    BatteryStausWrap status;
+    status.Get(battery.Get());
+    wprintf(L"Battery status (before update):\n");
+    status.Print();
+    wprintf(L"\n");
 
 #if 0
     // update battery information
