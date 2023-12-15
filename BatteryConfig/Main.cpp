@@ -62,6 +62,45 @@ struct BatteryStausWrap : BATTERY_STATUS {
 static_assert(sizeof(BatteryStausWrap) == sizeof(BATTERY_STATUS));
 
 
+struct BatteryInformationWrap : BATTERY_INFORMATION {
+    BatteryInformationWrap() : BATTERY_INFORMATION{} {
+    }
+
+    void Get(HANDLE device, ULONG battery_tag) {
+        BATTERY_QUERY_INFORMATION bqi = {};
+        bqi.InformationLevel = BatteryInformation;
+        bqi.BatteryTag = battery_tag;
+        DWORD bytes_returned = 0;
+        BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), this, sizeof(*this), &bytes_returned, nullptr);
+        if (!ok) {
+            //DWORD err = GetLastError();
+            throw std::runtime_error("IOCTL_BATTERY_QUERY_INFORMATION error");
+        }
+    }
+
+    void Set(HANDLE device) {
+        BOOL ok = DeviceIoControl(device, IOCTL_SIMBATT_SET_INFORMATION, this, sizeof(*this), nullptr, 0, nullptr, nullptr);
+        if (!ok) {
+            //DWORD err = GetLastError();
+            throw std::runtime_error("IOCTL_SIMBATT_SET_INFORMATION error");
+        }
+    }
+
+    void Print() {
+        wprintf(L"  Capabilities=%x\n", Capabilities);
+        wprintf(L"  Chemistry=%hs\n", std::string((char*)Chemistry, 4).c_str()); // not null-terminated
+        wprintf(L"  CriticalBias=%i\n", CriticalBias);
+        wprintf(L"  CycleCount=%i\n", CycleCount);
+        wprintf(L"  DefaultAlert1=%i\n", DefaultAlert1);
+        wprintf(L"  DefaultAlert2=%i\n", DefaultAlert2);
+        wprintf(L"  DesignedCapacity=%i\n", DesignedCapacity);
+        wprintf(L"  FullChargedCapacity=%i\n", FullChargedCapacity);
+        wprintf(L"  Technology=%i\n", Technology);
+    }
+};
+static_assert(sizeof(BatteryInformationWrap) == sizeof(BATTERY_INFORMATION));
+
+
 /** Get the virtual file physical device object (PDO) path of a device driver instance. */
 static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
     DEVINST dnDevInst = 0;
@@ -142,7 +181,7 @@ int wmain(int argc, wchar_t* argv[]) {
     wprintf(L"Battery opened...\n");
 
     BatteryStausWrap status;
-    BATTERY_INFORMATION info = {};
+    BatteryInformationWrap info;
     {
         // get battery tag (needed in later calls)
         ULONG battery_tag = 0;
@@ -159,15 +198,7 @@ int wmain(int argc, wchar_t* argv[]) {
         status.Get(battery.Get(), battery_tag);
 
         // query BATTERY_INFORMATION info
-        BATTERY_QUERY_INFORMATION bqi = {};
-        bqi.InformationLevel = BatteryInformation;
-        bqi.BatteryTag = battery_tag;
-        ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &info, sizeof(info), &bytes_returned, nullptr);
-        if (!ok) {
-            DWORD err = GetLastError();
-            wprintf(L"ERROR: BatteryInformation (err=%i).\n", err);
-            return -1;
-        }
+        info.Get(battery.Get(), battery_tag);
 
 #if 0
         // query BATTERY_REPORTING_SCALE scale (fails with error 1 "Incorrect function")
@@ -186,15 +217,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
     {
         wprintf(L"Battery information:\n");
-        wprintf(L"  Capabilities=%x\n", info.Capabilities);
-        wprintf(L"  Chemistry=%hs\n", std::string((char*)info.Chemistry, 4).c_str()); // not null-terminated
-        wprintf(L"  CriticalBias=%i\n", info.CriticalBias);
-        wprintf(L"  CycleCount=%i\n", info.CycleCount);
-        wprintf(L"  DefaultAlert1=%i\n", info.DefaultAlert1);
-        wprintf(L"  DefaultAlert2=%i\n", info.DefaultAlert2);
-        wprintf(L"  DesignedCapacity=%i\n", info.DesignedCapacity);
-        wprintf(L"  FullChargedCapacity=%i\n", info.FullChargedCapacity);
-        wprintf(L"  Technology=%i\n", info.Technology);
+        info.Print();
         wprintf(L"\n");
         wprintf(L"Battery status (before update):\n");
         status.Print();
@@ -203,14 +226,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
 #if 0
     // update battery information
-    {
-        BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_INFORMATION, &info, sizeof(info), nullptr, 0, nullptr, nullptr);
-        if (!ok) {
-            DWORD err = GetLastError();
-            wprintf(L"ERROR: IOCTL_SIMBATT_SET_INFORMATION (err=%i).\n", err);
-            return -1;
-        }
-    }
+    info.Set(battery.Get());
 #endif
 
     // update battery charge level
@@ -232,9 +248,8 @@ int wmain(int argc, wchar_t* argv[]) {
         status.Set(battery.Get());
     }
 
-    {
-        wprintf(L"Battery status (after update):\n");
-        status.Print();
-    }
+    wprintf(L"Battery status (after update):\n");
+    status.Print();
+
     return 0;
 }
