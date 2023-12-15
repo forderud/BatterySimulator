@@ -110,6 +110,7 @@ int wmain(int argc, wchar_t* argv[]) {
     BATTERY_STATUS status = {};
     BATTERY_INFORMATION info = {};
     {
+        // get battery tag (needed in later calls)
         ULONG battery_tag = 0;
         ULONG wait = 0;
         DWORD bytes_returned = 0;
@@ -193,8 +194,10 @@ int wmain(int argc, wchar_t* argv[]) {
         // toggle between charge and dischage
         if (newCharge > status.Capacity)
             status.PowerState = BATTERY_CHARGING;
-        else
+        else if (newCharge < status.Capacity)
             status.PowerState = BATTERY_DISCHARGING;
+        else
+            status.PowerState = 0; // same charge as before
 
         // update charge level
         status.Capacity = newCharge;
