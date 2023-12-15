@@ -8,6 +8,7 @@
 
 #include <cassert>
 #include <string>
+#include <stdexcept>
 #include <vector>
 
 #include "../simbatt/simbattdriverif.h"
@@ -26,6 +27,39 @@ std::vector<BYTE> GetDevInstProperty(DEVINST dnDevInst, const DEVPROPKEY& proper
     buffer.resize(buffer_size);
     return buffer;
 }
+
+struct BatteryStausWrap : BATTERY_STATUS {
+    BatteryStausWrap() : BATTERY_STATUS{} {
+    }
+
+    void Get(HANDLE device, ULONG battery_tag) {
+        // query BATTERY_STATUS status
+        BATTERY_WAIT_STATUS wait_status = {};
+        wait_status.BatteryTag = battery_tag;
+        DWORD bytes_returned = 0;
+        BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_STATUS, &wait_status, sizeof(wait_status), this, sizeof(*this), &bytes_returned, nullptr);
+        if (!ok) {
+            //DWORD err = GetLastError();
+            throw std::runtime_error("IOCTL_BATTERY_QUERY_STATUS error");
+        }
+    }
+
+    void Set(HANDLE device) {
+        BOOL ok = DeviceIoControl(device, IOCTL_SIMBATT_SET_STATUS, this, sizeof(*this), nullptr, 0, nullptr, nullptr);
+        if (!ok) {
+            //DWORD err = GetLastError();
+            throw std::runtime_error("IOCTL_SIMBATT_SET_STATUS error");
+        }
+    }
+
+    void Print() {
+        wprintf(L"  Capacity=%i\n", Capacity);
+        wprintf(L"  PowerState=%x\n", PowerState);
+        wprintf(L"  Rate=%x\n", Rate);
+        wprintf(L"  Voltage=%i\n", Voltage);
+    }
+};
+static_assert(sizeof(BatteryStausWrap) == sizeof(BATTERY_STATUS));
 
 
 /** Get the virtual file physical device object (PDO) path of a device driver instance. */
@@ -107,7 +141,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
     wprintf(L"Battery opened...\n");
 
-    BATTERY_STATUS status = {};
+    BatteryStausWrap status;
     BATTERY_INFORMATION info = {};
     {
         // get battery tag (needed in later calls)
@@ -122,14 +156,7 @@ int wmain(int argc, wchar_t* argv[]) {
         }
 
         // query BATTERY_STATUS status
-        BATTERY_WAIT_STATUS wait_status = {};
-        wait_status.BatteryTag = battery_tag;
-        ok = DeviceIoControl(battery.Get(), IOCTL_BATTERY_QUERY_STATUS, &wait_status, sizeof(wait_status), &status, sizeof(status), &bytes_returned, nullptr);
-        if (!ok) {
-            DWORD err = GetLastError();
-            wprintf(L"ERROR: IOCTL_BATTERY_QUERY_STATUS (err=%i).\n", err);
-            return -1;
-        }
+        status.Get(battery.Get(), battery_tag);
 
         // query BATTERY_INFORMATION info
         BATTERY_QUERY_INFORMATION bqi = {};
@@ -170,10 +197,7 @@ int wmain(int argc, wchar_t* argv[]) {
         wprintf(L"  Technology=%i\n", info.Technology);
         wprintf(L"\n");
         wprintf(L"Battery status (before update):\n");
-        wprintf(L"  Capacity=%i\n", status.Capacity);
-        wprintf(L"  PowerState=%x\n", status.PowerState);
-        wprintf(L"  Rate=%x\n", status.Rate);
-        wprintf(L"  Voltage=%i\n", status.Voltage);
+        status.Print();
         wprintf(L"\n");
     }
 
@@ -205,20 +229,12 @@ int wmain(int argc, wchar_t* argv[]) {
         status.Rate = BATTERY_UNKNOWN_RATE; // was 0
         status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was -1
 
-        BOOL ok = DeviceIoControl(battery.Get(), IOCTL_SIMBATT_SET_STATUS, &status, sizeof(status), nullptr, 0, nullptr, nullptr);
-        if (!ok) {
-            DWORD err = GetLastError();
-            wprintf(L"ERROR: IOCTL_SIMBATT_SET_STATUS (err=%i).\n", err);
-            return -1;
-        }
+        status.Set(battery.Get());
     }
 
     {
         wprintf(L"Battery status (after update):\n");
-        wprintf(L"  Capacity=%i\n", status.Capacity);
-        wprintf(L"  PowerState=%x\n", status.PowerState);
-        wprintf(L"  Rate=%x\n", status.Rate);
-        wprintf(L"  Voltage=%i\n", status.Voltage);
+        status.Print();
     }
     return 0;
 }
