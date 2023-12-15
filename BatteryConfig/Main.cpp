@@ -15,6 +15,19 @@
 using FileHandle = Microsoft::WRL::Wrappers::FileHandle;
 
 
+std::vector<BYTE> GetDevInstProperty(DEVINST dnDevInst, const DEVPROPKEY& propertyKey, /*out*/DEVPROPTYPE& propertyType) {
+    std::vector<BYTE> buffer(1024, 0);
+    ULONG buffer_size = (ULONG)buffer.size();
+    CONFIGRET res = CM_Get_DevNode_PropertyW(dnDevInst, &propertyKey, &propertyType, buffer.data(), &buffer_size, 0);
+    if (res != CR_SUCCESS) {
+        wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
+        return {};
+    }
+    buffer.resize(buffer_size);
+    return buffer;
+}
+
+
 /** Get the virtual file physical device object (PDO) path of a device driver instance. */
 static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
     DEVINST dnDevInst = 0;
@@ -27,30 +40,15 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
     {
         // get driver version
         DEVPROPTYPE PropertyType = 0;
-        std::vector<BYTE> buffer(1024, 0);
-        ULONG buffer_size = (ULONG)buffer.size();
-        res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_DriverVersion, &PropertyType, buffer.data(), &buffer_size, 0);
-        if (res != CR_SUCCESS) {
-            wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
-            return {};
-        }
+        std::vector<BYTE> buffer = GetDevInstProperty(dnDevInst, DEVPKEY_Device_DriverVersion, PropertyType);
         assert(PropertyType == DEVPROP_TYPE_STRING);
-        buffer.resize(buffer_size);
-
         wprintf(L"Driver version: %s.\n", reinterpret_cast<wchar_t*>(buffer.data()));
     }
     {
         // get driver date
         DEVPROPTYPE PropertyType = 0;
-        std::vector<BYTE> buffer(1024, 0);
-        ULONG buffer_size = (ULONG)buffer.size();
-        res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_DriverDate, &PropertyType, buffer.data(), &buffer_size, 0);
-        if (res != CR_SUCCESS) {
-            wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
-            return {};
-        }
+        std::vector<BYTE> buffer = GetDevInstProperty(dnDevInst, DEVPKEY_Device_DriverDate, PropertyType);
         assert(PropertyType == DEVPROP_TYPE_FILETIME);
-        buffer.resize(buffer_size);
 
         SYSTEMTIME time = {};
         BOOL ok = FileTimeToSystemTime(reinterpret_cast<FILETIME*>(buffer.data()), &time);
@@ -70,15 +68,8 @@ static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
     {
         // get PDO path
         DEVPROPTYPE PropertyType = 0;
-        std::vector<BYTE> buffer(1024, 0);
-        ULONG buffer_size = (ULONG)buffer.size();
-        res = CM_Get_DevNode_PropertyW(dnDevInst, &DEVPKEY_Device_PDOName, &PropertyType, buffer.data(), &buffer_size, 0);
-        if (res != CR_SUCCESS) {
-            wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
-            return {};
-        }
+        std::vector<BYTE> buffer = GetDevInstProperty(dnDevInst, DEVPKEY_Device_PDOName, PropertyType);
         assert(PropertyType == DEVPROP_TYPE_STRING);
-        buffer.resize(buffer_size);
 
         pdoPath = L"\\\\?\\GLOBALROOT"; // PDO prefix
         pdoPath += reinterpret_cast<wchar_t*>(buffer.data()); // append PDO name
