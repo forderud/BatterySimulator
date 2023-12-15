@@ -21,7 +21,7 @@ std::variant<std::wstring, FILETIME> GetDevInstProperty(DEVINST dnDevInst, const
     buffer.resize(buffer_size);
 
     if (propertyType == DEVPROP_TYPE_STRING) {
-        return std::wstring(reinterpret_cast<wchar_t*>(buffer.data()));
+        return reinterpret_cast<wchar_t*>(buffer.data());
     } else if (propertyType == DEVPROP_TYPE_FILETIME) {
         return *reinterpret_cast<FILETIME*>(buffer.data());
     }
