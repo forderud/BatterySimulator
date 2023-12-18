@@ -5,5 +5,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Battery.hpp" />
+    <ClInclude Include="DeviceInstance.hpp" />
   </ItemGroup>
 </Project>
