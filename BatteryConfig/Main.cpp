@@ -16,15 +16,16 @@ int wmain(int argc, wchar_t* argv[]) {
 
     wchar_t deviceInstancePath[] = L"ROOT\\BATTERY\\????"; // first simulated battery
     swprintf_s(deviceInstancePath, L"ROOT\\BATTERY\\%04i", batteryIdx); // replace ???? with a 4-digit integer 
+    wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath);
 
     std::wstring pdoPath;
     try {
         DeviceInstance dev(deviceInstancePath);
 
         auto ver = dev.GetDriverVersion();
-        wprintf(L"Driver version: %s.\n", ver.c_str());
+        wprintf(L"  Driver version: %s.\n", ver.c_str());
         auto time = dev.GetDriverDate();
-        wprintf(L"Driver date: %s.\n", DeviceInstance::FileTimeToDateStr(time).c_str());
+        wprintf(L"  Driver date: %s.\n", DeviceInstance::FileTimeToDateStr(time).c_str());
 
         pdoPath = dev.GetPDOPath();
     } catch (std::exception& e) {
@@ -33,7 +34,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    wprintf(L"Attempting to open %s\n", pdoPath.c_str());
+    wprintf(L"Opening %s\n", pdoPath.c_str());
     Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(pdoPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
         DWORD err = GetLastError();
@@ -41,9 +42,8 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    wprintf(L"Battery opened...\n");
-
     BatteryInformationWrap info(battery.Get());
+    wprintf(L"\n"); 
     wprintf(L"Battery information:\n");
     info.Print();
     wprintf(L"\n");
