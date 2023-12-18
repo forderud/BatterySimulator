@@ -28,6 +28,7 @@ struct BatteryStausWrap : BATTERY_STATUS {
             Get(device);
     }
 
+    /** Standard getter. */
     void Get(HANDLE device) {
         // query BATTERY_STATUS status
         BATTERY_WAIT_STATUS wait_status = {};
@@ -40,6 +41,7 @@ struct BatteryStausWrap : BATTERY_STATUS {
         }
     }
 
+    /** SimBatt-specific setter. */
     void Set(HANDLE device) {
         BOOL ok = DeviceIoControl(device, IOCTL_SIMBATT_SET_STATUS, this, sizeof(*this), nullptr, 0, nullptr, nullptr);
         if (!ok) {
@@ -65,6 +67,7 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
             Get(device);
     }
 
+    /** Standard getter. */
     void Get(HANDLE device) {
         BATTERY_QUERY_INFORMATION bqi = {};
         bqi.InformationLevel = BatteryInformation;
@@ -77,6 +80,7 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
         }
     }
 
+    /** SimBatt-specific setter. */
     void Set(HANDLE device) {
         BOOL ok = DeviceIoControl(device, IOCTL_SIMBATT_SET_INFORMATION, this, sizeof(*this), nullptr, 0, nullptr, nullptr);
         if (!ok) {
