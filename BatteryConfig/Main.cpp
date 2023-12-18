@@ -32,6 +32,16 @@ public:
         return std::get<FILETIME>(res);
     }
 
+    /** Get the virtual file physical device object (PDO) path of a device driver instance. */
+    std::wstring GetPDOPath() const {
+        auto res = GetDevInstProperty(DEVPKEY_Device_PDOName);
+
+        std::wstring pdoPath = L"\\\\?\\GLOBALROOT"; // PDO prefix
+        pdoPath += std::get<std::wstring>(res); // append PDO name
+        return pdoPath;
+
+    }
+
     std::variant<std::wstring, FILETIME> GetDevInstProperty(const DEVPROPKEY& propertyKey) const {
         DEVPROPTYPE propertyType = 0;
         std::vector<BYTE> buffer(1024, 0);
@@ -72,34 +82,6 @@ public:
 };
 
 
-/** Get the virtual file physical device object (PDO) path of a device driver instance. */
-static std::wstring GetPDOPath(wchar_t* deviceInstancePath) {
-    DeviceInstance dev(deviceInstancePath);
-
-    {
-        // get driver version
-        auto res = dev.GetDriverVersion();
-        wprintf(L"Driver version: %s.\n", res.c_str());
-    }
-    {
-        // get driver date
-        auto res = dev.GetDriverDate();
-        wprintf(L"Driver date: %s.\n", DeviceInstance::FileTimeToDateStr(res).c_str());
-    }
-
-    std::wstring pdoPath;
-    {
-        // get PDO path
-        auto res = dev.GetDevInstProperty(DEVPKEY_Device_PDOName);
-
-        pdoPath = L"\\\\?\\GLOBALROOT"; // PDO prefix
-        pdoPath += std::get<std::wstring>(res); // append PDO name
-    }
-
-    return pdoPath;
-}
-
-
 int wmain(int argc, wchar_t* argv[]) {
     if (argc < 3) {
         wprintf(L"USAGE: \"BatteryConfig.exe <N> <Charge>\" where <N> is the battery index and <Charge> is the new charge.\n");
@@ -112,14 +94,24 @@ int wmain(int argc, wchar_t* argv[]) {
     wchar_t deviceInstancePath[] = L"ROOT\\BATTERY\\????"; // first simulated battery
     swprintf_s(deviceInstancePath, L"ROOT\\BATTERY\\%04i", batteryIdx); // replace ???? with a 4-digit integer 
 
-    std::wstring fileName = GetPDOPath(deviceInstancePath);
-    if (fileName.empty()) {
+    std::wstring pdoPath;
+    try {
+        DeviceInstance dev(deviceInstancePath);
+
+        auto ver = dev.GetDriverVersion();
+        wprintf(L"Driver version: %s.\n", ver.c_str());
+        auto time = dev.GetDriverDate();
+        wprintf(L"Driver date: %s.\n", DeviceInstance::FileTimeToDateStr(time).c_str());
+
+        pdoPath = dev.GetPDOPath();
+    } catch (std::exception& e) {
         wprintf(L"ERROR: Unable to locate battery %s\n", deviceInstancePath);
+        wprintf(L"ERROR: what: %hs\n", e.what());
         return -1;
     }
 
-    wprintf(L"Attempting to open %s\n", fileName.c_str());
-    Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(fileName.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
+    wprintf(L"Attempting to open %s\n", pdoPath.c_str());
+    Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(pdoPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
         DWORD err = GetLastError();
         wprintf(L"ERROR: CreateFileW (err=%i).\n", err);
