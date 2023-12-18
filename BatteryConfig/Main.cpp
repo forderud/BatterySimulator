@@ -23,18 +23,18 @@ public:
     }
 
     std::wstring GetDriverVersion() const {
-        auto res = GetDevInstProperty(DEVPKEY_Device_DriverVersion);
+        auto res = GetProperty(DEVPKEY_Device_DriverVersion);
         return std::get<std::wstring>(res);
     }
 
     FILETIME GetDriverDate() const {
-        auto res = GetDevInstProperty(DEVPKEY_Device_DriverDate);
+        auto res = GetProperty(DEVPKEY_Device_DriverDate);
         return std::get<FILETIME>(res);
     }
 
     /** Get the virtual file physical device object (PDO) path of a device driver instance. */
     std::wstring GetPDOPath() const {
-        auto res = GetDevInstProperty(DEVPKEY_Device_PDOName);
+        auto res = GetProperty(DEVPKEY_Device_PDOName);
 
         std::wstring pdoPath = L"\\\\?\\GLOBALROOT"; // PDO prefix
         pdoPath += std::get<std::wstring>(res); // append PDO name
@@ -42,7 +42,7 @@ public:
 
     }
 
-    std::variant<std::wstring, FILETIME> GetDevInstProperty(const DEVPROPKEY& propertyKey) const {
+    std::variant<std::wstring, FILETIME> GetProperty(const DEVPROPKEY& propertyKey) const {
         DEVPROPTYPE propertyType = 0;
         std::vector<BYTE> buffer(1024, 0);
         ULONG buffer_size = (ULONG)buffer.size();
