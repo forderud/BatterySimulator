@@ -36,8 +36,8 @@ Warning displayed when simulating low-battery conditions:
 Windows handling of low-battery situations can be configured through "Power Options" (or using [Powercfg](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options)):  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/c98a64a4-1c29-43d8-9376-3feca6ce1130)
 
-### WMI `Win32_Battery` access
-Battery parameters from the battery miniclass driver will automatically be exposed through the `Win32_Battery` WMI class, so there's no need for implementing a WMI provider yourself.
+### WMI `Win32_Battery` parameters
+Battery parameters from the battery miniclass driver will automatically be exposed through the [`Win32_Battery`](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery) WMI class, so there's no need for implementing a WMI provider yourself.
 
 Query battery status from PowerShell: `Get-CimInstance -Namespace root\CIMV2 Win32_Battery`
 
