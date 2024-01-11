@@ -36,6 +36,86 @@ Warning displayed when simulating low-battery conditions:
 Windows handling of low-battery situations can be configured through "Power Options" (or using [Powercfg](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options)):  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/c98a64a4-1c29-43d8-9376-3feca6ce1130)
 
+### WMI `Win32_Battery` access
+Query battery status:
+* From PowerShell: `Get-CimInstance -Namespace root\CIMV2 Win32_Battery`
+
+
+Sample output:
+```
+PS > Get-CimInstance -Namespace root\CIMV2 Win32_Battery
+
+Caption                     : Internal Battery
+Description                 : Internal Battery
+InstallDate                 :
+Name                        : SimulatedBattery
+Status                      : Service
+Availability                : 1
+ConfigManagerErrorCode      :
+ConfigManagerUserConfig     :
+CreationClassName           : Win32_Battery
+DeviceID                    : SimulatedBattery0000
+ErrorCleared                :
+ErrorDescription            :
+LastErrorCode               :
+PNPDeviceID                 :
+PowerManagementCapabilities : {1}
+PowerManagementSupported    : False
+StatusInfo                  :
+SystemCreationClassName     : Win32_ComputerSystem
+SystemName                  : WINDEV2211EVAL
+BatteryStatus               : 6
+Chemistry                   : 2
+DesignCapacity              :
+DesignVoltage               :
+EstimatedChargeRemaining    : 90
+EstimatedRunTime            : 0
+ExpectedLife                :
+FullChargeCapacity          :
+MaxRechargeTime             :
+SmartBatteryVersion         :
+TimeOnBattery               :
+TimeToFullCharge            :
+BatteryRechargeTime         :
+ExpectedBatteryLife         :
+PSComputerName              :
+
+Caption                     : Internal Battery
+Description                 : Internal Battery
+InstallDate                 :
+Name                        : SimulatedBattery
+Status                      : OK
+Availability                : 2
+ConfigManagerErrorCode      :
+ConfigManagerUserConfig     :
+CreationClassName           : Win32_Battery
+DeviceID                    : SimulatedBattery0000
+ErrorCleared                :
+ErrorDescription            :
+LastErrorCode               :
+PNPDeviceID                 :
+PowerManagementCapabilities : {1}
+PowerManagementSupported    : False
+StatusInfo                  :
+SystemCreationClassName     : Win32_ComputerSystem
+SystemName                  : WINDEV2211EVAL
+BatteryStatus               : 2
+Chemistry                   : 2
+DesignCapacity              :
+DesignVoltage               :
+EstimatedChargeRemaining    : 100
+EstimatedRunTime            : 0
+ExpectedLife                :
+FullChargeCapacity          :
+MaxRechargeTime             :
+SmartBatteryVersion         :
+TimeOnBattery               :
+TimeToFullCharge            :
+BatteryRechargeTime         :
+ExpectedBatteryLife         :
+PSComputerName              :
+```
+
 ### Windows power events
 Windows applications receive [`WM_POWERBROADCAST`](https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast) events when the machine transitions between AC and battery power, as well as when suspening or resuming from low-power modes. Applications can also call [`GetSystemPowerStatus`](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getsystempowerstatus) to retrieve details about the power state and aggregated battery charge level. Take a look at the `BatteryMonitor` project for sample code.  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/622a8e92-8535-46ce-85b9-72d4fd52b798)
