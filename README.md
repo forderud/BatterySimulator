@@ -40,8 +40,29 @@ Battery status icons that can be simulated:
 Warning displayed when simulating low-battery conditions:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/80707d03-8ffc-4209-bfff-8bfaa1c4181c)
 
-Windows handling of low-battery situations can be configured through "Power Options" (or using [Powercfg](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options)):  
+Windows handling of low-battery situations can either be configured through the "Power Options" UI:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/c98a64a4-1c29-43d8-9376-3feca6ce1130)
+
+... or using [Powercfg](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options):
+```
+set SCHEME=SCHEME_BALANCED
+
+:: Critical battery notification (0=off, 1=on)
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
+
+:: Critical battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
+
+:: Low battery notification (0=off, 1=on)
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
+
+:: Low battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
+```
 
 ### WMI `Win32_Battery` parameters
 Battery parameters from the battery miniclass driver will automatically be exposed through the [`Win32_Battery`](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery) WMI class, so there's no need for implementing a WMI provider yourself.
