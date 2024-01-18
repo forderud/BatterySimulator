@@ -46,6 +46,9 @@ Windows handling of low-battery situations can either be configured through the 
 
 ... or using [Powercfg](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options):
 ```
+:: Display current power configuration 
+PowerCfg.exe /query
+
 set SCHEME=SCHEME_BALANCED
 
 :: Critical battery notification (0=off, 1=on)
