@@ -61,12 +61,10 @@ int wmain(int argc, wchar_t* argv[]) {
     // update battery charge level
     {
         // toggle between charge and dischage
-        if (newCharge >= 90)
-            status.PowerState = BATTERY_POWER_ON_LINE; // simulate AC power
-        else if (newCharge > status.Capacity)
-            status.PowerState = BATTERY_CHARGING;
+        if (newCharge > status.Capacity)
+            status.PowerState = BATTERY_POWER_ON_LINE | BATTERY_CHARGING; // charging while on AC power
         else if (newCharge < status.Capacity)
-            status.PowerState = BATTERY_DISCHARGING;
+            status.PowerState = BATTERY_DISCHARGING; // discharging
         else
             status.PowerState = 0; // same charge as before
 
