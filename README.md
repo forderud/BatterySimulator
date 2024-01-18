@@ -30,6 +30,13 @@ Steps:
 Simulate 6 battery-packs:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/fce5172f-8125-495b-ab06-864e079c19c7)
 
+Battery status icons that can be simulated:
+* Critical level: ![image](https://github.com/forderud/BatterySimulator/assets/2671400/9a6d48aa-3e21-4423-b9ef-753cff2587aa) (7% or less)
+* Low level: ![image](https://github.com/forderud/BatterySimulator/assets/2671400/7e03f6c0-222e-4a87-8a33-4aec937ede94) (10% or less)
+* Battery saver: ![image](https://github.com/forderud/BatterySimulator/assets/2671400/ef038cbd-33a3-43c8-8e18-531878c59004) (20% or less)
+* Half full: ![image](https://github.com/forderud/BatterySimulator/assets/2671400/fdc0fc67-3628-4879-a9ef-9fa2d02feda6)
+* On AC power: ![image](https://github.com/forderud/BatterySimulator/assets/2671400/d258e0a8-5876-4ca4-80da-f16367166ce6) (90% or more)
+
 Warning displayed when simulating low-battery conditions:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/80707d03-8ffc-4209-bfff-8bfaa1c4181c)
 
