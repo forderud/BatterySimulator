@@ -41,7 +41,7 @@ Notification when simulating low-battery conditions:
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/80707d03-8ffc-4209-bfff-8bfaa1c4181c)
 
 ### Configuring Windows power management
-Windows handling of low-battery situations can either be configured through the "Power Options" UI:  
+Windows handling of low-battery situations can either be configured through the "Power Options" UI (accessed from "Power & sleep" settings -> "Additional power settings" -> "Change plan settings" -> "Change advanced power settings"):  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/c98a64a4-1c29-43d8-9376-3feca6ce1130)
 
 ... or using [Powercfg](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options):
