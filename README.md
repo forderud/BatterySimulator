@@ -49,6 +49,7 @@ Windows handling of low-battery situations can either be configured through the 
 :: Display current power configuration 
 PowerCfg.exe /query
 
+:: Select power scheme (SCHEME_MIN, SCHEME_MAX or SCHEME_BALANCED)
 set SCHEME=SCHEME_BALANCED
 
 :: Critical battery notification (0=off, 1=on)
