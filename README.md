@@ -37,7 +37,7 @@ Battery status icons that can be simulated:
 * Half full: ![image](https://github.com/forderud/BatterySimulator/assets/2671400/fdc0fc67-3628-4879-a9ef-9fa2d02feda6)
 * On AC power: ![image](https://github.com/forderud/BatterySimulator/assets/2671400/d258e0a8-5876-4ca4-80da-f16367166ce6)
 
-Warning displayed when simulating low-battery conditions:  
+Notification displayed when simulating low-battery conditions:  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/80707d03-8ffc-4209-bfff-8bfaa1c4181c)
 
 ### Configuring Windows power management
