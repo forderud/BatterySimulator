@@ -15,7 +15,7 @@ int wmain(int argc, wchar_t* argv[]) {
     const unsigned int newCharge = _wtoi(argv[2]);
 
     wchar_t deviceInstancePath[18] = {};
-    swprintf_s(deviceInstancePath, L"ROOT\\BATTERY\\%04i", batteryIdx); // add 4-digit hex index suffix
+    swprintf_s(deviceInstancePath, L"SWD\\DEVGEN\\%i", batteryIdx); // add device index suffix
     wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath);
 
     std::wstring pdoPath;

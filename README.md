@@ -21,8 +21,9 @@ You can with the driver **make Windows believe that it’s being powered by one 
 Steps:
 * Build solution in Visual Studio or download binaries from [releases](../../releases).
 * Copy `BatteryConfig.exe`, `BatteryMonitor.exe` and the `simbatt` folder to the target machine.
-* Run `INSTALL.bat` with admin privileges to install the drivers. Run the script multiple times to simulate additional batteries.
-* Run `BatteryConfig.exe <N> <Charge>`, where `<N>` is the simulated battery index and `<Charge>` is the new charge level, to modify the battery state. Example: `BatteryConfig.exe 0 90` to set the charge level of the first battery to 90%.
+* Complete the certificate installation steps in `INSTALL.bat` to prepare the computer for driver installation.
+* Run `INSTALL.bat` with admin privileges to install the driver with two simulated batteries.
+* Run `BatteryConfig.exe <N> <Charge>`, where `<N>` is the simulated battery index and `<Charge>` is the new charge level, to modify the battery state. Example: `BatteryConfig.exe 1 90` to set the charge level of the first battery to 90%.
 * Run `BatteryMonitor.exe` to monitor power events broadcasted to all application.
 * Run `UNINSTALL.bat` with admin privileges to uninstall the driver and delete simulated batteries.
 
