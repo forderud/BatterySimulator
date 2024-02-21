@@ -14,8 +14,8 @@ int wmain(int argc, wchar_t* argv[]) {
     const unsigned int batteryIdx = _wtoi(argv[1]); // 0 is first battery
     const unsigned int newCharge = _wtoi(argv[2]);
 
-    wchar_t deviceInstancePath[] = L"ROOT\\BATTERY\\????"; // first simulated battery
-    swprintf_s(deviceInstancePath, L"ROOT\\BATTERY\\%04i", batteryIdx); // replace ???? with a 4-digit integer 
+    wchar_t deviceInstancePath[18] = {};
+    swprintf_s(deviceInstancePath, L"ROOT\\BATTERY\\%04i", batteryIdx); // add 4-digit hex index suffix
     wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath);
 
     std::wstring pdoPath;
