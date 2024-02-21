@@ -75,7 +75,8 @@
     </DriverSign>
     <PostBuildEvent>
       <Command>copy *.bat $(PackageDir)
-copy "$(WDKBinRoot_x64)\certmgr.exe" $(OutDir)
+copy $(OutDir)\simbatt.cer $(PackageDir)
+copy "$(WDKBinRoot_x64)\certmgr.exe" $(PackageDir)
 copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\devgen.exe" $(PackageDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -105,7 +106,8 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\devgen.
     </DriverSign>
     <PostBuildEvent>
       <Command>copy *.bat $(PackageDir)
-copy "$(WDKBinRoot_x64)\certmgr.exe" $(OutDir)
+copy $(OutDir)\simbatt.cer $(PackageDir)
+copy "$(WDKBinRoot_x64)\certmgr.exe" $(PackageDir)
 copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\devgen.exe" $(PackageDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
