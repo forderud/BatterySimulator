@@ -3,8 +3,8 @@
 cd /d "%~dp0"
 
 :: Install certificate for silent driver installation and loading (run from administrative command prompt)
-:: certmgr.exe /add simbatt.cer /s /r localMachine root
-:: certmgr.exe /add simbatt.cer /s /r localMachine trustedpublisher
+certmgr.exe /add simbatt.cer /s /r localMachine root
+certmgr.exe /add simbatt.cer /s /r localMachine trustedpublisher
 
 :: Install driver
 pnputil.exe /add-driver simbatt.inf /install /reboot
