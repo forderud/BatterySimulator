@@ -76,7 +76,7 @@
     <PostBuildEvent>
       <Command>copy *.bat $(PackageDir)
 copy "$(WDKBinRoot_x64)\certmgr.exe" $(OutDir)
-copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\dev*.exe" $(PackageDir)</Command>
+copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\devgen.exe" $(PackageDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,7 +106,7 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\dev*.ex
     <PostBuildEvent>
       <Command>copy *.bat $(PackageDir)
 copy "$(WDKBinRoot_x64)\certmgr.exe" $(OutDir)
-copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\dev*.exe" $(PackageDir)</Command>
+copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\devgen.exe" $(PackageDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
