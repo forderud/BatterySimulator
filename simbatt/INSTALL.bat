@@ -2,7 +2,7 @@
 :: Goto current directory
 cd /d "%~dp0"
 
-:: Install certificate for silent driver installation and loading (run from administrative command prompt)
+:: Install driver certificate
 certmgr.exe /add simbatt.cer /s /r localMachine root
 certmgr.exe /add simbatt.cer /s /r localMachine trustedpublisher
 
