@@ -51,7 +51,21 @@ PowerCfg.exe /query
 
 :: Select power scheme (SCHEME_MIN, SCHEME_MAX or SCHEME_BALANCED)
 set SCHEME=SCHEME_BALANCED
+```
 
+Power savings exaples:
+```
+:: Sleep after after 4min on DC and never sleep on AC
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_SLEEP STANDBYIDLE 240
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_SLEEP STANDBYIDLE 0
+
+:: Turn off display after 5min on DC and 10min on AC
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 300
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 600
+```
+
+Low-battery event examples:
+```
 :: Critical battery notification (0=off, 1=on)
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
@@ -67,10 +81,6 @@ PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
 :: Low battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
-
-:: Turn off display after 5min on DC and 10min on AC
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 300
-PowerCfg.exe /setacvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 600
 ```
 
 ### WMI `Win32_Battery` parameters
