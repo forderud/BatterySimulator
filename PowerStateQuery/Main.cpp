@@ -42,11 +42,13 @@ static void PrintPowerData(CM_POWER_DATA powerData) {
     for (size_t state = PowerSystemWorking; state < PowerSystemMaximum; state++)
         wprintf(L"  %s: %s\n", SystemPowerStateStr((SYSTEM_POWER_STATE)state), DevicePowerStateStr(powerData.PD_PowerStateMapping[state]));
 
-    wprintf(L"\n");
-    wprintf(L"Wakeup latencies:\n");
-    wprintf(L"  From D1: %i ms\n", powerData.PD_D1Latency/10); // convert 100us unit to ms
-    wprintf(L"  From D2: %i ms\n", powerData.PD_D2Latency/10);
-    wprintf(L"  From D3: %i ms\n", powerData.PD_D3Latency/10);
+    if (powerData.PD_D1Latency | powerData.PD_D2Latency | powerData.PD_D3Latency) {
+        wprintf(L"\n");
+        wprintf(L"Wakeup latencies:\n");
+        wprintf(L"  From D1: %i ms\n", powerData.PD_D1Latency/10); // convert 100us unit to ms
+        wprintf(L"  From D2: %i ms\n", powerData.PD_D2Latency/10);
+        wprintf(L"  From D3: %i ms\n", powerData.PD_D3Latency/10);
+    }
 
     wprintf(L"\n");
 }
