@@ -75,7 +75,8 @@ int GetDeviceDriverPowerData() {
         // TODO: Also query DEVPKEY_Device_PowerRelations
 
         CM_POWER_DATA powerData = {};
-        if (!SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, SPDRP_DEVICE_POWER_DATA, nullptr, (BYTE*)&powerData, sizeof(powerData), nullptr)) {
+        ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, SPDRP_DEVICE_POWER_DATA, nullptr, (BYTE*)&powerData, sizeof(powerData), nullptr);
+        if (!ok) {
             DWORD res = GetLastError();
             continue;
         }
