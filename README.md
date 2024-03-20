@@ -63,6 +63,8 @@ PowerCfg.exe /setacvalueindex %SCHEME% SUB_SLEEP STANDBYIDLE 0
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 300
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 600
 ```
+Drivers can expose both standard and custom power setting parameters as documented on [Managing Device Performance States](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/managing-device-performance-states). These power settings can afterwards be configured using `PowerCfg`.
+
 
 Power event configuration:
 ```
