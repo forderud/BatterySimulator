@@ -1,9 +1,7 @@
 #include <windows.h>
 #include <setupapi.h>
-#include <devguid.h>
 #include <cassert>
 #include <iostream>
-
 
 #pragma comment (lib, "SetupAPI.lib")
 
@@ -39,15 +37,16 @@ static const wchar_t* DevicePowerStateStr(DEVICE_POWER_STATE state) {
 static void PrintPowerData(CM_POWER_DATA powerData) {
     wprintf(L"Current power state: %s.\n", DevicePowerStateStr(powerData.PD_MostRecentPowerState));
 
-    wprintf(L"\nPower state mapping:\n");
-    for (size_t state = PowerSystemWorking; state < PowerSystemMaximum; state++) {
+    wprintf(L"\n");
+    wprintf(L"Power state mapping:\n");
+    for (size_t state = PowerSystemWorking; state < PowerSystemMaximum; state++)
         wprintf(L"  %s: %s\n", SystemPowerStateStr((SYSTEM_POWER_STATE)state), DevicePowerStateStr(powerData.PD_PowerStateMapping[state]));
-    }
 
-    wprintf(L"\nWakeup latencies:\n");
-    wprintf(L"  From D1: %i ms\n", powerData.PD_D1Latency / 10); // convert 100us to ms
-    wprintf(L"  From D2: %i ms\n", powerData.PD_D2Latency / 10);
-    wprintf(L"  From D3: %i ms\n", powerData.PD_D3Latency / 10);
+    wprintf(L"\n");
+    wprintf(L"Wakeup latencies:\n");
+    wprintf(L"  From D1: %i ms\n", powerData.PD_D1Latency/10); // convert 100us unit to ms
+    wprintf(L"  From D2: %i ms\n", powerData.PD_D2Latency/10);
+    wprintf(L"  From D3: %i ms\n", powerData.PD_D3Latency/10);
 
     wprintf(L"\n");
 }
@@ -64,7 +63,7 @@ static std::wstring GetDevicePropertyStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& dev
     }
     assert(dataType == 1); // REG_SZ string
 
-    result.resize(requiredSize / sizeof(wchar_t) - 1);
+    result.resize(requiredSize/sizeof(wchar_t) - 1); // exclude null-termination
     return result;
 }
 
@@ -83,9 +82,7 @@ int GetDeviceDriverPowerData() {
             DWORD err = GetLastError();
             if (err == ERROR_NO_MORE_ITEMS)
                 break;
-
-            wprintf(L"SetupDiEnumDeviceInfo failed with %d.\n", err);
-            continue;
+            abort();
         }
 
         wprintf(L"== Device: %s ==\n", GetDevicePropertyStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str()); // SPDRP_FRIENDLYNAME or SPDRP_DEVICEDESC
