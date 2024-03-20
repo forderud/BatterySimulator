@@ -53,7 +53,7 @@ PowerCfg.exe /query
 set SCHEME=SCHEME_BALANCED
 ```
 
-Power savings exaples:
+Power saving configuration:
 ```
 :: Sleep after after 4min on DC and never sleep on AC
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_SLEEP STANDBYIDLE 240
@@ -64,7 +64,7 @@ PowerCfg.exe /setdcvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 300
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 600
 ```
 
-Low-battery event examples:
+Power event configuration:
 ```
 :: Critical battery notification (0=off, 1=on)
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
