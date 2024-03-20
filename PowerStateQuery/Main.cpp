@@ -52,6 +52,22 @@ static void PrintPowerData(CM_POWER_DATA powerData) {
     wprintf(L"\n");
 }
 
+static std::wstring GetDevicePropertyStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, DWORD property) {
+    std::wstring result;
+    result.resize(128, L'\0');
+    DWORD requiredSize = 0;
+    DWORD dataType = 0;
+    BOOL ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, property, &dataType, (BYTE*)result.data(), (DWORD)result.size()*sizeof(wchar_t), &requiredSize);
+    if (!ok) {
+        DWORD res = GetLastError();
+        return {};
+    }
+    assert(dataType == 1); // REG_SZ string
+
+    result.resize(requiredSize / sizeof(wchar_t) - 1);
+    return result;
+}
+
 int GetDeviceDriverPowerData() {
     // query all connected devices
     HDEVINFO hDevInfo = SetupDiGetClassDevsW(NULL, 0, 0, DIGCF_ALLCLASSES | DIGCF_PRESENT);
@@ -71,6 +87,9 @@ int GetDeviceDriverPowerData() {
             wprintf(L"SetupDiEnumDeviceInfo failed with %d.\n", err);
             continue;
         }
+
+        wprintf(L"== Device: %s ==\n", GetDevicePropertyStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str()); // SPDRP_FRIENDLYNAME or SPDRP_DEVICEDESC
+        
 
         // TODO: Also query DEVPKEY_Device_PowerRelations
 
