@@ -60,7 +60,7 @@ static std::wstring GetDevicePropertyStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& dev
     DWORD dataType = 0;
     BOOL ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, property, &dataType, (BYTE*)result.data(), (DWORD)result.size()*sizeof(wchar_t), &requiredSize);
     if (!ok) {
-        DWORD res = GetLastError();
+        DWORD res = GetLastError(); res;
         return {};
     }
     assert(dataType == 1); // REG_SZ string
@@ -95,7 +95,7 @@ int GetDeviceDriverPowerData() {
         CM_POWER_DATA powerData = {};
         ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, SPDRP_DEVICE_POWER_DATA, nullptr, (BYTE*)&powerData, sizeof(powerData), nullptr);
         if (!ok) {
-            DWORD res = GetLastError();
+            DWORD res = GetLastError(); res;
             continue;
         }
 
