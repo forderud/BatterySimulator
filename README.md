@@ -67,6 +67,10 @@ PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
 :: Low battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
+
+:: Turn off display after 5min on DC and 10min on AC
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 300
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 600
 ```
 
 ### WMI `Win32_Battery` parameters
