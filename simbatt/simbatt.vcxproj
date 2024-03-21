@@ -75,7 +75,7 @@
     <PostBuildEvent>
       <Command>copy *.bat $(PackageDir)
 copy $(OutDir)\simbatt.cer $(PackageDir)
-copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\devgen.exe" $(PackageDir)</Command>
+copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)\devgen.exe" $(PackageDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -105,7 +105,7 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\devgen.
     <PostBuildEvent>
       <Command>copy *.bat $(PackageDir)
 copy $(OutDir)\simbatt.cer $(PackageDir)
-copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\x64\devgen.exe" $(PackageDir)</Command>
+copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)\devgen.exe" $(PackageDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
