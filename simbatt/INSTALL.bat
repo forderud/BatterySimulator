@@ -2,9 +2,9 @@
 :: Goto current directory
 cd /d "%~dp0"
 
-:: Install driver certificate
-certmgr.exe /add simbatt.cer /s /r localMachine root
-certmgr.exe /add simbatt.cer /s /r localMachine trustedpublisher
+:: Trust driver certificate
+certutil.exe -addstore root simbatt.cer
+certutil.exe -addstore trustedpublisher simbatt.cer
 
 :: Install driver
 pnputil.exe /add-driver simbatt.inf /install /reboot
