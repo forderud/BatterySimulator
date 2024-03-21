@@ -68,13 +68,9 @@ Drivers can expose both standard and custom power setting parameters as document
 
 Power event configuration:
 ```
-:: Critical battery notification (0=off, 1=on)
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
-PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
-
-:: Critical battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
-PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
+:: Low battery level (percentage)
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATLEVELLOW 10
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATLEVELLOW 10
 
 :: Low battery notification (0=off, 1=on)
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
@@ -83,6 +79,18 @@ PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
 :: Low battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
+
+:: Critical battery level (percentage)
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATLEVELCRIT 5
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATLEVELCRIT 5
+
+:: Critical battery notification (0=off, 1=on)
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
+
+:: Critical battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
 ```
 
 ### WMI `Win32_Battery` parameters
