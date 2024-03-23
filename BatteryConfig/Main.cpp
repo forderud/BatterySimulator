@@ -14,13 +14,9 @@ int wmain(int argc, wchar_t* argv[]) {
     const wchar_t* instanceId = argv[1]; // 0 is first battery
     const unsigned int newCharge = _wtoi(argv[2]);
 
-    wchar_t deviceInstancePath[18] = {};
-    swprintf_s(deviceInstancePath, L"SWD\\DEVGEN\\%s", instanceId); // device instance ID
-    wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath);
-
     std::wstring pdoPath;
     try {
-        DeviceInstance dev(deviceInstancePath);
+        DeviceInstance dev(instanceId);
 
         auto ver = dev.GetDriverVersion();
         wprintf(L"  Driver version: %s.\n", ver.c_str());
@@ -29,7 +25,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
         pdoPath = dev.GetPDOPath();
     } catch (std::exception& e) {
-        wprintf(L"ERROR: Unable to locate battery %s\n", deviceInstancePath);
+        wprintf(L"ERROR: Unable to locate battery %s\n", instanceId);
         wprintf(L"ERROR: what: %hs\n", e.what());
         return -1;
     }

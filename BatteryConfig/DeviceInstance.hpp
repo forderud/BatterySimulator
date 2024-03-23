@@ -8,10 +8,28 @@
 
 class DeviceInstance {
 public:
-    DeviceInstance(wchar_t* deviceInstancePath) {
-        CONFIGRET res = CM_Locate_DevNodeW(&m_devInst, deviceInstancePath, CM_LOCATE_DEVNODE_NORMAL);
-        if (res != CR_SUCCESS)
-            throw std::runtime_error("ERROR: CM_Locate_DevNodeW");
+    DeviceInstance(const wchar_t* instanceId) {
+        wchar_t deviceInstancePath1[32] = {}; // SW device
+        swprintf_s(deviceInstancePath1, L"SWD\\DEVGEN\\%s", instanceId); // device instance ID
+
+        wchar_t deviceInstancePath2[32] = {}; // "HW" device
+        swprintf_s(deviceInstancePath2, L"ROOT\\DEVGEN\\%s", instanceId); // device instance ID
+
+        // try to open as SW device first
+        CONFIGRET res = CM_Locate_DevNodeW(&m_devInst, deviceInstancePath1, CM_LOCATE_DEVNODE_NORMAL);
+        if (res == CR_SUCCESS) {
+            wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath1);
+            return;
+        }
+
+        // fallback to opening as HW device
+        res = CM_Locate_DevNodeW(&m_devInst, deviceInstancePath2, CM_LOCATE_DEVNODE_NORMAL);
+        if (res == CR_SUCCESS) {
+            wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath2);
+            return;
+        }
+
+        throw std::runtime_error("ERROR: CM_Locate_DevNodeW");
     }
 
     ~DeviceInstance() {
