@@ -11,11 +11,11 @@ int wmain(int argc, wchar_t* argv[]) {
         return 1;
     }
 
-    const unsigned int batteryIdx = _wtoi(argv[1]); // 0 is first battery
+    const wchar_t* instanceId = argv[1]; // 0 is first battery
     const unsigned int newCharge = _wtoi(argv[2]);
 
     wchar_t deviceInstancePath[18] = {};
-    swprintf_s(deviceInstancePath, L"SWD\\DEVGEN\\%i", batteryIdx); // add device index suffix
+    swprintf_s(deviceInstancePath, L"SWD\\DEVGEN\\%s", instanceId); // device instance ID
     wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath);
 
     std::wstring pdoPath;
