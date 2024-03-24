@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:difxapp='http://schemas.microsoft.com/wix/DifxAppExtension'>
+    <Product Id="*" Name="BatterySimulator" Language="1033" Version="1.0.0.0" Manufacturer="TODO-Set-Manufacturer" UpgradeCode="E1C79D1B-49A9-45F8-AC07-2762C3B20005">
+        <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" Description="Simulated battery driver" />
+
+        <!-- Disable downgrades, prevent side-by-side installations of same version -->
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." AllowSameVersionUpgrades="yes"/>
+        <!-- Embed binaries inside MSI instead of separate CAB files -->
+        <MediaTemplate EmbedCab="yes"/>
+
+        <Feature Id="ProductFeature" Title="BatterySimulator" Level="1">
+            <ComponentGroupRef Id="ProductComponents" />
+        </Feature>
+
+        <CustomAction Id="AddCertToRoot"
+                  Directory="INSTALLFOLDER"
+                  ExeCommand="certutil.exe -addstore root &quot;[INSTALLFOLDER]simbatt.cer&quot;"
+                  Execute="deferred"
+                  Impersonate="no"
+                  />
+        <CustomAction Id="AddCertToTrustedPublisher"
+                  Directory="INSTALLFOLDER"
+                  ExeCommand="certutil.exe -addstore trustedpublisher &quot;[INSTALLFOLDER]simbatt.cer&quot;"
+                  Execute="deferred"
+                  Impersonate="no"
+                  />
+
+        <InstallExecuteSequence>
+            <Custom Action='AddCertToRoot' Before='MsiProcessDrivers'>NOT Installed OR REINSTALL</Custom>
+            <Custom Action='AddCertToTrustedPublisher' Before='MsiProcessDrivers'>NOT Installed OR REINSTALL</Custom>
+        </InstallExecuteSequence>
+    </Product>
+
+    <Fragment>
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFiles64Folder">
+                <Directory Id="INSTALLFOLDER" Name="BatterySimulator" />
+            </Directory>
+        </Directory>
+    </Fragment>
+
+    <Fragment>
+        <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+            <Component Id="simbatt.cer" Guid="*">
+                <File Id="simbatt.cer" Source="..\$(var.Platform)\$(var.Configuration)\simbatt\simbatt.cer" KeyPath="yes"/>
+            </Component>
+            <Component Id="BatterySimulator" Guid="*">
+                <difxapp:Driver Legacy='yes' />
+                <File Id="simbatt.cat" Source="..\$(var.Platform)\$(var.Configuration)\simbatt\simbatt.cat" />
+                <File Id="simbatt.inf" Source="..\$(var.Platform)\$(var.Configuration)\simbatt\simbatt.inf" />
+                <File Id="simbatt.sys" Source="..\$(var.Platform)\$(var.Configuration)\simbatt\simbatt.sys" KeyPath="yes" Checksum="yes"/>
+            </Component>
+            <Component Id="devgen.exe" Guid="*">
+                <File Id="devgen.exe" Source="..\$(var.Platform)\$(var.Configuration)\simbatt\devgen.exe" KeyPath="yes" Checksum="yes"/>
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>
