@@ -41,16 +41,16 @@
 
     <Fragment>
         <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-            <Component Id="simbatt.cer" Guid="*">
+            <Component Id="Certificate" Guid="*">
                 <File Id="simbatt.cer" Source="$(var.simbatt.TargetDir)simbatt\simbatt.cer" KeyPath="yes"/>
             </Component>
-            <Component Id="BatterySimulator" Guid="*">
+            <Component Id="DriverFiles" Guid="*">
                 <difxapp:Driver Legacy='yes' PlugAndPlayPrompt='no' />
                 <File Id="simbatt.cat" Source="$(var.simbatt.TargetDir)simbatt\simbatt.cat" />
                 <File Id="simbatt.inf" Source="$(var.simbatt.TargetDir)simbatt\simbatt.inf" />
                 <File Id="simbatt.sys" Source="$(var.simbatt.TargetDir)simbatt\simbatt.sys" KeyPath="yes" Checksum="yes"/>
             </Component>
-            <Component Id="devgen.exe" Guid="*">
+            <Component Id="DevGen" Guid="*">
                 <File Id="devgen.exe" Source="$(var.simbatt.TargetDir)simbatt\devgen.exe" KeyPath="yes" Checksum="yes"/>
             </Component>
         </ComponentGroup>
