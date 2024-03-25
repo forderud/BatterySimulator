@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:difxapp='http://schemas.microsoft.com/wix/DifxAppExtension'>
-    <Product Id="*" Name="BatterySimulator" Language="1033" Version="1.0.0.0" Manufacturer="TODO-Set-Manufacturer" UpgradeCode="E1C79D1B-49A9-45F8-AC07-2762C3B20005">
+    <Product Id="*" Name="BatterySimulator" Language="1033" Version="1.0.0.0" Manufacturer="OpenSource" UpgradeCode="E1C79D1B-49A9-45F8-AC07-2762C3B20005">
         <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" Description="Simulated battery driver" />
 
         <!-- Disable downgrades, prevent side-by-side installations of same version -->
