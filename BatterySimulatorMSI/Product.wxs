@@ -56,6 +56,9 @@
             <Component Id="BatteryConfig" Guid="*">
                 <File Id="BatteryConfig.exe" Source="$(var.BatteryConfig.TargetDir)BatteryConfig.exe" KeyPath="yes" Checksum="yes"/>
             </Component>
+            <Component Id="BatteryParams" Guid="*">
+                <File Id="BatteryParams.ps1" Source="$(var.SolutionDir)BatteryParams.ps1" KeyPath="yes" Checksum="yes"/>
+            </Component>
         </ComponentGroup>
     </Fragment>
 </Wix>
