@@ -9,7 +9,7 @@ It's recommended to **test in a disposable virtual machine (VM)** during develop
 Prerequisites for the _host_ computer:
 * Install [Visual Studio](https://visualstudio.microsoft.com/).
 * Install [Windows Driver Kit (WDK)](https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk).
-* (optional) Install [WIX TOOLSET](https://wixtoolset.org/) for MSI installer packaging.
+* (optional) Install [WiX toolset](https://wixtoolset.org/) for MSI installer packaging.
 
 Prerequisites for the _target_ computer:
 * Disable Secure Boot in UEFI/BIOS.
