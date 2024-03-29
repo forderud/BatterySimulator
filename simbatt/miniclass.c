@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattQueryInformation)
 #pragma alloc_text(PAGE, SimBattQueryStatus)
 #pragma alloc_text(PAGE, SimBattSetStatusNotify)
 #pragma alloc_text(PAGE, SimBattDisableStatusNotify)
@@ -264,11 +263,8 @@ SimBattQueryInformation (
     ULONG BufferLength,
     PULONG ReturnedLength
     )
-
 /*++
-
 Routine Description:
-
     Called by the class driver to retrieve battery information
 
     The battery class driver will serialize all requests it issues to
@@ -278,7 +274,6 @@ Routine Description:
     can't be handled. This is defined in the battery class spec.
 
 Arguments:
-
     Context - Supplies the miniport context value for battery
 
     BatteryTag - Supplies the tag of current battery
@@ -294,11 +289,8 @@ Arguments:
     ReturnedLength - Supplies the length in bytes of the returned data
 
 Return Value:
-
     Success if there is a battery currently installed, else no such device.
-
 --*/
-
 {
     PSIMBATT_FDO_DATA DevExt;
     ULONG ResultValue;
@@ -309,7 +301,6 @@ Return Value:
     UNREFERENCED_PARAMETER(AtRate);
 
     DebugEnter();
-    PAGED_CODE();
 
     DevExt = (PSIMBATT_FDO_DATA)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
