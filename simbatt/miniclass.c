@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattSetBatteryStatus)
 #pragma alloc_text(PAGE, SimBattSetBatteryInformation)
 #pragma alloc_text(PAGE, SimBattSetBatteryManufactureDate)
 #pragma alloc_text(PAGE, SimBattSetBatteryGranularityScale)
@@ -849,36 +848,19 @@ SimBattSetBatteryStatus (
     WDFDEVICE Device,
     PBATTERY_STATUS BatteryStatus
     )
-
 /*++
-
 Routine Description:
-
     Set the simulated battery status structure values.
 
 Arguments:
-
     Device - Supplies the device to set data for.
 
     BatteryStatus - Supplies the new status data to set.
-
-Return Value:
-
-   NTSTATUS
-
 --*/
-
 {
-
-    PSIMBATT_FDO_DATA DevExt;
-    NTSTATUS Status;
-    ULONG ValidPowerState;
-
-    PAGED_CODE();
-
-    Status = STATUS_INVALID_PARAMETER;
-    DevExt = GetDeviceExtension(Device);
-    ValidPowerState = BATTERY_CHARGING |
+    NTSTATUS Status = STATUS_INVALID_PARAMETER;
+    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
+    ULONG ValidPowerState = BATTERY_CHARGING |
                       BATTERY_DISCHARGING |
                       BATTERY_CRITICAL |
                       BATTERY_POWER_ON_LINE;
