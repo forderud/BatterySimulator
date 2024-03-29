@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattSetBatteryGranularityScale)
 #pragma alloc_text(PAGE, SimBattSetBatteryEstimatedTime)
 #pragma alloc_text(PAGE, SimBattSetBatteryTemperature)
 #pragma alloc_text(PAGE, SimBattSetBatteryString)
@@ -1009,46 +1008,28 @@ SimBattSetBatteryGranularityScale (
     PBATTERY_REPORTING_SCALE Scale,
     ULONG ScaleCount
     )
-
 /*++
-
 Routine Description:
-
     Set the simulated battery status structure values.
 
 Arguments:
-
     Device - Supplies the device to set data for.
 
     Scale - Supplies the new granularity scale to set.
 
     ScaleCount - Supplies the number of granularity scale entries to set.
-
-Return Value:
-
-   NTSTATUS
-
 --*/
-
 {
-
-    PSIMBATT_FDO_DATA DevExt;
     ULONG ScaleIndex;
-    NTSTATUS Status;
 
-    PAGED_CODE();
-
-    Status = STATUS_INVALID_PARAMETER;
-    DevExt = GetDeviceExtension(Device);
+    NTSTATUS Status = STATUS_INVALID_PARAMETER;
+    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
     if (ScaleCount > 4) {
         goto SetBatteryGranularityScaleEnd;
     }
 
-    //
     // Scale regions are listed in increasing order of capacity ranges they
     // apply to.
-    //
-
     for (ScaleIndex = 1; ScaleIndex < ScaleCount; ScaleIndex += 1) {
         if (Scale[ScaleIndex].Capacity <= Scale[ScaleIndex - 1].Capacity) {
             goto SetBatteryGranularityScaleEnd;
