@@ -36,7 +36,6 @@ WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(INIT, DriverEntry)
 #pragma alloc_text(PAGE, SimBattSelfManagedIoInit)
 #pragma alloc_text(PAGE, SimBattSelfManagedIoCleanup)
 #pragma alloc_text(PAGE, SimBattQueryStop)
