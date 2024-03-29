@@ -34,10 +34,6 @@ EVT_WDFDEVICE_WDM_IRP_PREPROCESS SimBattWdmIrpPreprocessSystemControl;
 WMI_QUERY_REGINFO_CALLBACK SimBattQueryWmiRegInfo;
 WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 
-//---------------------------------------------------------------------- Pragmas
-
-#pragma alloc_text(PAGE, SimBattQueryWmiDataBlock)
-
 //-------------------------------------------------------------------- Functions
 
 _Use_decl_annotations_
@@ -745,18 +741,14 @@ SimBattQueryWmiDataBlock (
     ULONG BufferAvail,
     PUCHAR Buffer
     )
-
 /*++
-
 Routine Description:
-
     This routine is a callback into the driver to query for the contents of
     a data block. When the driver has finished filling the data block it
     must call WmiCompleteRequest to complete the irp. The driver can
     return STATUS_PENDING if the irp cannot be completed immediately.
 
 Arguments:
-
     DeviceObject - Supplies the device whose data block is being queried.
 
     Irp - Supplies the Irp that makes this request.
@@ -779,16 +771,8 @@ Arguments:
         block.
 
     Buffer - Supplies a pointer to a buffer to return the data block.
-
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-
     PSIMBATT_FDO_DATA DevExt;
     WDFDEVICE Device;
     NTSTATUS Status;
@@ -797,8 +781,6 @@ Return Value:
     UNREFERENCED_PARAMETER(InstanceCount);
 
     DebugEnter();
-    PAGED_CODE();
-
     ASSERT((InstanceIndex == 0) && (InstanceCount == 1));
 
     if (InstanceLengthArray == NULL) {
