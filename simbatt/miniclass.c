@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattSetBatteryTemperature)
 #pragma alloc_text(PAGE, SimBattSetBatteryString)
 #pragma alloc_text(PAGE, SimBattGetBatteryMaxChargingCurrent)
 #pragma alloc_text(PAGE, SaveSimBattStateToRegistry)
@@ -1085,32 +1084,17 @@ SimBattSetBatteryTemperature (
     WDFDEVICE Device,
     ULONG Temperature
     )
-
 /*++
-
 Routine Description:
-
     Set the simulated battery temperature value.
 
 Arguments:
-
     Device - Supplies the device to set data for.
 
     Temperature - Supplies the new temperature to set.
-
-Return Value:
-
-   NTSTATUS
-
 --*/
-
 {
-
-    PSIMBATT_FDO_DATA DevExt;
-
-    PAGED_CODE();
-
-    DevExt = GetDeviceExtension(Device);
+    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     DevExt->State.Temperature = Temperature;
     WdfWaitLockRelease(DevExt->StateLock);
