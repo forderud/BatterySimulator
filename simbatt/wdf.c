@@ -36,7 +36,6 @@ WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattWdmIrpPreprocessSystemControl)
 #pragma alloc_text(PAGE, SimBattQueryWmiRegInfo)
 #pragma alloc_text(PAGE, SimBattQueryWmiDataBlock)
 
@@ -605,11 +604,8 @@ SimBattWdmIrpPreprocessSystemControl (
     WDFDEVICE Device,
     PIRP Irp
     )
-
 /*++
-
 Routine Description:
-
     This event is called when the framework receives IRP_MJ_SYSTEM_CONTROL
     requests from the system.
 
@@ -620,41 +616,28 @@ Routine Description:
          requirement.
 
 Arguments:
-
     Device - Supplies a handle to a framework device object.
 
     Irp - Supplies the IO request being processed.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-
     PSIMBATT_FDO_DATA DevExt;
     PDEVICE_OBJECT DeviceObject;
     SYSCTL_IRP_DISPOSITION Disposition;
     NTSTATUS Status;
 
     DebugEnter();
-    PAGED_CODE();
-
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",(KeGetCurrentIrql() == PASSIVE_LEVEL));
 
     Status = STATUS_NOT_IMPLEMENTED;
     DevExt = GetDeviceExtension(Device);
     Disposition = IrpForward;
 
-    //
     // Acquire the class initialization lock and attempt to queue the IRP with
     // the class driver.
     //
     // Suppress 28118:Irq Exceeds Caller, see Routine Description for
     // explaination.
-    //
-
     #pragma warning(suppress: 28118)
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
     if (DevExt->ClassHandle != NULL) {
