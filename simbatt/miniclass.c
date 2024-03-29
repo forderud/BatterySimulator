@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattGetBatteryMaxChargingCurrent)
 #pragma alloc_text(PAGE, SaveSimBattStateToRegistry)
 
 //------------------------------------------------------------ Battery Interface
@@ -1125,36 +1124,19 @@ SimBattGetBatteryMaxChargingCurrent (
     WDFDEVICE Device,
     PULONG MaxChargingCurrent
     )
-
 /*
  Routine Description:
-
     Called by the class driver to get the battery's maximum charging current.
 
 Arguments:
-
     Context - Supplies the miniport context value for battery
 
     MaxChargingCurrent - Supplies the pointer to return the value to
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-
-    PSIMBATT_FDO_DATA DevExt;
-    NTSTATUS Status;
-
-    PAGED_CODE();
-
-    DevExt = GetDeviceExtension(Device);
+    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
     *MaxChargingCurrent = DevExt->State.MaxCurrentDraw;
-    Status = STATUS_SUCCESS;
-
-    return Status;
+    return STATUS_SUCCESS;
 }
 
 
