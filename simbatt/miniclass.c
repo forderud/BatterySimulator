@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattIoDeviceControl)
 #pragma alloc_text(PAGE, SimBattSetBatteryStatus)
 #pragma alloc_text(PAGE, SimBattSetBatteryInformation)
 #pragma alloc_text(PAGE, SimBattSetBatteryManufactureDate)
@@ -626,8 +625,6 @@ SetInformationEnd:
 // implement the control side of the simulated battery. A real battery would
 // not implement this interface, and instead read battery data from hardware/
 // firmware interfaces.
-//
-
 VOID
 SimBattIoDeviceControl (
     WDFQUEUE Queue,
@@ -636,15 +633,11 @@ SimBattIoDeviceControl (
     size_t InputBufferLength,
     ULONG IoControlCode
     )
-
 /*++
-
 Routine Description:
-
     Handle changes to the simulated battery state.
 
 Arguments:
-
     Queue - Supplies a handle to the framework queue object that is associated
         with the I/O request.
 
@@ -659,21 +652,11 @@ Arguments:
 
     IoControlCode - Supplies the Driver-defined or system-defined I/O control
         code (IOCTL) that is associated with the request.
-
-Return Value:
-
-   VOID
-
 --*/
-
 {
-
     PBATTERY_INFORMATION BatteryInformation;
     PBATTERY_STATUS BatteryStatus;
-    ULONG BytesReturned;
     PWCHAR DestinationString;
-    PSIMBATT_FDO_DATA DevExt;
-    WDFDEVICE Device;
     PULONG EstimatedRunTime;
     ULONG GranularityEntries;
     PBATTERY_REPORTING_SCALE GranularityScale;
@@ -687,11 +670,9 @@ Return Value:
 
     UNREFERENCED_PARAMETER(OutputBufferLength);
 
-    PAGED_CODE();
-
-    BytesReturned = 0;
-    Device = WdfIoQueueGetDevice(Queue);
-    DevExt = GetDeviceExtension(Device);
+    ULONG BytesReturned = 0;
+    WDFDEVICE Device = WdfIoQueueGetDevice(Queue);
+    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
     DebugPrint(SIMBATT_INFO, "SimBattIoDeviceControl: 0x%p\n", Device);
     Status = STATUS_INVALID_PARAMETER;
     switch (IoControlCode) {
