@@ -36,7 +36,6 @@ WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattSelfManagedIoCleanup)
 #pragma alloc_text(PAGE, SimBattQueryStop)
 #pragma alloc_text(PAGE, SimBattDriverDeviceAdd)
 #pragma alloc_text(PAGE, SimBattDevicePrepareHardware)
@@ -441,7 +440,6 @@ Return Value:
     NTSTATUS Status;
 
     DebugEnter();
-    PAGED_CODE();
 
     DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
     Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_DEREGISTER);
