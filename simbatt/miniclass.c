@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattUpdateTag)
 #pragma alloc_text(PAGE, SimBattQueryTag)
 #pragma alloc_text(PAGE, SimBattQueryInformation)
 #pragma alloc_text(PAGE, SimBattQueryStatus)
@@ -203,29 +202,16 @@ VOID
 SimBattUpdateTag (
     PSIMBATT_FDO_DATA DevExt
     )
-
 /*++
-
 Routine Description:
-
     This routine is called when static battery properties have changed to
     update the battery tag.
 
 Arguments:
-
     DevExt - Supplies a pointer to the device extension  of the battery to
         update.
-
-Return Value:
-
-    None
-
 --*/
-
 {
-
-    PAGED_CODE();
-
     DevExt->BatteryTag += 1;
     if (DevExt->BatteryTag == BATTERY_TAG_INVALID) {
         DevExt->BatteryTag += 1;
