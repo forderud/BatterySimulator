@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattQueryStatus)
 #pragma alloc_text(PAGE, SimBattSetStatusNotify)
 #pragma alloc_text(PAGE, SimBattDisableStatusNotify)
 #pragma alloc_text(PAGE, SimBattSetInformation)
@@ -448,18 +447,14 @@ SimBattQueryStatus (
     ULONG BatteryTag,
     PBATTERY_STATUS BatteryStatus
     )
-
 /*++
-
 Routine Description:
-
     Called by the class driver to retrieve the batteries current status
 
     The battery class driver will serialize all requests it issues to
     the miniport for a given battery.
 
 Arguments:
-
     Context - Supplies the miniport context value for battery
 
     BatteryTag - Supplies the tag of current battery
@@ -468,17 +463,13 @@ Arguments:
         battery status in
 
 Return Value:
-
     Success if there is a battery currently installed, else no such device.
-
 --*/
-
 {
     PSIMBATT_FDO_DATA DevExt;
     NTSTATUS Status;
 
     DebugEnter();
-    PAGED_CODE();
 
     DevExt = (PSIMBATT_FDO_DATA)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
