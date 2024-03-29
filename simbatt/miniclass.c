@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattSetInformation)
 #pragma alloc_text(PAGE, SimBattIoDeviceControl)
 #pragma alloc_text(PAGE, SimBattSetBatteryStatus)
 #pragma alloc_text(PAGE, SimBattSetBatteryInformation)
@@ -573,15 +572,12 @@ SimBattSetInformation (
     BATTERY_SET_INFORMATION_LEVEL Level,
     PVOID Buffer
     )
-
 /*
  Routine Description:
-
     Called by the class driver to set the battery's charge/discharge state,
     critical bias, or charge current.
 
 Arguments:
-
     Context - Supplies the miniport context value for battery
 
     BatteryTag - Supplies the tag of current battery
@@ -589,22 +585,14 @@ Arguments:
     Level - Supplies action requested
 
     Buffer - Supplies a critical bias value if level is BatteryCriticalBias.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
     PBATTERY_CHARGING_SOURCE ChargingSource;
-    PSIMBATT_FDO_DATA DevExt;
     NTSTATUS Status;
 
     DebugEnter();
-    PAGED_CODE();
 
-    DevExt = (PSIMBATT_FDO_DATA)Context;
+    PSIMBATT_FDO_DATA DevExt = (PSIMBATT_FDO_DATA)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     if (BatteryTag != DevExt->BatteryTag) {
         Status = STATUS_NO_SUCH_DEVICE;
