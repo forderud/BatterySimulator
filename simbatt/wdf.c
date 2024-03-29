@@ -36,7 +36,6 @@ WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattQueryWmiRegInfo)
 #pragma alloc_text(PAGE, SimBattQueryWmiDataBlock)
 
 //-------------------------------------------------------------------- Functions
@@ -680,18 +679,14 @@ SimBattQueryWmiRegInfo (
     PUNICODE_STRING MofResourceName,
     PDEVICE_OBJECT *Pdo
     )
-
 /*++
-
 Routine Description:
-
     This routine is a callback into the driver to retrieve the list of
     guids or data blocks that the driver wants to register with WMI. This
     routine may not pend or block. Driver should NOT call
     WmiCompleteRequest.
 
 Arguments:
-
     DeviceObject - Supplies the device whose data block is being queried.
 
     RegFlags - Supplies a pointer to return a set of flags that describe the
@@ -717,15 +712,8 @@ Arguments:
     Pdo - Supplies a pointer to return the device object for the PDO associated
         with this device if the WMIREG_FLAG_INSTANCE_PDO flag is returned in
         *RegFlags.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-
     WDFDEVICE Device;
     PSIMBATT_GLOBAL_DATA GlobalData;
     NTSTATUS Status;
@@ -734,7 +722,6 @@ Return Value:
     UNREFERENCED_PARAMETER(InstanceName);
 
     DebugEnter();
-    PAGED_CODE();
 
     Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
     GlobalData = GetGlobalData(WdfGetDriver());
