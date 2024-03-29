@@ -36,7 +36,6 @@ WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattDriverDeviceAdd)
 #pragma alloc_text(PAGE, SimBattDevicePrepareHardware)
 #pragma alloc_text(PAGE, SimBattWdmIrpPreprocessDeviceControl)
 #pragma alloc_text(PAGE, SimBattWdmIrpPreprocessSystemControl)
@@ -154,13 +153,9 @@ Arguments:
         structure.
 
 Return Value:
-
     NTSTATUS
-
 --*/
-
 {
-
     WDF_OBJECT_ATTRIBUTES DeviceAttributes;
     PSIMBATT_FDO_DATA DevExt;
     WDFDEVICE DeviceHandle;  
@@ -171,15 +166,10 @@ Return Value:
     NTSTATUS Status;
 
     UNREFERENCED_PARAMETER(Driver);
-
     DebugEnter();
-    PAGED_CODE();
 
-    //
     // Initialize the PnpPowerCallbacks structure.  Callback events for PNP
     // and Power are specified here.
-    //
-
     WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&PnpPowerCallbacks);
     PnpPowerCallbacks.EvtDevicePrepareHardware = SimBattDevicePrepareHardware;
     PnpPowerCallbacks.EvtDeviceSelfManagedIoInit = SimBattSelfManagedIoInit;
