@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattSetBatteryEstimatedTime)
 #pragma alloc_text(PAGE, SimBattSetBatteryTemperature)
 #pragma alloc_text(PAGE, SimBattSetBatteryString)
 #pragma alloc_text(PAGE, SimBattGetBatteryMaxChargingCurrent)
@@ -1060,35 +1059,20 @@ SimBattSetBatteryEstimatedTime (
     WDFDEVICE Device,
     ULONG EstimatedTime
     )
-
 /*++
-
 Routine Description:
-
     Set the simulated battery estimated charge/run time. The value
     SIMBATT_RATE_CALCULATE causes the estimated time to be calculated based on
     charge/discharge status, the charge/discharge rate, the current capacity,
     and the last full charge capacity.
 
 Arguments:
-
     Device - Supplies the device to set data for.
 
     EstimatedTime - Supplies the new estimated run/charge time to set.
-
-Return Value:
-
-   NTSTATUS
-
 --*/
-
 {
-
-    PSIMBATT_FDO_DATA DevExt;
-
-    PAGED_CODE();
-
-    DevExt = GetDeviceExtension(Device);
+    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     DevExt->State.EstimatedTime = EstimatedTime;
     WdfWaitLockRelease(DevExt->StateLock);
