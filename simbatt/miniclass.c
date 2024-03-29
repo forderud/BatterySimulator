@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattSetBatteryString)
 #pragma alloc_text(PAGE, SimBattGetBatteryMaxChargingCurrent)
 #pragma alloc_text(PAGE, SaveSimBattStateToRegistry)
 
@@ -1107,29 +1106,16 @@ SimBattSetBatteryString (
     PCWSTR String,
     PWCHAR Destination
     )
-
 /*++
-
 Routine Description:
-
     Set one of the simulated battery strings.
 
 Arguments:
-
     String - Supplies the new string value to set.
 
     Destination - Supplies a pointer to the buffer to store the new string.
-
-Return Value:
-
-   NTSTATUS
-
 --*/
-
 {
-
-    PAGED_CODE();
-
     return RtlStringCchCopyW(Destination, MAX_BATTERY_STRING_SIZE, String);
 }
 
