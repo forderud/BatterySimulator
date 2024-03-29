@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattQueryTag)
 #pragma alloc_text(PAGE, SimBattQueryInformation)
 #pragma alloc_text(PAGE, SimBattQueryStatus)
 #pragma alloc_text(PAGE, SimBattSetStatusNotify)
@@ -226,33 +225,21 @@ SimBattQueryTag (
     PVOID Context,
     PULONG BatteryTag
     )
-
 /*++
-
 Routine Description:
-
     This routine is called to get the value of the current battery tag.
 
 Arguments:
-
     Context - Supplies the miniport context value for battery
 
     BatteryTag - Supplies a pointer to a ULONG to receive the battery tag.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-    PSIMBATT_FDO_DATA DevExt;
     NTSTATUS Status;
 
     DebugEnter();
-    PAGED_CODE();
 
-    DevExt = (PSIMBATT_FDO_DATA)Context;
+    PSIMBATT_FDO_DATA DevExt = (PSIMBATT_FDO_DATA)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     *BatteryTag = DevExt->BatteryTag;
     WdfWaitLockRelease(DevExt->StateLock);
