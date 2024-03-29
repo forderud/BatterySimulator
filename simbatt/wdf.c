@@ -36,7 +36,6 @@ WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattWdmIrpPreprocessDeviceControl)
 #pragma alloc_text(PAGE, SimBattWdmIrpPreprocessSystemControl)
 #pragma alloc_text(PAGE, SimBattQueryWmiRegInfo)
 #pragma alloc_text(PAGE, SimBattQueryWmiDataBlock)
@@ -548,9 +547,7 @@ SimBattWdmIrpPreprocessDeviceControl (
     )
 
 /*++
-
 Routine Description:
-
     This event is called when the framework receives IRP_MJ_DEVICE_CONTROL
     requests from the system.
 
@@ -561,23 +558,13 @@ Routine Description:
          requirement.
 
 Arguments:
-
     Device - Supplies a handle to a framework device object.
 
     Irp - Supplies the IO request being processed.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-
     PSIMBATT_FDO_DATA DevExt;
     NTSTATUS Status;
-
-    PAGED_CODE();
     DebugEnter();
 
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",
@@ -586,28 +573,18 @@ Return Value:
     DevExt = GetDeviceExtension(Device);
     Status = STATUS_NOT_SUPPORTED;
 
-    //
     // Suppress 28118:Irq Exceeds Caller, see Routine Description for
     // explaination.
-    //
-
     #pragma warning(suppress: 28118)
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
 
-    //
     // N.B. An attempt to queue the IRP with the port driver should happen
     //      before WDF assumes ownership of this IRP, i.e. before
     //      WdfDeviceWdmDispatchPreprocessedIrp is called, this is so that the
     //      Battery port driver, which is a WDM driver, may complete the IRP if
     //      it does endup procesing it.
-    //
-
     if (DevExt->ClassHandle != NULL) {
-
-        //
         // Suppress 28118:Irq Exceeds Caller, see above N.B.
-        //
-
         #pragma warning(suppress: 28118)
         Status = BatteryClassIoctl(DevExt->ClassHandle, Irp);
     }
