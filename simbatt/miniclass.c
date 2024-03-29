@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattSetBatteryManufactureDate)
 #pragma alloc_text(PAGE, SimBattSetBatteryGranularityScale)
 #pragma alloc_text(PAGE, SimBattSetBatteryEstimatedTime)
 #pragma alloc_text(PAGE, SimBattSetBatteryTemperature)
@@ -951,34 +950,18 @@ SimBattSetBatteryManufactureDate (
     WDFDEVICE Device,
     PBATTERY_MANUFACTURE_DATE ManufactureDate
     )
-
 /*++
-
 Routine Description:
-
     Set the simulated battery manufacture date structure values.
 
 Arguments:
-
     Device - Supplies the device to set data for.
 
     ManufactureDate - Supplies the new manufacture date to set.
-
-Return Value:
-
-   NTSTATUS
-
 --*/
-
 {
-
-    PSIMBATT_FDO_DATA DevExt;
-    NTSTATUS Status;
-
-    PAGED_CODE();
-
-    Status = STATUS_INVALID_PARAMETER;
-    DevExt = GetDeviceExtension(Device);
+    NTSTATUS Status = STATUS_INVALID_PARAMETER;
+    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
     if ((ManufactureDate->Year == 0) ||
         (ManufactureDate->Month == 0) ||
         (ManufactureDate->Day == 0)) {
