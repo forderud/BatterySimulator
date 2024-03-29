@@ -113,10 +113,6 @@ SaveSimBattStateToRegistry (
     _In_ PSIMBATT_STATE State
     );
 
-//---------------------------------------------------------------------- Pragmas
-
-#pragma alloc_text(PAGE, SaveSimBattStateToRegistry)
-
 //------------------------------------------------------------ Battery Interface
 
 _Use_decl_annotations_
@@ -1146,33 +1142,21 @@ SaveSimBattStateToRegistry (
     WDFDEVICE Device,
     PSIMBATT_STATE State
     )
-
 /*
  Routine Description:
-
     Called to save simbatt state data to the registry.
 
 Arguments:
-
     Device - Supplies WDF device handle.
 
     State - Supplies the pointer to the simbatt state.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
 
     WDFKEY  KeyHandle;
     DECLARE_CONST_UNICODE_STRING(SimbattStateRegNameStr, SIMBATT_STATE_REG_NAME);
-    NTSTATUS Status;
 
-    PAGED_CODE();
-
-    Status = WdfDeviceOpenRegistryKey(
+    NTSTATUS Status = WdfDeviceOpenRegistryKey(
         Device,
         PLUGPLAY_REGKEY_DEVICE,
         KEY_WRITE,
