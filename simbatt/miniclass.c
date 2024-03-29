@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattPrepareHardware)
 #pragma alloc_text(PAGE, SimBattUpdateTag)
 #pragma alloc_text(PAGE, SimBattQueryTag)
 #pragma alloc_text(PAGE, SimBattQueryInformation)
@@ -141,37 +140,22 @@ VOID
 SimBattPrepareHardware (
     WDFDEVICE Device
     )
-
 /*++
-
 Routine Description:
-
     This routine is called to initialize battery data to sane values.
 
     A real battery would query hardware to determine if a battery is present,
     query its static capabilities, etc.
 
 Arguments:
-
     Device - Supplies the device to initialize.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-    PSIMBATT_FDO_DATA DevExt;
-
     DebugEnter();
-    PAGED_CODE();
 
-    DevExt = GetDeviceExtension(Device);
+    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
 
-    //
     // Get this battery's state - use defaults.
-    //
 
     {
         WdfWaitLockAcquire(DevExt->StateLock, NULL);
