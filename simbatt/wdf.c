@@ -36,7 +36,6 @@ WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattDevicePrepareHardware)
 #pragma alloc_text(PAGE, SimBattWdmIrpPreprocessDeviceControl)
 #pragma alloc_text(PAGE, SimBattWdmIrpPreprocessSystemControl)
 #pragma alloc_text(PAGE, SimBattQueryWmiRegInfo)
@@ -530,17 +529,13 @@ Return Value:
 --*/
 
 {
-
-    NTSTATUS Status;
-
     UNREFERENCED_PARAMETER(ResourcesRaw);
     UNREFERENCED_PARAMETER(ResourcesTranslated);
 
     DebugEnter();
-    PAGED_CODE();
 
     SimBattPrepareHardware(Device);
-    Status = STATUS_SUCCESS;
+    NTSTATUS Status = STATUS_SUCCESS;
     DebugExitStatus(Status);
     return Status;
 }
