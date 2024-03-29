@@ -115,7 +115,6 @@ SaveSimBattStateToRegistry (
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattDisableStatusNotify)
 #pragma alloc_text(PAGE, SimBattSetInformation)
 #pragma alloc_text(PAGE, SimBattIoDeviceControl)
 #pragma alloc_text(PAGE, SimBattSetBatteryStatus)
@@ -543,35 +542,25 @@ NTSTATUS
 SimBattDisableStatusNotify (
     PVOID Context
     )
-
 /*++
-
 Routine Description:
-
     Called by the class driver to disable notification.
 
     The battery class driver will serialize all requests it issues to
     the miniport for a given battery.
 
 Arguments:
-
     Context - Supplies the miniport context value for battery
 
 Return Value:
-
     Success if there is a battery currently installed, else no such device.
-
 --*/
-
 {
-    NTSTATUS Status;
-
     UNREFERENCED_PARAMETER(Context);
 
     DebugEnter();
-    PAGED_CODE();
 
-    Status = STATUS_NOT_SUPPORTED;
+    NTSTATUS Status = STATUS_NOT_SUPPORTED;
     DebugExitStatus(Status);
     return Status;
 }
