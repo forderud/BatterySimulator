@@ -36,7 +36,6 @@ WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 
 //---------------------------------------------------------------------- Pragmas
 
-#pragma alloc_text(PAGE, SimBattQueryStop)
 #pragma alloc_text(PAGE, SimBattDriverDeviceAdd)
 #pragma alloc_text(PAGE, SimBattDevicePrepareHardware)
 #pragma alloc_text(PAGE, SimBattWdmIrpPreprocessDeviceControl)
@@ -492,19 +491,13 @@ Routine Description:
     SimBatt circumvents this issue.
 
 Arguments:
-
     Device - Supplies a handle to a framework device object.
 
 Return Value:
-
     NTSTATUS
-
 --*/
-
 {
-
     UNREFERENCED_PARAMETER(Device);
-
     return STATUS_UNSUCCESSFUL;
 }
 
