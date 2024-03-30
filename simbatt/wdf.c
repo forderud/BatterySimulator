@@ -34,19 +34,6 @@ EVT_WDFDEVICE_WDM_IRP_PREPROCESS SimBattWdmIrpPreprocessSystemControl;
 WMI_QUERY_REGINFO_CALLBACK SimBattQueryWmiRegInfo;
 WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 
-//---------------------------------------------------------------------- Pragmas
-
-#pragma alloc_text(INIT, DriverEntry)
-#pragma alloc_text(PAGE, SimBattSelfManagedIoInit)
-#pragma alloc_text(PAGE, SimBattSelfManagedIoCleanup)
-#pragma alloc_text(PAGE, SimBattQueryStop)
-#pragma alloc_text(PAGE, SimBattDriverDeviceAdd)
-#pragma alloc_text(PAGE, SimBattDevicePrepareHardware)
-#pragma alloc_text(PAGE, SimBattWdmIrpPreprocessDeviceControl)
-#pragma alloc_text(PAGE, SimBattWdmIrpPreprocessSystemControl)
-#pragma alloc_text(PAGE, SimBattQueryWmiRegInfo)
-#pragma alloc_text(PAGE, SimBattQueryWmiDataBlock)
-
 //-------------------------------------------------------------------- Functions
 
 _Use_decl_annotations_
@@ -158,13 +145,9 @@ Arguments:
         structure.
 
 Return Value:
-
     NTSTATUS
-
 --*/
-
 {
-
     WDF_OBJECT_ATTRIBUTES DeviceAttributes;
     PSIMBATT_FDO_DATA DevExt;
     WDFDEVICE DeviceHandle;  
@@ -175,15 +158,10 @@ Return Value:
     NTSTATUS Status;
 
     UNREFERENCED_PARAMETER(Driver);
-
     DebugEnter();
-    PAGED_CODE();
 
-    //
     // Initialize the PnpPowerCallbacks structure.  Callback events for PNP
     // and Power are specified here.
-    //
-
     WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&PnpPowerCallbacks);
     PnpPowerCallbacks.EvtDevicePrepareHardware = SimBattDevicePrepareHardware;
     PnpPowerCallbacks.EvtDeviceSelfManagedIoInit = SimBattSelfManagedIoInit;
@@ -351,8 +329,6 @@ Return Value:
     NTSTATUS Status;
 
     DebugEnter();
-    PAGED_CODE();
-
     DevExt = GetDeviceExtension(Device);
 
     //
@@ -445,7 +421,6 @@ Return Value:
     NTSTATUS Status;
 
     DebugEnter();
-    PAGED_CODE();
 
     DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
     Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_DEREGISTER);
@@ -498,19 +473,13 @@ Routine Description:
     SimBatt circumvents this issue.
 
 Arguments:
-
     Device - Supplies a handle to a framework device object.
 
 Return Value:
-
     NTSTATUS
-
 --*/
-
 {
-
     UNREFERENCED_PARAMETER(Device);
-
     return STATUS_UNSUCCESSFUL;
 }
 
@@ -553,17 +522,13 @@ Return Value:
 --*/
 
 {
-
-    NTSTATUS Status;
-
     UNREFERENCED_PARAMETER(ResourcesRaw);
     UNREFERENCED_PARAMETER(ResourcesTranslated);
 
     DebugEnter();
-    PAGED_CODE();
 
     SimBattPrepareHardware(Device);
-    Status = STATUS_SUCCESS;
+    NTSTATUS Status = STATUS_SUCCESS;
     DebugExitStatus(Status);
     return Status;
 }
@@ -576,9 +541,7 @@ SimBattWdmIrpPreprocessDeviceControl (
     )
 
 /*++
-
 Routine Description:
-
     This event is called when the framework receives IRP_MJ_DEVICE_CONTROL
     requests from the system.
 
@@ -589,23 +552,13 @@ Routine Description:
          requirement.
 
 Arguments:
-
     Device - Supplies a handle to a framework device object.
 
     Irp - Supplies the IO request being processed.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-
     PSIMBATT_FDO_DATA DevExt;
     NTSTATUS Status;
-
-    PAGED_CODE();
     DebugEnter();
 
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",
@@ -614,28 +567,18 @@ Return Value:
     DevExt = GetDeviceExtension(Device);
     Status = STATUS_NOT_SUPPORTED;
 
-    //
     // Suppress 28118:Irq Exceeds Caller, see Routine Description for
     // explaination.
-    //
-
     #pragma warning(suppress: 28118)
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
 
-    //
     // N.B. An attempt to queue the IRP with the port driver should happen
     //      before WDF assumes ownership of this IRP, i.e. before
     //      WdfDeviceWdmDispatchPreprocessedIrp is called, this is so that the
     //      Battery port driver, which is a WDM driver, may complete the IRP if
     //      it does endup procesing it.
-    //
-
     if (DevExt->ClassHandle != NULL) {
-
-        //
         // Suppress 28118:Irq Exceeds Caller, see above N.B.
-        //
-
         #pragma warning(suppress: 28118)
         Status = BatteryClassIoctl(DevExt->ClassHandle, Irp);
     }
@@ -656,11 +599,8 @@ SimBattWdmIrpPreprocessSystemControl (
     WDFDEVICE Device,
     PIRP Irp
     )
-
 /*++
-
 Routine Description:
-
     This event is called when the framework receives IRP_MJ_SYSTEM_CONTROL
     requests from the system.
 
@@ -671,41 +611,28 @@ Routine Description:
          requirement.
 
 Arguments:
-
     Device - Supplies a handle to a framework device object.
 
     Irp - Supplies the IO request being processed.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-
     PSIMBATT_FDO_DATA DevExt;
     PDEVICE_OBJECT DeviceObject;
     SYSCTL_IRP_DISPOSITION Disposition;
     NTSTATUS Status;
 
     DebugEnter();
-    PAGED_CODE();
-
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",(KeGetCurrentIrql() == PASSIVE_LEVEL));
 
     Status = STATUS_NOT_IMPLEMENTED;
     DevExt = GetDeviceExtension(Device);
     Disposition = IrpForward;
 
-    //
     // Acquire the class initialization lock and attempt to queue the IRP with
     // the class driver.
     //
     // Suppress 28118:Irq Exceeds Caller, see Routine Description for
     // explaination.
-    //
-
     #pragma warning(suppress: 28118)
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
     if (DevExt->ClassHandle != NULL) {
@@ -748,18 +675,14 @@ SimBattQueryWmiRegInfo (
     PUNICODE_STRING MofResourceName,
     PDEVICE_OBJECT *Pdo
     )
-
 /*++
-
 Routine Description:
-
     This routine is a callback into the driver to retrieve the list of
     guids or data blocks that the driver wants to register with WMI. This
     routine may not pend or block. Driver should NOT call
     WmiCompleteRequest.
 
 Arguments:
-
     DeviceObject - Supplies the device whose data block is being queried.
 
     RegFlags - Supplies a pointer to return a set of flags that describe the
@@ -785,15 +708,8 @@ Arguments:
     Pdo - Supplies a pointer to return the device object for the PDO associated
         with this device if the WMIREG_FLAG_INSTANCE_PDO flag is returned in
         *RegFlags.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-
     WDFDEVICE Device;
     PSIMBATT_GLOBAL_DATA GlobalData;
     NTSTATUS Status;
@@ -802,7 +718,6 @@ Return Value:
     UNREFERENCED_PARAMETER(InstanceName);
 
     DebugEnter();
-    PAGED_CODE();
 
     Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
     GlobalData = GetGlobalData(WdfGetDriver());
@@ -826,18 +741,14 @@ SimBattQueryWmiDataBlock (
     ULONG BufferAvail,
     PUCHAR Buffer
     )
-
 /*++
-
 Routine Description:
-
     This routine is a callback into the driver to query for the contents of
     a data block. When the driver has finished filling the data block it
     must call WmiCompleteRequest to complete the irp. The driver can
     return STATUS_PENDING if the irp cannot be completed immediately.
 
 Arguments:
-
     DeviceObject - Supplies the device whose data block is being queried.
 
     Irp - Supplies the Irp that makes this request.
@@ -860,16 +771,8 @@ Arguments:
         block.
 
     Buffer - Supplies a pointer to a buffer to return the data block.
-
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
-
     PSIMBATT_FDO_DATA DevExt;
     WDFDEVICE Device;
     NTSTATUS Status;
@@ -878,8 +781,6 @@ Return Value:
     UNREFERENCED_PARAMETER(InstanceCount);
 
     DebugEnter();
-    PAGED_CODE();
-
     ASSERT((InstanceIndex == 0) && (InstanceCount == 1));
 
     if (InstanceLengthArray == NULL) {
