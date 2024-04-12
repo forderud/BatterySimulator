@@ -65,7 +65,7 @@ Abstract:
 
 typedef struct {
     UNICODE_STRING                  RegistryPath;
-} SIMBATT_GLOBAL_DATA, *PSIMBATT_GLOBAL_DATA;
+} SIMBATT_GLOBAL_DATA;
 
 #define SIMBATT_STATE_VERSION_1     1
 #define SIMBATT_STATE_VERSION       SIMBATT_STATE_VERSION_1
@@ -84,7 +84,7 @@ typedef struct {
     WCHAR                           ManufacturerName[MAX_BATTERY_STRING_SIZE];
     WCHAR                           SerialNumber[MAX_BATTERY_STRING_SIZE];
     WCHAR                           UniqueId[MAX_BATTERY_STRING_SIZE];
-} SIMBATT_STATE, *PSIMBATT_STATE;
+} SIMBATT_STATE;
 
 typedef struct {
 

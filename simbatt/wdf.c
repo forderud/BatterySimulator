@@ -65,10 +65,8 @@ Return Value:
 --*/
 
 {
-
     WDF_OBJECT_ATTRIBUTES DriverAttributes;
     WDF_DRIVER_CONFIG DriverConfig;
-    PSIMBATT_GLOBAL_DATA GlobalData;
     NTSTATUS Status;
 
     DebugEnter();
@@ -87,6 +85,7 @@ Return Value:
     //      how the callbacks are required to be synchronized in your driver.
     //
 
+    SIMBATT_GLOBAL_DATA* GlobalData = NULL;
     WDF_OBJECT_ATTRIBUTES_INIT(&DriverAttributes);
     WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DriverAttributes,
                                            SIMBATT_GLOBAL_DATA);
@@ -711,7 +710,6 @@ Arguments:
 --*/
 {
     WDFDEVICE Device;
-    PSIMBATT_GLOBAL_DATA GlobalData;
     NTSTATUS Status;
 
     UNREFERENCED_PARAMETER(MofResourceName);
@@ -720,7 +718,7 @@ Arguments:
     DebugEnter();
 
     Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
-    GlobalData = GetGlobalData(WdfGetDriver());
+    SIMBATT_GLOBAL_DATA* GlobalData = GetGlobalData(WdfGetDriver());
     *RegFlags = WMIREG_FLAG_INSTANCE_PDO;
     *RegistryPath = &GlobalData->RegistryPath;
     *Pdo = WdfDeviceWdmGetPhysicalDevice(Device);
