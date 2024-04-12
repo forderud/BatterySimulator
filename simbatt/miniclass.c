@@ -1,21 +1,7 @@
 /*++
-
-Copyright (c) Microsoft Corporation. All rights reserved.
-
-Module Name:
-
-    miniclass.c
-
-Abstract:
-
     This module implements battery miniclass functionality specific to the
     simulated battery driver.
-
-    N.B. This code is provided "AS IS" without any expressed or implied warranty.
-
 --*/
-
-//--------------------------------------------------------------------- Includes
 
 #include "simbatt.h"
 #include "simbattdriverif.h"
@@ -276,12 +262,10 @@ Return Value:
         goto QueryInformationEnd;
     }
 
-    //
     // Determine the value of the information being queried for and return it.
     // In a real battery, this would require hardware/firmware accesses. The
     // simulated battery fakes this by storing the data to be returned in
     // memory.
-    //
 
     ReturnBuffer = NULL;
     ReturnBufferLength = 0;
@@ -787,9 +771,7 @@ Arguments:
                 break;
             }
 
-            //
             // Supress invalid failure: Redundant Pointer Test on DestinationString
-            //
 
             #pragma warning(suppress: 28922)
             if (DestinationString != NULL) {
@@ -896,12 +878,10 @@ Arguments:
     DevExt->State.BatteryInfo.CriticalBias = BatteryInformation->CriticalBias;
     DevExt->State.BatteryInfo.CycleCount = BatteryInformation->CycleCount;
 
-    //
     // To indicate that battery information has changed, update the battery tag
     // and notify the class driver that the battery status has updated. The
     // status query will fail due to a different battery tag, causing the class
     // driver to query for the new tag and new information.
-    //
 
     SimBattUpdateTag(DevExt);
     WdfWaitLockRelease(DevExt->StateLock);
@@ -1121,25 +1101,16 @@ SimBattPrint (
     )
 
 /*++
-
 Routine Description:
-
     This routine emits the debugger message.
 
 Arguments:
-
     Level - Supplies the criticality of message being printed.
 
     Format - Message to be emitted in varible argument format.
 
-Return Value:
-
-    None.
-
 --*/
-
 {
-
 	va_list Arglist;
 	va_start(Arglist, Format);
 	vDbgPrintEx(DPFLTR_IHVDRIVER_ID, Level, Format, Arglist);

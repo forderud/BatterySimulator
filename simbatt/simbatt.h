@@ -1,25 +1,4 @@
-/*++
-
-Copyright (c) Microsoft Corporation. All rights reserved.
-
-Module Name:
-
-    simbatt.h
-
-Abstract:
-
-    This is the header file for the simulated battery driver.
-
-    N.B. This code is provided "AS IS" without any expressed or implied warranty.
-
---*/
-
-//---------------------------------------------------------------------- Pragmas
-
 #pragma once
-
-//--------------------------------------------------------------------- Includes
-
 #include <wdm.h>
 #include <wdf.h>
 #include <batclass.h>
@@ -28,7 +7,6 @@ Abstract:
 #include <ntstrsafe.h>
 
 //------------------------------------------------------------- Debug Facilities
-
 #define SIMBATT_ERROR               DPFLTR_ERROR_LEVEL      // ed Kd_IHVDRIVER_Mask 0x1
 #define SIMBATT_WARN                DPFLTR_WARNING_LEVEL    // ed Kd_IHVDRIVER_Mask 0x2
 #define SIMBATT_TRACE               DPFLTR_TRACE_LEVEL      // ed Kd_IHVDRIVER_Mask 0x4
@@ -48,7 +26,6 @@ Abstract:
         DebugPrint(SIMBATT_TRACE, \
                    "Leaving " __FUNCTION__ ": Status=0x%x\n", \
                    _status_)
-
 #else
     #define DebugPrint(l, m, ...)
     #define DebugEnter()
@@ -87,11 +64,9 @@ typedef struct {
 } SIMBATT_STATE;
 
 typedef struct {
-
     //
     // Battery class registration
     //
-
     PVOID                           ClassHandle;
     WDFWAITLOCK                     ClassInitLock;
     WMILIB_CONTEXT                  WmiLibContext;
@@ -99,7 +74,6 @@ typedef struct {
     //
     // Battery state
     //
-
     WDFWAITLOCK                     StateLock;
     ULONG                           BatteryTag;
     SIMBATT_STATE                   State;
@@ -133,4 +107,3 @@ SimBattPrint (
     _In_ PCSTR Format,
     ...
     );
-

@@ -1,21 +1,8 @@
 /*++
-
-Copyright (c) Microsoft Corporation. All rights reserved.
-
-Module Name:
-
-    wdf.c
-
-Abstract:
     This module implements WDF and WDM functionality required to register as a
     device driver, instantiate devices, and register those devices with the
     battery class driver.
-
-    N.B. This code is provided "AS IS" without any expressed or implied warranty.
-
 --*/
-
-//--------------------------------------------------------------------- Includes
 
 #include "simbatt.h"
 #include "simbattdriverif.h"
@@ -44,24 +31,16 @@ DriverEntry (
     )
 
 /*++
-
 Routine Description:
-
     DriverEntry initializes the driver and is the first routine called by the
     system after the driver is loaded. DriverEntry configures and creates a WDF
     driver object.
 
 Parameters Description:
-
     DriverObject - Supplies a pointer to the driver object.
 
     RegistryPath - Supplies a pointer to a unicode string representing the path
         to the driver-specific key in the registry.
-
-Return Value:
-
-    NTSTATUS.
-
 --*/
 
 {
@@ -73,7 +52,6 @@ Return Value:
 
     WDF_DRIVER_CONFIG_INIT(&DriverConfig, SimBattDriverDeviceAdd);
 
-    //
     // Initialize attributes and a context area for the driver object.
     //
     // N.B. ExecutionLevel is set to Passive because this driver expect callback
@@ -83,7 +61,6 @@ Return Value:
     //      None. This means that the WDF framework does not synchronize the
     //      callbacks, you may want to set this to a different value based on
     //      how the callbacks are required to be synchronized in your driver.
-    //
 
     SIMBATT_GLOBAL_DATA* GlobalData = NULL;
     WDF_OBJECT_ATTRIBUTES_INIT(&DriverAttributes);
@@ -92,10 +69,7 @@ Return Value:
 
     DriverAttributes.ExecutionLevel = WdfExecutionLevelPassive;
 
-    //
     // Create the driver object
-    //
-
     Status = WdfDriverCreate(DriverObject,
                              RegistryPath,
                              &DriverAttributes,
@@ -131,20 +105,15 @@ SimBattDriverDeviceAdd (
 
 /*++
 Routine Description:
-
     EvtDriverDeviceAdd is called by the framework in response to AddDevice
     call from the PnP manager. A WDF device object is created and initialized to
     represent a new instance of the battery device.
 
 Arguments:
-
     Driver - Supplies a handle to the WDF Driver object.
 
     DeviceInit - Supplies a pointer to a framework-allocated WDFDEVICE_INIT
         structure.
-
-Return Value:
-    NTSTATUS
 --*/
 {
     WDF_OBJECT_ATTRIBUTES DeviceAttributes;
@@ -167,11 +136,9 @@ Return Value:
     PnpPowerCallbacks.EvtDeviceQueryStop = SimBattQueryStop;
     WdfDeviceInitSetPnpPowerEventCallbacks(DeviceInit, &PnpPowerCallbacks);
 
-    //
     // Register WDM preprocess callbacks for IRP_MJ_DEVICE_CONTROL and
     // IRP_MJ_SYSTEM_CONTROL. The battery class driver needs to handle these IO
     // requests directly.
-    //
 
     Status = WdfDeviceInitAssignWdmIrpPreprocessCallback(
                  DeviceInit,
@@ -205,18 +172,14 @@ Return Value:
          goto DriverDeviceAddEnd;
     }
 
-    //
     // Initialize attributes and a context area for the device object.
-    //
 
     WDF_OBJECT_ATTRIBUTES_INIT(&DeviceAttributes);
     WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DeviceAttributes, SIMBATT_FDO_DATA);
 
-    //
     // Create a framework device object.  This call will in turn create
     // a WDM device object, attach to the lower stack, and set the
     // appropriate flags and attributes.
-    //
 
     Status = WdfDeviceCreate(&DeviceInit, &DeviceAttributes, &DeviceHandle);
     if (!NT_SUCCESS(Status)) {
@@ -224,11 +187,9 @@ Return Value:
         goto DriverDeviceAddEnd;
     }
 
-    //
     // Configure a default queue for IO requests that are not handled by the
     // class driver. For the simulated battery, this queue processes requests
     // to set the simulated status.
-    //
 
     WDF_IO_QUEUE_CONFIG_INIT_DEFAULT_QUEUE(&QueueConfig,
                                            WdfIoQueueDispatchSequential);
@@ -244,10 +205,8 @@ Return Value:
         goto DriverDeviceAddEnd;
     }
 
-    //
     // Create a device interface for this device to advertise the simulated
     // battery IO interface.
-    //
 
     Status = WdfDeviceCreateDeviceInterface(DeviceHandle,
                                             &SIMBATT_DEVINTERFACE_GUID,
@@ -257,9 +216,7 @@ Return Value:
         goto DriverDeviceAddEnd;
     }
 
-    //
     // Finish initializing the device context area.
-    //
 
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(DeviceHandle);
     DevExt->BatteryTag = BATTERY_TAG_INVALID;
@@ -300,25 +257,15 @@ NTSTATUS
 SimBattSelfManagedIoInit (
     WDFDEVICE Device
     )
-
 /*++
-
 Routine Description:
-
     The framework calls this function once per device after EvtDeviceD0Entry
     callback has been called for the first time. This function is not called
     again unless device is remove and reconnected or the drivers are reloaded.
 
 Arguments:
-
     Device - Supplies a handle to a framework device object.
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
 
     BATTERY_MINIPORT_INFO_V1_1 BattInit;
@@ -328,9 +275,7 @@ Return Value:
     DebugEnter();
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
-    //
     // Attach to the battery class driver.
-    //
 
     RtlZeroMemory(&BattInit, sizeof(BattInit));
     BattInit.MajorVersion = BATTERY_CLASS_MAJOR_VERSION;
@@ -354,11 +299,9 @@ Return Value:
         goto DevicePrepareHardwareEnd;
     }
 
-    //
     // Register the device as a WMI data provider. This is done using WDM
     // methods because the battery class driver uses WDM methods to complete
     // WMI requests.
-    //
 
     DevExt->WmiLibContext.GuidCount = 0;
     DevExt->WmiLibContext.GuidList = NULL;
@@ -371,9 +314,7 @@ Return Value:
     DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
     Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_REGISTER);
 
-    //
     // Failure to register with WMI is nonfatal.
-    //
 
     if (!NT_SUCCESS(Status)) {
         DebugPrint(SIMBATT_WARN,
@@ -393,24 +334,17 @@ VOID
 SimBattSelfManagedIoCleanup (
     WDFDEVICE Device
     )
-
 /*++
-
 Routine Description:
-
     This function is called after EvtDeviceSelfManagedIoSuspend callback. This
     function must release any sel-managed I/O operation data.
 
 Arguments:
-
     Device - Supplies a handle to a framework device object.
 
 Return Value:
-
     NTSTATUS - Failures will be logged, but not acted on.
-
 --*/
-
 {
     PDEVICE_OBJECT DeviceObject;
     NTSTATUS Status;
@@ -444,11 +378,8 @@ NTSTATUS
 SimBattQueryStop (
     _In_ WDFDEVICE Device
     )
-
 /*++
-
 Routine Description:
-
     EvtDeviceQueryStop event callback function determines whether a specified 
     device can be stopped so that the PnP manager can redistribute system 
     hardware resources.
@@ -469,9 +400,6 @@ Routine Description:
 
 Arguments:
     Device - Supplies a handle to a framework device object.
-
-Return Value:
-    NTSTATUS
 --*/
 {
     UNREFERENCED_PARAMETER(Device);
@@ -485,18 +413,14 @@ SimBattDevicePrepareHardware (
     WDFCMRESLIST ResourcesRaw,
     WDFCMRESLIST ResourcesTranslated
     )
-
 /*++
-
 Routine Description:
-
     EvtDevicePrepareHardware event callback performs operations that are
     necessary to make the driver's device operational. The framework calls the
     driver's EvtDevicePrepareHardware callback when the PnP manager sends an
     IRP_MN_START_DEVICE request to the driver stack.
 
 Arguments:
-
     Device - Supplies a handle to a framework device object.
 
     ResourcesRaw - Supplies a handle to a collection of framework resource
@@ -509,13 +433,7 @@ Arguments:
         device. The resources appear from the CPU's point of view. Use this list
         of resources to map I/O space and device-accessible memory into virtual
         address space
-
-Return Value:
-
-    NTSTATUS
-
 --*/
-
 {
     UNREFERENCED_PARAMETER(ResourcesRaw);
     UNREFERENCED_PARAMETER(ResourcesTranslated);
@@ -534,7 +452,6 @@ SimBattWdmIrpPreprocessDeviceControl (
     WDFDEVICE Device,
     PIRP Irp
     )
-
 /*++
 Routine Description:
     This event is called when the framework receives IRP_MJ_DEVICE_CONTROL
@@ -782,12 +699,10 @@ Arguments:
     Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
-    //
     // The class driver guarantees that all outstanding IO requests will be
     // completed before it finishes unregistering. As a result, the class
     // initialization lock does not need to be acquired in this callback, since
     // it is called during class driver processing of a WMI IRP.
-    //
 
     Status = BatteryClassQueryWmiDataBlock(DevExt->ClassHandle,
                                            DeviceObject,

@@ -1,28 +1,4 @@
-/*++
-
-Copyright (c) Microsoft Corporation. All rights reserved.
-
-Module Name:
-
-    batclass_prepublish.h
-
-Abstract:
-
-    This module defines pre-publish definations to be made available in DDK/SDK.
-
-    N.B. This file must not be included when batclass.h defines 
-         BATTERY_MINIPORT_INFO_V1_1 type and BATTERY_CLASS_MINOR_VERSION_1.
-
-    N.B. This code is provided "AS IS" without any expressed or implied warranty.
-
---*/
-
-//---------------------------------------------------------------------- Pragmas
-
 #pragma once
-
-//--------------------------------------------------------------------- Includes
-
 #include <batclass.h>
 
 //-------------------------------------------------- Would be Public Definitions

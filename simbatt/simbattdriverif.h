@@ -1,29 +1,6 @@
-/*++
-
-Copyright (c) Microsoft Corporation. All rights reserved.
-
-Module Name:
-
-    simbattdriverif.h
-
-Abstract:
-
-    This module contains the interfaces used to communicate between usermode
-    and the simulated battery driver stack.
-
-    N.B. This code is provided "AS IS" without any expressed or implied warranty.
-
---*/
-
-//---------------------------------------------------------------------- Pragmas
-
 #pragma once
-
-//--------------------------------------------------------------------- Includes
-
 #include <initguid.h>
 
-//------------------------------------------------------------------ Definitions
 
 //
 // Battery bus driver interface
@@ -74,55 +51,31 @@ DEFINE_GUID(SIMBATT_DEVINTERFACE_GUID,
 
 typedef struct _BATTBUS_PLUGIN_HARDWARE
 {
-    //
     // Size of this type.
-    //
-
     ULONG Size;
 
-    //
     // Unique serial number of the device to be enumerated.
     // Enumeration will be failed if another device on the
     // bus has the same serial number.
-    //
-
     ULONG SerialNo;
 
-    //
     // UI number.
-    //
-
     ULONG UINumber;
 
-    //
     // Type of device being enumerated
     //
     // Reserved value, set to 0.
-    //
-
     ULONG Type;
-
-} BATTBUS_PLUGIN_HARDWARE, *PBATTBUS_PLUGIN_HARDWARE;
+} BATTBUS_PLUGIN_HARDWARE;
 
 typedef struct _BATTBUS_UNPLUG_HARDWARE
 {
-    //
     // size of this type
-    //
-
     ULONG Size;
 
-    //
     // Serial number of the device to be unplugged.
-    //
-
     ULONG SerialNo;
 
-    //
     // Must not be referenced used.
-    //
-
     ULONG Reserved[2];
-
-} BATTBUS_UNPLUG_HARDWARE, *PBATTBUS_UNPLUG_HARDWARE;
-
+} BATTBUS_UNPLUG_HARDWARE;
