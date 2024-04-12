@@ -103,7 +103,7 @@ typedef struct {
     WDFWAITLOCK                     StateLock;
     ULONG                           BatteryTag;
     SIMBATT_STATE                   State;
-} SIMBATT_FDO_DATA, *PSIMBATT_FDO_DATA;
+} SIMBATT_FDO_DATA;
 
 //------------------------------------------------------ WDF Context Declaration
 

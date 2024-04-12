@@ -148,7 +148,6 @@ Return Value:
 --*/
 {
     WDF_OBJECT_ATTRIBUTES DeviceAttributes;
-    PSIMBATT_FDO_DATA DevExt;
     WDFDEVICE DeviceHandle;  
     WDF_OBJECT_ATTRIBUTES LockAttributes;
     WDF_PNPPOWER_EVENT_CALLBACKS PnpPowerCallbacks;
@@ -262,7 +261,7 @@ Return Value:
     // Finish initializing the device context area.
     //
 
-    DevExt = GetDeviceExtension(DeviceHandle);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(DeviceHandle);
     DevExt->BatteryTag = BATTERY_TAG_INVALID;
     DevExt->ClassHandle = NULL;
     WDF_OBJECT_ATTRIBUTES_INIT(&LockAttributes);
@@ -323,12 +322,11 @@ Return Value:
 {
 
     BATTERY_MINIPORT_INFO_V1_1 BattInit;
-    PSIMBATT_FDO_DATA DevExt;
     PDEVICE_OBJECT DeviceObject;
     NTSTATUS Status;
 
     DebugEnter();
-    DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
     //
     // Attach to the battery class driver.
@@ -414,8 +412,6 @@ Return Value:
 --*/
 
 {
-
-    PSIMBATT_FDO_DATA DevExt;
     PDEVICE_OBJECT DeviceObject;
     NTSTATUS Status;
 
@@ -431,7 +427,7 @@ Return Value:
         Status = STATUS_SUCCESS;
     }
 
-    DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
     if (DevExt->ClassHandle != NULL) {
         Status = BatteryClassUnload(DevExt->ClassHandle);
@@ -556,14 +552,13 @@ Arguments:
     Irp - Supplies the IO request being processed.
 --*/
 {
-    PSIMBATT_FDO_DATA DevExt;
     NTSTATUS Status;
     DebugEnter();
 
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",
               (KeGetCurrentIrql() == PASSIVE_LEVEL));
 
-    DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     Status = STATUS_NOT_SUPPORTED;
 
     // Suppress 28118:Irq Exceeds Caller, see Routine Description for
@@ -615,7 +610,6 @@ Arguments:
     Irp - Supplies the IO request being processed.
 --*/
 {
-    PSIMBATT_FDO_DATA DevExt;
     PDEVICE_OBJECT DeviceObject;
     SYSCTL_IRP_DISPOSITION Disposition;
     NTSTATUS Status;
@@ -624,7 +618,7 @@ Arguments:
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",(KeGetCurrentIrql() == PASSIVE_LEVEL));
 
     Status = STATUS_NOT_IMPLEMENTED;
-    DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     Disposition = IrpForward;
 
     // Acquire the class initialization lock and attempt to queue the IRP with
@@ -771,7 +765,6 @@ Arguments:
     Buffer - Supplies a pointer to a buffer to return the data block.
 --*/
 {
-    PSIMBATT_FDO_DATA DevExt;
     WDFDEVICE Device;
     NTSTATUS Status;
 
@@ -787,7 +780,7 @@ Arguments:
     }
 
     Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
-    DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
     //
     // The class driver guarantees that all outstanding IO requests will be

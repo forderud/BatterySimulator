@@ -32,7 +32,7 @@ Abstract:
 _IRQL_requires_same_
 VOID
 SimBattUpdateTag (
-    _Inout_ PSIMBATT_FDO_DATA DevExt
+    _Inout_ SIMBATT_FDO_DATA* DevExt
     );
 
 BCLASS_QUERY_TAG_CALLBACK SimBattQueryTag;
@@ -126,7 +126,7 @@ Arguments:
 {
     DebugEnter();
 
-    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
     // Get this battery's state - use defaults.
 
@@ -166,7 +166,7 @@ Arguments:
 _Use_decl_annotations_
 VOID
 SimBattUpdateTag (
-    PSIMBATT_FDO_DATA DevExt
+    SIMBATT_FDO_DATA* DevExt
     )
 /*++
 Routine Description:
@@ -206,7 +206,7 @@ Arguments:
 
     DebugEnter();
 
-    PSIMBATT_FDO_DATA DevExt = (PSIMBATT_FDO_DATA)Context;
+    SIMBATT_FDO_DATA* DevExt = (SIMBATT_FDO_DATA*)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     *BatteryTag = DevExt->BatteryTag;
     WdfWaitLockRelease(DevExt->StateLock);
@@ -260,7 +260,6 @@ Return Value:
     Success if there is a battery currently installed, else no such device.
 --*/
 {
-    PSIMBATT_FDO_DATA DevExt;
     ULONG ResultValue;
     PVOID ReturnBuffer;
     size_t ReturnBufferLength;
@@ -270,7 +269,7 @@ Return Value:
 
     DebugEnter();
 
-    DevExt = (PSIMBATT_FDO_DATA)Context;
+    SIMBATT_FDO_DATA* DevExt = (SIMBATT_FDO_DATA*)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     if (BatteryTag != DevExt->BatteryTag) {
         Status = STATUS_NO_SUCH_DEVICE;
@@ -435,12 +434,11 @@ Return Value:
     Success if there is a battery currently installed, else no such device.
 --*/
 {
-    PSIMBATT_FDO_DATA DevExt;
     NTSTATUS Status;
 
     DebugEnter();
 
-    DevExt = (PSIMBATT_FDO_DATA)Context;
+    SIMBATT_FDO_DATA* DevExt = (SIMBATT_FDO_DATA*)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     if (BatteryTag != DevExt->BatteryTag) {
         Status = STATUS_NO_SUCH_DEVICE;
@@ -486,14 +484,13 @@ Return Value:
     Success if there is a battery currently installed, else no such device.
 --*/
 {
-    PSIMBATT_FDO_DATA DevExt;
     NTSTATUS Status;
 
     UNREFERENCED_PARAMETER(BatteryNotify);
 
     DebugEnter();
 
-    DevExt = (PSIMBATT_FDO_DATA)Context;
+    SIMBATT_FDO_DATA* DevExt = (SIMBATT_FDO_DATA*)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     if (BatteryTag != DevExt->BatteryTag) {
         Status = STATUS_NO_SUCH_DEVICE;
@@ -564,7 +561,7 @@ Arguments:
 
     DebugEnter();
 
-    PSIMBATT_FDO_DATA DevExt = (PSIMBATT_FDO_DATA)Context;
+    SIMBATT_FDO_DATA* DevExt = (SIMBATT_FDO_DATA*)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     if (BatteryTag != DevExt->BatteryTag) {
         Status = STATUS_NO_SUCH_DEVICE;
@@ -645,7 +642,7 @@ Arguments:
 
     ULONG BytesReturned = 0;
     WDFDEVICE Device = WdfIoQueueGetDevice(Queue);
-    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     DebugPrint(SIMBATT_INFO, "SimBattIoDeviceControl: 0x%p\n", Device);
     Status = STATUS_INVALID_PARAMETER;
     switch (IoControlCode) {
@@ -828,7 +825,7 @@ Arguments:
 --*/
 {
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
-    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     ULONG ValidPowerState = BATTERY_CHARGING |
                       BATTERY_DISCHARGING |
                       BATTERY_CRITICAL |
@@ -868,7 +865,7 @@ Arguments:
 --*/
 {
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
-    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     ULONG ValidCapabilities = BATTERY_CAPACITY_RELATIVE |
                         BATTERY_IS_SHORT_TERM |
                         BATTERY_SYSTEM_BATTERY;
@@ -932,7 +929,7 @@ Arguments:
 --*/
 {
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
-    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     if ((ManufactureDate->Year == 0) ||
         (ManufactureDate->Month == 0) ||
         (ManufactureDate->Day == 0)) {
@@ -995,7 +992,7 @@ Arguments:
     ULONG ScaleIndex;
 
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
-    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     if (ScaleCount > 4) {
         goto SetBatteryGranularityScaleEnd;
     }
@@ -1045,7 +1042,7 @@ Arguments:
     EstimatedTime - Supplies the new estimated run/charge time to set.
 --*/
 {
-    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     DevExt->State.EstimatedTime = EstimatedTime;
     WdfWaitLockRelease(DevExt->StateLock);
@@ -1068,7 +1065,7 @@ Arguments:
     Temperature - Supplies the new temperature to set.
 --*/
 {
-    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     DevExt->State.Temperature = Temperature;
     WdfWaitLockRelease(DevExt->StateLock);
@@ -1110,7 +1107,7 @@ Arguments:
     MaxChargingCurrent - Supplies the pointer to return the value to
 --*/
 {
-    PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     *MaxChargingCurrent = DevExt->State.MaxCurrentDraw;
     return STATUS_SUCCESS;
 }
