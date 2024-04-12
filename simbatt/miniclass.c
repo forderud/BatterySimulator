@@ -106,13 +106,6 @@ SimBattGetBatteryMaxChargingCurrent (
     _Out_ PULONG MaxChargingCurrent
     );
 
-_Success_(return==STATUS_SUCCESS)
-NTSTATUS
-SaveSimBattStateToRegistry (
-    _In_ WDFDEVICE Device,
-    _In_ PSIMBATT_STATE State
-    );
-
 //------------------------------------------------------------ Battery Interface
 
 _Use_decl_annotations_
@@ -165,14 +158,6 @@ Arguments:
         SimBattSetBatteryString(DEFAULT_SERIALNO, DevExt->State.SerialNumber);
         SimBattSetBatteryString(DEFAULT_UNIQUEID, DevExt->State.UniqueId);
         WdfWaitLockRelease(DevExt->StateLock);
-
-        //
-        // Save new defaults to registry.
-        // Normally this only happens the first time the device starts after
-        // install because the key should exist after that point.
-        //
-
-        SaveSimBattStateToRegistry(Device, &DevExt->State);
     }
 
     return;
@@ -822,11 +807,6 @@ Arguments:
         break;
     }
 
-    //
-    // Update the state stored in registry since the state has likely changed.
-    //
-
-    SaveSimBattStateToRegistry(Device, &DevExt->State);
     WdfRequestCompleteWithInformation(Request, Status, BytesReturned);
     return;
 }
@@ -1133,56 +1113,6 @@ Arguments:
     PSIMBATT_FDO_DATA DevExt = GetDeviceExtension(Device);
     *MaxChargingCurrent = DevExt->State.MaxCurrentDraw;
     return STATUS_SUCCESS;
-}
-
-
-_Use_decl_annotations_
-NTSTATUS
-SaveSimBattStateToRegistry (
-    WDFDEVICE Device,
-    PSIMBATT_STATE State
-    )
-/*
- Routine Description:
-    Called to save simbatt state data to the registry.
-
-Arguments:
-    Device - Supplies WDF device handle.
-
-    State - Supplies the pointer to the simbatt state.
---*/
-{
-
-    WDFKEY  KeyHandle;
-    DECLARE_CONST_UNICODE_STRING(SimbattStateRegNameStr, SIMBATT_STATE_REG_NAME);
-
-    NTSTATUS Status = WdfDeviceOpenRegistryKey(
-        Device,
-        PLUGPLAY_REGKEY_DEVICE,
-        KEY_WRITE,
-        NULL,
-        &KeyHandle
-        );
-
-    if (!NT_SUCCESS (Status)) {
-        goto SaveSimBattStateToRegistryEnd;
-    }
-
-    Status = WdfRegistryAssignValue(
-        KeyHandle,
-        &SimbattStateRegNameStr,
-        REG_BINARY,
-        sizeof(SIMBATT_STATE),
-        State
-        );
-
-    WdfRegistryClose(KeyHandle);
-    if (!NT_SUCCESS (Status)) {
-        goto SaveSimBattStateToRegistryEnd;
-    }
-
-SaveSimBattStateToRegistryEnd:
-    return Status;
 }
 
 _Use_decl_annotations_
