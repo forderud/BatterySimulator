@@ -2,6 +2,8 @@ Mock driver to simulate multi-battery setups and test Windows power management. 
 
 Tutorial: [Writing Battery Miniclass Drivers](https://learn.microsoft.com/en-us/windows-hardware/drivers/battery/writing-battery-miniclass-drivers)
 
+![image](DriverStack.png)  
+
 ## How to test
 It's recommended to **test in a disposable virtual machine (VM)** during development, since faulty drivers might crash or corrupt the computer. You can use the "checkpoint" feature to roll back the machine to a known good state in case of driver installations problems.
 
