@@ -263,8 +263,7 @@ Arguments:
 
     // Attach to the battery class driver.
 
-    BATTERY_MINIPORT_INFO_V1_1 BattInit;
-    RtlZeroMemory(&BattInit, sizeof(BattInit));
+    BATTERY_MINIPORT_INFO_V1_1 BattInit = {0};
     BattInit.MajorVersion = BATTERY_CLASS_MAJOR_VERSION;
     BattInit.MinorVersion = BATTERY_CLASS_MINOR_VERSION_1;
     BattInit.Context = DevExt;
