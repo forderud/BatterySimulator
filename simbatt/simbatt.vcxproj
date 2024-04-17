@@ -16,6 +16,10 @@
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
     <SampleGuid>{0D5B7AF0-B4D6-4392-8A7A-BC502932382B}</SampleGuid>
+    <MajorVer>0</MajorVer>
+    <MinorVer>0</MinorVer>
+    <PatchVer>0</PatchVer>
+    <BuildVer>0</BuildVer>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -69,7 +73,7 @@
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc</AdditionalIncludeDirectories>
     </Midl>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);DRIVER;DEBUGPRINT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);DRIVER;DEBUGPRINT;MAJOR=$(MajorVer);MINOR=$(MinorVer);PATCH=$(PatchVer);BUILD=$(BuildVer)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
@@ -99,7 +103,7 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc</AdditionalIncludeDirectories>
     </Midl>
     <ResourceCompile>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions);DRIVER;DEBUGPRINT</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);DRIVER;DEBUGPRINT;MAJOR=$(MajorVer);MINOR=$(MinorVer);PATCH=$(PatchVer);BUILD=$(BuildVer)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
@@ -113,6 +117,11 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)
 copy $(OutDir)\simbatt.cer $(PackageDir)
 copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)\devgen.exe" $(PackageDir)</Command>
     </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(MajorVer)'!='0' Or '$(MinorVer)'!='0' Or '$(PatchVer)'!='0' Or '$(BuildVer)'!='0'">
+    <Inf>
+      <TimeStamp>$(MajorVer).$(MinorVer).$(PatchVer).$(BuildVer)</TimeStamp>
+    </Inf>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="miniclass.c" />
