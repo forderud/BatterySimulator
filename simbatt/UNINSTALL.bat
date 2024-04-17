@@ -10,6 +10,6 @@ devgen /remove "SWD\DEVGEN\2"
 ::pnputil.exe /remove-device /deviceid "SWD\DEVGEN\2"
 
 :: Uninstall driver
-pnputil.exe /delete-driver simbatt.inf /uninstall /force /reboot
+pnputil.exe /delete-driver simbatt.inf /uninstall /force
 
 pause
