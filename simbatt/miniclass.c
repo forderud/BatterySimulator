@@ -115,7 +115,6 @@ Arguments:
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
     // Get this battery's state - use defaults.
-
     {
         WdfWaitLockAcquire(DevExt->StateLock, NULL);
         SimBattUpdateTag(DevExt);
@@ -247,8 +246,6 @@ Return Value:
 --*/
 {
     ULONG ResultValue;
-    PVOID ReturnBuffer;
-    size_t ReturnBufferLength;
     NTSTATUS Status;
 
     UNREFERENCED_PARAMETER(AtRate);
@@ -267,8 +264,8 @@ Return Value:
     // simulated battery fakes this by storing the data to be returned in
     // memory.
 
-    ReturnBuffer = NULL;
-    ReturnBufferLength = 0;
+    PVOID ReturnBuffer = NULL;
+    size_t ReturnBufferLength = 0;
     DebugPrint(SIMBATT_INFO, "Query for information level 0x%x\n", Level);
     Status = STATUS_INVALID_DEVICE_REQUEST;
     switch (Level) {
@@ -540,7 +537,6 @@ Arguments:
     Buffer - Supplies a critical bias value if level is BatteryCriticalBias.
 --*/
 {
-    PBATTERY_CHARGING_SOURCE ChargingSource;
     NTSTATUS Status;
 
     DebugEnter();
@@ -556,7 +552,7 @@ Arguments:
         Status = STATUS_INVALID_PARAMETER_4;
 
     } else if (Level == BatteryChargingSource) {
-        ChargingSource = (PBATTERY_CHARGING_SOURCE)Buffer;
+        PBATTERY_CHARGING_SOURCE ChargingSource = (PBATTERY_CHARGING_SOURCE)Buffer;
         DevExt->State.MaxCurrentDraw = ChargingSource->MaxCurrent;
         DebugPrint(SIMBATT_INFO,
                    "SimBatt : Set MaxCurrentDraw = %u mA\n",
@@ -617,7 +613,6 @@ Arguments:
     size_t Length;
     PBATTERY_MANUFACTURE_DATE ManufactureDate;
     PULONG MaxCurrentDraw;
-    NTSTATUS Status;
     PWSTR String;
     PULONG Temperature;
     NTSTATUS TempStatus;
@@ -628,13 +623,10 @@ Arguments:
     WDFDEVICE Device = WdfIoQueueGetDevice(Queue);
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     DebugPrint(SIMBATT_INFO, "SimBattIoDeviceControl: 0x%p\n", Device);
-    Status = STATUS_INVALID_PARAMETER;
+    NTSTATUS Status = STATUS_INVALID_PARAMETER;
     switch (IoControlCode) {
     case IOCTL_SIMBATT_SET_STATUS:
-        TempStatus = WdfRequestRetrieveInputBuffer(Request,
-                                                   sizeof(BATTERY_STATUS),
-                                                   &BatteryStatus,
-                                                   &Length);
+        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(BATTERY_STATUS), &BatteryStatus, &Length);
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_STATUS))) {
             Status = SimBattSetBatteryStatus(Device, BatteryStatus);
@@ -643,10 +635,7 @@ Arguments:
         break;
 
     case IOCTL_SIMBATT_SET_INFORMATION:
-        TempStatus = WdfRequestRetrieveInputBuffer(Request,
-                                                   sizeof(BATTERY_INFORMATION),
-                                                   &BatteryInformation,
-                                                   &Length);
+        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(BATTERY_INFORMATION), &BatteryInformation, &Length);
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_INFORMATION))) {
             Status = SimBattSetBatteryInformation(Device, BatteryInformation);
@@ -655,14 +644,10 @@ Arguments:
         break;
 
     case IOCTL_SIMBATT_GET_MAXCHARGINGCURRENT:
-        TempStatus = WdfRequestRetrieveOutputBuffer(Request,
-                                                    sizeof(*MaxCurrentDraw),
-                                                    &MaxCurrentDraw,
-                                                    &Length);
+        TempStatus = WdfRequestRetrieveOutputBuffer(Request, sizeof(*MaxCurrentDraw), &MaxCurrentDraw, &Length);
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(ULONG))) {
-            Status = SimBattGetBatteryMaxChargingCurrent(Device,
-                                                         MaxCurrentDraw);
+            Status = SimBattGetBatteryMaxChargingCurrent(Device, MaxCurrentDraw);
 
             if (NT_SUCCESS(Status)) {
                 BytesReturned = sizeof(*MaxCurrentDraw);
@@ -678,19 +663,14 @@ Arguments:
                          &ManufactureDate,
                          &Length);
 
-        if (NT_SUCCESS(TempStatus) &&
-            (Length == sizeof(BATTERY_MANUFACTURE_DATE))) {
-
+        if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_MANUFACTURE_DATE))) {
             Status = SimBattSetBatteryManufactureDate(Device, ManufactureDate);
         }
 
         break;
 
     case IOCTL_SIMBATT_SET_TEMPERATURE:
-        TempStatus = WdfRequestRetrieveInputBuffer(Request,
-                                                   sizeof(ULONG),
-                                                   &Temperature,
-                                                   &Length);
+        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(ULONG), &Temperature, &Length);
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(ULONG))) {
             Status = SimBattSetBatteryTemperature(Device, *Temperature);
@@ -699,10 +679,7 @@ Arguments:
         break;
 
     case IOCTL_SIMBATT_SET_ESTIMATED_TIME:
-        TempStatus = WdfRequestRetrieveInputBuffer(Request,
-                                                   sizeof(ULONG),
-                                                   &EstimatedRunTime,
-                                                   &Length);
+        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(ULONG), &EstimatedRunTime, &Length);
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(ULONG))) {
             Status = SimBattSetBatteryEstimatedTime(Device, *EstimatedRunTime);
@@ -734,19 +711,13 @@ Arguments:
     case IOCTL_SIMBATT_SET_MANUFACTURE_NAME:
     case IOCTL_SIMBATT_SET_SERIAL_NUMBER:
     case IOCTL_SIMBATT_SET_UNIQUE_ID:
-            TempStatus = WdfRequestRetrieveInputBuffer(Request,
-                                                       sizeof(WCHAR),
-                                                       &String,
-                                                       &Length);
+        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(WCHAR), &String, &Length);
 
         if (NT_SUCCESS(TempStatus) &&
             (Length % sizeof(WCHAR) == 0) &&
             (String[(Length / sizeof(WCHAR)) - 1] == UNICODE_NULL)) {
 
-            //
-            // Explicitly set the terminating null to silence prefast
-            // warnings.
-            //
+            // Explicitly set the terminating null to silence prefast warnings.
 
             String[(Length / sizeof(WCHAR)) - 1] = UNICODE_NULL;
             switch (IoControlCode) {
@@ -772,7 +743,6 @@ Arguments:
             }
 
             // Supress invalid failure: Redundant Pointer Test on DestinationString
-
             #pragma warning(suppress: 28922)
             if (DestinationString != NULL) {
                 WdfWaitLockAcquire(DevExt->StateLock, NULL);
@@ -867,11 +837,9 @@ Arguments:
     DevExt->State.BatteryInfo.Chemistry[1] = BatteryInformation->Chemistry[1];
     DevExt->State.BatteryInfo.Chemistry[2] = BatteryInformation->Chemistry[2];
     DevExt->State.BatteryInfo.Chemistry[3] = BatteryInformation->Chemistry[3];
-    DevExt->State.BatteryInfo.DesignedCapacity =
-        BatteryInformation->DesignedCapacity;
+    DevExt->State.BatteryInfo.DesignedCapacity = BatteryInformation->DesignedCapacity;
 
-    DevExt->State.BatteryInfo.FullChargedCapacity =
-        BatteryInformation->FullChargedCapacity;
+    DevExt->State.BatteryInfo.FullChargedCapacity = BatteryInformation->FullChargedCapacity;
 
     DevExt->State.BatteryInfo.DefaultAlert1 = BatteryInformation->DefaultAlert1;
     DevExt->State.BatteryInfo.DefaultAlert2 = BatteryInformation->DefaultAlert2;
@@ -910,30 +878,14 @@ Arguments:
 {
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
-    if ((ManufactureDate->Year == 0) ||
-        (ManufactureDate->Month == 0) ||
-        (ManufactureDate->Day == 0)) {
-
-        //
+    if ((ManufactureDate->Year == 0) || (ManufactureDate->Month == 0) || (ManufactureDate->Day == 0)) {
         // All zeroes indicates that the manufacture date is unknown.
-        //
-
-        if ((ManufactureDate->Year != 0) ||
-            (ManufactureDate->Month != 0) ||
-            (ManufactureDate->Day != 0)) {
-
+        if ((ManufactureDate->Year != 0) || (ManufactureDate->Month != 0) || (ManufactureDate->Day != 0)) {
             goto SetBatteryManufactureDateEnd;
         }
-
     } else {
-
-        //
         // Make sure the dates are close to reasonable.
-        //
-
-        if ((ManufactureDate->Month > 12) ||
-            (ManufactureDate->Day > 31)) {
-
+        if ((ManufactureDate->Month > 12) || (ManufactureDate->Day > 31)) {
             goto SetBatteryManufactureDateEnd;
         }
     }
@@ -969,8 +921,6 @@ Arguments:
     ScaleCount - Supplies the number of granularity scale entries to set.
 --*/
 {
-    ULONG ScaleIndex;
-
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     if (ScaleCount > 4) {
@@ -979,14 +929,14 @@ Arguments:
 
     // Scale regions are listed in increasing order of capacity ranges they
     // apply to.
-    for (ScaleIndex = 1; ScaleIndex < ScaleCount; ScaleIndex += 1) {
+    for (ULONG ScaleIndex = 1; ScaleIndex < ScaleCount; ScaleIndex += 1) {
         if (Scale[ScaleIndex].Capacity <= Scale[ScaleIndex - 1].Capacity) {
             goto SetBatteryGranularityScaleEnd;
         }
     }
 
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
-    for (ScaleIndex = 0; ScaleIndex < ScaleCount; ScaleIndex += 1) {
+    for (ULONG ScaleIndex = 0; ScaleIndex < ScaleCount; ScaleIndex += 1) {
         DevExt->State.GranularityScale[ScaleIndex].Granularity =
             Scale[ScaleIndex].Granularity;
 
