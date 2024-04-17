@@ -44,12 +44,9 @@ Parameters Description:
 --*/
 
 {
-    WDF_OBJECT_ATTRIBUTES DriverAttributes;
-    WDF_DRIVER_CONFIG DriverConfig;
-    NTSTATUS Status;
-
     DebugEnter();
 
+    WDF_DRIVER_CONFIG DriverConfig;
     WDF_DRIVER_CONFIG_INIT(&DriverConfig, SimBattDriverDeviceAdd);
 
     // Initialize attributes and a context area for the driver object.
@@ -61,8 +58,7 @@ Parameters Description:
     //      None. This means that the WDF framework does not synchronize the
     //      callbacks, you may want to set this to a different value based on
     //      how the callbacks are required to be synchronized in your driver.
-
-    SIMBATT_GLOBAL_DATA* GlobalData = NULL;
+    WDF_OBJECT_ATTRIBUTES DriverAttributes;
     WDF_OBJECT_ATTRIBUTES_INIT(&DriverAttributes);
     WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DriverAttributes,
                                            SIMBATT_GLOBAL_DATA);
@@ -70,7 +66,7 @@ Parameters Description:
     DriverAttributes.ExecutionLevel = WdfExecutionLevelPassive;
 
     // Create the driver object
-    Status = WdfDriverCreate(DriverObject,
+    NTSTATUS Status = WdfDriverCreate(DriverObject,
                              RegistryPath,
                              &DriverAttributes,
                              &DriverConfig,
@@ -84,7 +80,7 @@ Parameters Description:
         goto DriverEntryEnd;
     }
 
-    GlobalData = GetGlobalData(WdfGetDriver());
+    SIMBATT_GLOBAL_DATA* GlobalData = GetGlobalData(WdfGetDriver());
     GlobalData->RegistryPath.MaximumLength = RegistryPath->Length +
                                              sizeof(UNICODE_NULL);
 
@@ -116,19 +112,12 @@ Arguments:
         structure.
 --*/
 {
-    WDF_OBJECT_ATTRIBUTES DeviceAttributes;
-    WDFDEVICE DeviceHandle;  
-    WDF_OBJECT_ATTRIBUTES LockAttributes;
-    WDF_PNPPOWER_EVENT_CALLBACKS PnpPowerCallbacks;
-    WDFQUEUE Queue;
-    WDF_IO_QUEUE_CONFIG QueueConfig;
-    NTSTATUS Status;
-
     UNREFERENCED_PARAMETER(Driver);
     DebugEnter();
 
     // Initialize the PnpPowerCallbacks structure.  Callback events for PNP
     // and Power are specified here.
+    WDF_PNPPOWER_EVENT_CALLBACKS PnpPowerCallbacks;
     WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&PnpPowerCallbacks);
     PnpPowerCallbacks.EvtDevicePrepareHardware = SimBattDevicePrepareHardware;
     PnpPowerCallbacks.EvtDeviceSelfManagedIoInit = SimBattSelfManagedIoInit;
@@ -140,7 +129,7 @@ Arguments:
     // IRP_MJ_SYSTEM_CONTROL. The battery class driver needs to handle these IO
     // requests directly.
 
-    Status = WdfDeviceInitAssignWdmIrpPreprocessCallback(
+    NTSTATUS Status = WdfDeviceInitAssignWdmIrpPreprocessCallback(
                  DeviceInit,
                  SimBattWdmIrpPreprocessDeviceControl,
                  IRP_MJ_DEVICE_CONTROL,
@@ -173,14 +162,14 @@ Arguments:
     }
 
     // Initialize attributes and a context area for the device object.
-
+    WDF_OBJECT_ATTRIBUTES DeviceAttributes;
     WDF_OBJECT_ATTRIBUTES_INIT(&DeviceAttributes);
     WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DeviceAttributes, SIMBATT_FDO_DATA);
 
     // Create a framework device object.  This call will in turn create
     // a WDM device object, attach to the lower stack, and set the
     // appropriate flags and attributes.
-
+    WDFDEVICE DeviceHandle;
     Status = WdfDeviceCreate(&DeviceInit, &DeviceAttributes, &DeviceHandle);
     if (!NT_SUCCESS(Status)) {
         DebugPrint(SIMBATT_ERROR, "WdfDeviceCreate() Failed. 0x%x\n", Status);
@@ -190,11 +179,12 @@ Arguments:
     // Configure a default queue for IO requests that are not handled by the
     // class driver. For the simulated battery, this queue processes requests
     // to set the simulated status.
-
+    WDF_IO_QUEUE_CONFIG QueueConfig;
     WDF_IO_QUEUE_CONFIG_INIT_DEFAULT_QUEUE(&QueueConfig,
                                            WdfIoQueueDispatchSequential);
 
     QueueConfig.EvtIoDeviceControl = SimBattIoDeviceControl;
+    WDFQUEUE Queue;
     Status = WdfIoQueueCreate(DeviceHandle,
                               &QueueConfig,
                               WDF_NO_OBJECT_ATTRIBUTES,
@@ -221,6 +211,7 @@ Arguments:
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(DeviceHandle);
     DevExt->BatteryTag = BATTERY_TAG_INVALID;
     DevExt->ClassHandle = NULL;
+    WDF_OBJECT_ATTRIBUTES LockAttributes;
     WDF_OBJECT_ATTRIBUTES_INIT(&LockAttributes);
     LockAttributes.ParentObject = DeviceHandle;
     Status = WdfWaitLockCreate(&LockAttributes,
@@ -267,16 +258,12 @@ Arguments:
     Device - Supplies a handle to a framework device object.
 --*/
 {
-
-    BATTERY_MINIPORT_INFO_V1_1 BattInit;
-    PDEVICE_OBJECT DeviceObject;
-    NTSTATUS Status;
-
     DebugEnter();
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
     // Attach to the battery class driver.
 
+    BATTERY_MINIPORT_INFO_V1_1 BattInit;
     RtlZeroMemory(&BattInit, sizeof(BattInit));
     BattInit.MajorVersion = BATTERY_CLASS_MAJOR_VERSION;
     BattInit.MinorVersion = BATTERY_CLASS_MINOR_VERSION_1;
@@ -291,7 +278,7 @@ Arguments:
     BattInit.DeviceName = NULL;
     BattInit.Fdo = WdfDeviceWdmGetDeviceObject(Device);
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
-    Status = BatteryClassInitializeDevice((PBATTERY_MINIPORT_INFO)&BattInit,
+    NTSTATUS Status = BatteryClassInitializeDevice((PBATTERY_MINIPORT_INFO)&BattInit,
                                           &DevExt->ClassHandle);
 
     WdfWaitLockRelease(DevExt->ClassInitLock);
@@ -311,7 +298,7 @@ Arguments:
     DevExt->WmiLibContext.SetWmiDataItem = NULL;
     DevExt->WmiLibContext.ExecuteWmiMethod = NULL;
     DevExt->WmiLibContext.WmiFunctionControl = NULL;
-    DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
+    PDEVICE_OBJECT DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
     Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_REGISTER);
 
     // Failure to register with WMI is nonfatal.
@@ -346,13 +333,10 @@ Return Value:
     NTSTATUS - Failures will be logged, but not acted on.
 --*/
 {
-    PDEVICE_OBJECT DeviceObject;
-    NTSTATUS Status;
-
     DebugEnter();
 
-    DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
-    Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_DEREGISTER);
+    PDEVICE_OBJECT DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
+    NTSTATUS Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_DEREGISTER);
     if (!NT_SUCCESS(Status)) {
         DebugPrint(SIMBATT_WARN,
                    "IoWMIRegistrationControl() Failed. Status 0x%x\n",
@@ -469,14 +453,13 @@ Arguments:
     Irp - Supplies the IO request being processed.
 --*/
 {
-    NTSTATUS Status;
     DebugEnter();
 
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",
               (KeGetCurrentIrql() == PASSIVE_LEVEL));
 
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
-    Status = STATUS_NOT_SUPPORTED;
+    NTSTATUS Status = STATUS_NOT_SUPPORTED;
 
     // Suppress 28118:Irq Exceeds Caller, see Routine Description for
     // explaination.
@@ -527,16 +510,12 @@ Arguments:
     Irp - Supplies the IO request being processed.
 --*/
 {
-    PDEVICE_OBJECT DeviceObject;
-    SYSCTL_IRP_DISPOSITION Disposition;
-    NTSTATUS Status;
-
     DebugEnter();
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",(KeGetCurrentIrql() == PASSIVE_LEVEL));
 
-    Status = STATUS_NOT_IMPLEMENTED;
+    NTSTATUS Status = STATUS_NOT_IMPLEMENTED;
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
-    Disposition = IrpForward;
+    SYSCTL_IRP_DISPOSITION Disposition = IrpForward;
 
     // Acquire the class initialization lock and attempt to queue the IRP with
     // the class driver.
@@ -546,7 +525,7 @@ Arguments:
     #pragma warning(suppress: 28118)
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
     if (DevExt->ClassHandle != NULL) {
-        DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
+        PDEVICE_OBJECT DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
         Status = BatteryClassSystemControl(DevExt->ClassHandle,
                                            &DevExt->WmiLibContext,
                                            DeviceObject,
@@ -620,20 +599,17 @@ Arguments:
         *RegFlags.
 --*/
 {
-    WDFDEVICE Device;
-    NTSTATUS Status;
-
     UNREFERENCED_PARAMETER(MofResourceName);
     UNREFERENCED_PARAMETER(InstanceName);
 
     DebugEnter();
 
-    Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
+    WDFDEVICE Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
     SIMBATT_GLOBAL_DATA* GlobalData = GetGlobalData(WdfGetDriver());
     *RegFlags = WMIREG_FLAG_INSTANCE_PDO;
     *RegistryPath = &GlobalData->RegistryPath;
     *Pdo = WdfDeviceWdmGetPhysicalDevice(Device);
-    Status = STATUS_SUCCESS;
+    NTSTATUS Status = STATUS_SUCCESS;
     DebugExitStatus(Status);
     return Status;
 }
@@ -682,7 +658,6 @@ Arguments:
     Buffer - Supplies a pointer to a buffer to return the data block.
 --*/
 {
-    WDFDEVICE Device;
     NTSTATUS Status;
 
     UNREFERENCED_PARAMETER(InstanceIndex);
@@ -696,7 +671,7 @@ Arguments:
         goto SimBattQueryWmiDataBlockEnd;
     }
 
-    Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
+    WDFDEVICE Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
     // The class driver guarantees that all outstanding IO requests will be
