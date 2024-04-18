@@ -120,8 +120,10 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)
     <ResourceCompile Include="simbatt.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Inf Exclude="@(Inf)" Include="*.inx" />
     <FilesToPackage Include="$(TargetPath)" Condition="'$(ConfigurationType)'=='Driver' or '$(ConfigurationType)'=='DynamicLibrary'" />
+  </ItemGroup>
+  <ItemGroup>
+    <Inf Include="simbatt.inx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
