@@ -3,20 +3,25 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <MajorVer>0</MajorVer>
+    <MinorVer>0</MinorVer>
+    <PatchVer>0</PatchVer>
+    <BuildVer>0</BuildVer>
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>f33f1b5e-a173-4e5e-bdb7-9ce85898a712</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>BatterySimulator</OutputName>
+    <OutputName>BatterySimulator-$(MajorVer).$(MinorVer).$(PatchVer).$(BuildVer)</OutputName>
     <OutputType>Package</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <DefineConstants>Debug</DefineConstants>
+    <DefineConstants>Debug;Version=$(MajorVer).$(MinorVer).$(PatchVer).$(BuildVer)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Version=$(MajorVer).$(MinorVer).$(PatchVer).$(BuildVer)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
