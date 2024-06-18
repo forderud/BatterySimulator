@@ -20,7 +20,7 @@
                   />
         <CustomAction Id="AddCertToTrustedPublisher"
                   Directory="INSTALLFOLDER"
-                  ExeCommand="certutil.exe -addstore trustedpublisher &quot;[INSTALLFOLDER]simbatt.cer&quot;"
+                  ExeCommand="certutil.exe -f -addstore trustedpublisher &quot;[INSTALLFOLDER]simbatt.cer&quot;"
                   Execute="deferred"
                   Impersonate="no"
                   />
