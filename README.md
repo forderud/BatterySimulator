@@ -191,3 +191,4 @@ The most prominent changes to the Microsoft [`simbatt`](https://github.com/micro
 * Switch to default output folder.
 * ~~Disable faulty read-back of state from registry through `GetSimBattStateFromRegistry` function: https://github.com/microsoft/Windows-driver-samples/pull/1064~~
 * Clear BATTERY_INFORMATION `BATTERY_CAPACITY_RELATIVE` field to enable per-battery charge display in Windows Settings: https://github.com/microsoft/Windows-driver-samples/pull/1063
+* Provide instructions for how to test the driver: https://github.com/microsoft/Windows-driver-samples/pull/1187
