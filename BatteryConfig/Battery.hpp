@@ -6,7 +6,8 @@
 #include <stdexcept>
 
 
-/** Convenience function for getting the battery tag that's needed for some IOCTL calls. */
+/** Convenience function for getting the battery tag that's needed for some IOCTL calls.
+    The battery tag will change if it's removed /reinserted, replaced or if static information like BATTERY_INFORMATION changes. */
 ULONG GetBatteryTag(HANDLE device) {
     // get battery tag (needed in later calls)
     ULONG battery_tag = 0;
