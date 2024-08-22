@@ -8,7 +8,6 @@
     <ResourceCompile Include="simbatt.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="batclass_prepublish.h" />
     <ClInclude Include="simbatt.h" />
     <ClInclude Include="simbattdriverif.h" />
   </ItemGroup>
