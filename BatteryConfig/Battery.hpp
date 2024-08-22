@@ -4,6 +4,7 @@
 #include "../simbatt/simbattdriverif.h"
 #include <string>
 #include <stdexcept>
+#include <cassert>
 
 
 /** Convenience function for getting the battery tag that's needed for some IOCTL calls.
@@ -103,3 +104,21 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
     }
 };
 static_assert(sizeof(BatteryInformationWrap) == sizeof(BATTERY_INFORMATION));
+
+
+std::wstring GetBatteryInfoStr(HANDLE device, BATTERY_QUERY_INFORMATION_LEVEL level) {
+    assert((level == BatteryDeviceName) || (level == BatteryManufactureName) || (level == BatterySerialNumber) || (level == BatteryUniqueID));
+    BATTERY_QUERY_INFORMATION bqi = {};
+    bqi.InformationLevel = level;
+    bqi.BatteryTag = GetBatteryTag(device);
+
+    wchar_t buffer[1024] = {}; // null terminated
+    DWORD bytes_returned = 0;
+    BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), buffer, sizeof(buffer), &bytes_returned, nullptr);
+    if (!ok) {
+        //DWORD err = GetLastError();
+        throw std::runtime_error("IOCTL_BATTERY_QUERY_INFORMATION error");
+    }
+
+    return std::wstring(buffer);
+}

@@ -38,6 +38,12 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
+    wprintf(L"Battery information fields:\n");
+    wprintf(L"  BatteryDeviceName:      %s\n", GetBatteryInfoStr(battery.Get(), BatteryDeviceName).c_str());
+    wprintf(L"  BatteryManufactureName: %s\n", GetBatteryInfoStr(battery.Get(), BatteryManufactureName).c_str());
+    wprintf(L"  BatterySerialNumber:    %s\n", GetBatteryInfoStr(battery.Get(), BatterySerialNumber).c_str());
+    wprintf(L"  BatteryUniqueID:        %s\n", GetBatteryInfoStr(battery.Get(), BatteryUniqueID).c_str());
+
     BatteryInformationWrap info(battery.Get());
     wprintf(L"\n"); 
     wprintf(L"Battery information:\n");
