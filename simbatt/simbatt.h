@@ -44,11 +44,7 @@ typedef struct {
     UNICODE_STRING                  RegistryPath;
 } SIMBATT_GLOBAL_DATA;
 
-#define SIMBATT_STATE_VERSION_1     1
-#define SIMBATT_STATE_VERSION       SIMBATT_STATE_VERSION_1
-
 typedef struct {
-    USHORT                          Version;
     BATTERY_MANUFACTURE_DATE        ManufactureDate;
     BATTERY_INFORMATION             BatteryInfo;
     BATTERY_STATUS                  BatteryStatus;

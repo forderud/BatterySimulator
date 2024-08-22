@@ -77,7 +77,6 @@ Arguments:
     {
         WdfWaitLockAcquire(DevExt->StateLock, NULL);
         SimBattUpdateTag(DevExt);
-        DevExt->State.Version = SIMBATT_STATE_VERSION;
         DevExt->State.BatteryStatus.PowerState = BATTERY_POWER_ON_LINE;
         DevExt->State.BatteryStatus.Capacity = 100;
         DevExt->State.BatteryStatus.Voltage = BATTERY_UNKNOWN_VOLTAGE;
