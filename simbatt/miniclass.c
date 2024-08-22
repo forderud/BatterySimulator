@@ -44,15 +44,6 @@ SimBattSetBatteryInformation (
     _In_ PBATTERY_INFORMATION BatteryInformation
     );
 
-_Must_inspect_result_
-_Success_(return==STATUS_SUCCESS)
-NTSTATUS
-SimBattSetBatteryGranularityScale (
-    _In_ WDFDEVICE Device,
-    _In_reads_(ScaleCount) PBATTERY_REPORTING_SCALE Scale,
-    _In_ ULONG ScaleCount
-    );
-
 _Success_(return==STATUS_SUCCESS)
 NTSTATUS
 SimBattSetBatteryString (
@@ -113,6 +104,12 @@ Arguments:
 
         DevExt->State.Temperature = 2931; // 20 degree Celsius [10ths of a degree Kelvin]
         DevExt->State.EstimatedTime = BATTERY_UNKNOWN_TIME; // battery run time, in seconds
+
+        //DevExt->State.GranularityCount = 0;
+        //for (unsigned int i = 0; i < DevExt->State.GranularityCount; ++i) {
+        //    DevExt->State.GranularityScale[i].Granularity = 0; // granularity [mWh]
+        //    DevExt->State.GranularityScale[i].Capacity = 0; // upper capacity limit for Granularity [mWh]
+        //}
 
         //DevExt->State.ManufactureDate.Year =
         //DevExt->State.ManufactureDate.Month =
@@ -582,12 +579,11 @@ Arguments:
 {
     PBATTERY_INFORMATION BatteryInformation;
     PBATTERY_STATUS BatteryStatus;
-    ULONG GranularityEntries;
-    PBATTERY_REPORTING_SCALE GranularityScale;
     size_t Length;
     NTSTATUS TempStatus;
 
     UNREFERENCED_PARAMETER(OutputBufferLength);
+    UNREFERENCED_PARAMETER(InputBufferLength);
 
     ULONG BytesReturned = 0;
     WDFDEVICE Device = WdfIoQueueGetDevice(Queue);
@@ -608,26 +604,6 @@ Arguments:
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_INFORMATION))) {
             Status = SimBattSetBatteryInformation(Device, BatteryInformation);
-        }
-
-        break;
-
-    case IOCTL_SIMBATT_SET_GRANULARITY_INFORMATION:
-        GranularityEntries = (ULONG)(InputBufferLength /
-                                     sizeof(PBATTERY_REPORTING_SCALE));
-
-        TempStatus = WdfRequestRetrieveInputBuffer(
-                         Request,
-                         GranularityEntries * sizeof(PBATTERY_REPORTING_SCALE),
-                         &GranularityScale,
-                         &Length);
-
-        if (NT_SUCCESS(TempStatus) &&
-            (Length == GranularityEntries * sizeof(PBATTERY_REPORTING_SCALE))) {
-
-            Status = SimBattSetBatteryGranularityScale(Device,
-                                                       GranularityScale,
-                                                       GranularityEntries);
         }
 
         break;
@@ -737,57 +713,6 @@ Arguments:
     Status = STATUS_SUCCESS;
 
 SetBatteryInformationEnd:
-    return Status;
-}
-
-_Use_decl_annotations_
-NTSTATUS
-SimBattSetBatteryGranularityScale (
-    WDFDEVICE Device,
-    PBATTERY_REPORTING_SCALE Scale,
-    ULONG ScaleCount
-    )
-/*++
-Routine Description:
-    Set the simulated battery status structure values.
-
-Arguments:
-    Device - Supplies the device to set data for.
-
-    Scale - Supplies the new granularity scale to set.
-
-    ScaleCount - Supplies the number of granularity scale entries to set.
---*/
-{
-    NTSTATUS Status = STATUS_INVALID_PARAMETER;
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
-    if (ScaleCount > 4) {
-        goto SetBatteryGranularityScaleEnd;
-    }
-
-    // Scale regions are listed in increasing order of capacity ranges they
-    // apply to.
-    for (ULONG ScaleIndex = 1; ScaleIndex < ScaleCount; ScaleIndex += 1) {
-        if (Scale[ScaleIndex].Capacity <= Scale[ScaleIndex - 1].Capacity) {
-            goto SetBatteryGranularityScaleEnd;
-        }
-    }
-
-    WdfWaitLockAcquire(DevExt->StateLock, NULL);
-    for (ULONG ScaleIndex = 0; ScaleIndex < ScaleCount; ScaleIndex += 1) {
-        DevExt->State.GranularityScale[ScaleIndex].Granularity =
-            Scale[ScaleIndex].Granularity;
-
-        DevExt->State.GranularityScale[ScaleIndex].Capacity =
-            Scale[ScaleIndex].Capacity;
-    }
-
-    DevExt->State.GranularityCount = ScaleCount;
-    SimBattUpdateTag(DevExt);
-    WdfWaitLockRelease(DevExt->StateLock);
-    Status = STATUS_SUCCESS;
-
-SetBatteryGranularityScaleEnd:
     return Status;
 }
 
