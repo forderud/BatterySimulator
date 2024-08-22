@@ -41,7 +41,12 @@ int wmain(int argc, wchar_t* argv[]) {
     {
         wprintf(L"Battery information fields:\n");
         wprintf(L"  BatteryDeviceName:      %s\n", GetBatteryInfoStr(battery.Get(), BatteryDeviceName).c_str());
-        wprintf(L"  BatteryEstimatedTime:   %u\n", GetBatteryInfoUlong(battery.Get(), BatteryEstimatedTime));
+
+        ULONG estimatedTime = GetBatteryInfoUlong(battery.Get(), BatteryEstimatedTime);
+        if (estimatedTime != BATTERY_UNKNOWN_TIME)
+            wprintf(L"  BatteryEstimatedTime:   %u\n", estimatedTime);
+        else
+            wprintf(L"  BatteryEstimatedTime:   <unknown>\n");
         
         BATTERY_REPORTING_SCALE scale[4] = {};
         unsigned int count = GetBatteryInfoGranularity(battery.Get(), scale);
