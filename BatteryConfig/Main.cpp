@@ -42,11 +42,20 @@ int wmain(int argc, wchar_t* argv[]) {
         wprintf(L"Battery information fields:\n");
         wprintf(L"  BatteryDeviceName:      %s\n", GetBatteryInfoStr(battery.Get(), BatteryDeviceName).c_str());
         wprintf(L"  BatteryEstimatedTime:   %u\n", GetBatteryInfoUlong(battery.Get(), BatteryEstimatedTime));
+        
+        BATTERY_REPORTING_SCALE scale[4] = {};
+        unsigned int count = GetBatteryInfoGranularity(battery.Get(), scale);
+        for (unsigned int idx = 0; idx < count; ++idx)
+            wprintf(L"  BatteryGranularityInformation: Granularity=%u, Capacity=%u\n", scale[idx].Granularity, scale[idx].Capacity);
+        if (count == 0)
+            wprintf(L"  BatteryGranularityInformation: <unknown>\n");
+
         BATTERY_MANUFACTURE_DATE date = {};
         if (GetBatteryInfoDate(battery.Get(), date))
             wprintf(L"  BatteryManufactureDate: %u-%u-%u\n", date.Year, date.Month, date.Day);
         else
             wprintf(L"  BatteryManufactureDate: <unknown>\n");
+        
         wprintf(L"  BatteryManufactureName: %s\n", GetBatteryInfoStr(battery.Get(), BatteryManufactureName).c_str());
         wprintf(L"  BatterySerialNumber:    %s\n", GetBatteryInfoStr(battery.Get(), BatterySerialNumber).c_str());
         wprintf(L"  BatteryTemperature:     %u\n", GetBatteryInfoUlong(battery.Get(), BatteryTemperature));

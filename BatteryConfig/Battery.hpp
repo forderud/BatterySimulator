@@ -149,3 +149,14 @@ bool GetBatteryInfoDate(HANDLE device, BATTERY_MANUFACTURE_DATE& date) {
     BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &date, sizeof(date), &bytes_returned, nullptr);
     return ok;
 }
+
+unsigned int GetBatteryInfoGranularity(HANDLE device, BATTERY_REPORTING_SCALE scale[4]) {
+    BATTERY_QUERY_INFORMATION bqi = {};
+    bqi.InformationLevel = BatteryGranularityInformation;
+    bqi.BatteryTag = GetBatteryTag(device);
+
+    DWORD bytes_returned = 0;
+    BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), scale, 4*sizeof(BATTERY_REPORTING_SCALE), &bytes_returned, nullptr);
+    ok;
+    return bytes_returned/sizeof(BATTERY_REPORTING_SCALE);
+}
