@@ -122,3 +122,20 @@ std::wstring GetBatteryInfoStr(HANDLE device, BATTERY_QUERY_INFORMATION_LEVEL le
 
     return std::wstring(buffer);
 }
+
+ULONG GetBatteryInfoUlong(HANDLE device, BATTERY_QUERY_INFORMATION_LEVEL level) {
+    assert((level == BatteryEstimatedTime) || (level == BatteryTemperature));
+    BATTERY_QUERY_INFORMATION bqi = {};
+    bqi.InformationLevel = level;
+    bqi.BatteryTag = GetBatteryTag(device);
+
+    ULONG value = 0;
+    DWORD bytes_returned = 0;
+    BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &value, sizeof(value), &bytes_returned, nullptr);
+    if (!ok) {
+        //DWORD err = GetLastError();
+        throw std::runtime_error("IOCTL_BATTERY_QUERY_INFORMATION error");
+    }
+
+    return value;
+}
