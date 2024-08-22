@@ -61,14 +61,6 @@ SimBattSetBatteryGranularityScale (
     _In_ ULONG ScaleCount
     );
 
-_Must_inspect_result_
-_Success_(return==STATUS_SUCCESS)
-NTSTATUS
-SimBattSetBatteryEstimatedTime (
-    _In_ WDFDEVICE Device,
-    _In_ ULONG EstimatedTime
-    );
-
 _Success_(return==STATUS_SUCCESS)
 NTSTATUS
 SimBattSetBatteryString (
@@ -136,6 +128,7 @@ Arguments:
         SimBattSetBatteryString(DEFAULT_UNIQUEID, DevExt->State.UniqueId);
 
         DevExt->State.Temperature = 2931; // 20 degree Celsius [10ths of a degree Kelvin]
+        DevExt->State.EstimatedTime = BATTERY_UNKNOWN_TIME; // battery run time, in seconds
 
         WdfWaitLockRelease(DevExt->StateLock);
     }
@@ -601,7 +594,6 @@ Arguments:
 {
     PBATTERY_INFORMATION BatteryInformation;
     PBATTERY_STATUS BatteryStatus;
-    PULONG EstimatedRunTime;
     ULONG GranularityEntries;
     PBATTERY_REPORTING_SCALE GranularityScale;
     size_t Length;
@@ -656,15 +648,6 @@ Arguments:
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_MANUFACTURE_DATE))) {
             Status = SimBattSetBatteryManufactureDate(Device, ManufactureDate);
-        }
-
-        break;
-
-    case IOCTL_SIMBATT_SET_ESTIMATED_TIME:
-        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(ULONG), &EstimatedRunTime, &Length);
-
-        if (NT_SUCCESS(TempStatus) && (Length == sizeof(ULONG))) {
-            Status = SimBattSetBatteryEstimatedTime(Device, *EstimatedRunTime);
         }
 
         break;
@@ -888,32 +871,6 @@ Arguments:
 
 SetBatteryGranularityScaleEnd:
     return Status;
-}
-
-_Use_decl_annotations_
-NTSTATUS
-SimBattSetBatteryEstimatedTime (
-    WDFDEVICE Device,
-    ULONG EstimatedTime
-    )
-/*++
-Routine Description:
-    Set the simulated battery estimated charge/run time. The value
-    SIMBATT_RATE_CALCULATE causes the estimated time to be calculated based on
-    charge/discharge status, the charge/discharge rate, the current capacity,
-    and the last full charge capacity.
-
-Arguments:
-    Device - Supplies the device to set data for.
-
-    EstimatedTime - Supplies the new estimated run/charge time to set.
---*/
-{
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
-    WdfWaitLockAcquire(DevExt->StateLock, NULL);
-    DevExt->State.EstimatedTime = EstimatedTime;
-    WdfWaitLockRelease(DevExt->StateLock);
-    return STATUS_SUCCESS;
 }
 
 _Use_decl_annotations_
