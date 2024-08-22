@@ -48,8 +48,8 @@ typedef struct {
     BATTERY_MANUFACTURE_DATE        ManufactureDate;
     BATTERY_INFORMATION             BatteryInfo;
     BATTERY_STATUS                  BatteryStatus;
-    BATTERY_REPORTING_SCALE         GranularityScale[4];
     ULONG                           GranularityCount;
+    BATTERY_REPORTING_SCALE         GranularityScale[4];
     ULONG                           EstimatedTime;
     ULONG                           Temperature;
     ULONG                           MaxCurrentDraw;

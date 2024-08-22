@@ -77,10 +77,11 @@ Arguments:
     {
         WdfWaitLockAcquire(DevExt->StateLock, NULL);
         SimBattUpdateTag(DevExt);
-        DevExt->State.BatteryStatus.PowerState = BATTERY_POWER_ON_LINE;
-        DevExt->State.BatteryStatus.Capacity = 100;
-        DevExt->State.BatteryStatus.Voltage = BATTERY_UNKNOWN_VOLTAGE;
-        DevExt->State.BatteryStatus.Rate = 0;
+
+        //DevExt->State.ManufactureDate.Year =
+        //DevExt->State.ManufactureDate.Month =
+        //DevExt->State.ManufactureDate.Day =
+
         DevExt->State.BatteryInfo.Capabilities = BATTERY_SYSTEM_BATTERY;
         DevExt->State.BatteryInfo.Technology = 1;
         DevExt->State.BatteryInfo.Chemistry[0] = 'F';
@@ -93,16 +94,11 @@ Arguments:
         DevExt->State.BatteryInfo.DefaultAlert2 = 0;
         DevExt->State.BatteryInfo.CriticalBias = 0;
         DevExt->State.BatteryInfo.CycleCount = 100;
-        DevExt->State.MaxCurrentDraw = UNKNOWN_CURRENT;
-        SimBattSetBatteryString(DEFAULT_NAME, DevExt->State.DeviceName);
-        SimBattSetBatteryString(DEFAULT_MANUFACTURER,
-                                DevExt->State.ManufacturerName);
 
-        SimBattSetBatteryString(DEFAULT_SERIALNO, DevExt->State.SerialNumber);
-        SimBattSetBatteryString(DEFAULT_UNIQUEID, DevExt->State.UniqueId);
-
-        DevExt->State.Temperature = 2931; // 20 degree Celsius [10ths of a degree Kelvin]
-        DevExt->State.EstimatedTime = BATTERY_UNKNOWN_TIME; // battery run time, in seconds
+        DevExt->State.BatteryStatus.PowerState = BATTERY_POWER_ON_LINE;
+        DevExt->State.BatteryStatus.Capacity = 100;
+        DevExt->State.BatteryStatus.Voltage = BATTERY_UNKNOWN_VOLTAGE;
+        DevExt->State.BatteryStatus.Rate = 0;
 
         //DevExt->State.GranularityCount = 0;
         //for (unsigned int i = 0; i < DevExt->State.GranularityCount; ++i) {
@@ -110,9 +106,19 @@ Arguments:
         //    DevExt->State.GranularityScale[i].Capacity = 0; // upper capacity limit for Granularity [mWh]
         //}
 
-        //DevExt->State.ManufactureDate.Year =
-        //DevExt->State.ManufactureDate.Month =
-        //DevExt->State.ManufactureDate.Day =
+        DevExt->State.EstimatedTime = BATTERY_UNKNOWN_TIME; // battery run time, in seconds
+
+        DevExt->State.Temperature = 2931; // 20 degree Celsius [10ths of a degree Kelvin]
+
+        DevExt->State.MaxCurrentDraw = UNKNOWN_CURRENT;
+
+        SimBattSetBatteryString(DEFAULT_NAME, DevExt->State.DeviceName);
+
+        SimBattSetBatteryString(DEFAULT_MANUFACTURER, DevExt->State.ManufacturerName);
+
+        SimBattSetBatteryString(DEFAULT_SERIALNO, DevExt->State.SerialNumber);
+
+        SimBattSetBatteryString(DEFAULT_UNIQUEID, DevExt->State.UniqueId);
 
         WdfWaitLockRelease(DevExt->StateLock);
     }
@@ -318,8 +324,7 @@ Return Value:
     case BatteryGranularityInformation:
         if (DevExt->State.GranularityCount > 0) {
             ReturnBuffer = DevExt->State.GranularityScale;
-            ReturnBufferLength = DevExt->State.GranularityCount *
-                                    sizeof(BATTERY_REPORTING_SCALE);
+            ReturnBufferLength = DevExt->State.GranularityCount*sizeof(BATTERY_REPORTING_SCALE);
 
             Status = STATUS_SUCCESS;
         }
