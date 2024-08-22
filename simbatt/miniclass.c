@@ -69,14 +69,6 @@ SimBattSetBatteryEstimatedTime (
     _In_ ULONG EstimatedTime
     );
 
-_Must_inspect_result_
-_Success_(return==STATUS_SUCCESS)
-NTSTATUS
-SimBattSetBatteryTemperature (
-    _In_ WDFDEVICE Device,
-    _In_ ULONG Temperature
-    );
-
 _Success_(return==STATUS_SUCCESS)
 NTSTATUS
 SimBattSetBatteryString (
@@ -142,6 +134,9 @@ Arguments:
 
         SimBattSetBatteryString(DEFAULT_SERIALNO, DevExt->State.SerialNumber);
         SimBattSetBatteryString(DEFAULT_UNIQUEID, DevExt->State.UniqueId);
+
+        DevExt->State.Temperature = 2931; // 20 degree Celsius [10ths of a degree Kelvin]
+
         WdfWaitLockRelease(DevExt->StateLock);
     }
 
@@ -612,7 +607,6 @@ Arguments:
     size_t Length;
     PBATTERY_MANUFACTURE_DATE ManufactureDate;
     PULONG MaxCurrentDraw;
-    PULONG Temperature;
     NTSTATUS TempStatus;
 
     UNREFERENCED_PARAMETER(OutputBufferLength);
@@ -662,15 +656,6 @@ Arguments:
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_MANUFACTURE_DATE))) {
             Status = SimBattSetBatteryManufactureDate(Device, ManufactureDate);
-        }
-
-        break;
-
-    case IOCTL_SIMBATT_SET_TEMPERATURE:
-        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(ULONG), &Temperature, &Length);
-
-        if (NT_SUCCESS(TempStatus) && (Length == sizeof(ULONG))) {
-            Status = SimBattSetBatteryTemperature(Device, *Temperature);
         }
 
         break;
@@ -927,29 +912,6 @@ Arguments:
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     DevExt->State.EstimatedTime = EstimatedTime;
-    WdfWaitLockRelease(DevExt->StateLock);
-    return STATUS_SUCCESS;
-}
-
-_Use_decl_annotations_
-NTSTATUS
-SimBattSetBatteryTemperature (
-    WDFDEVICE Device,
-    ULONG Temperature
-    )
-/*++
-Routine Description:
-    Set the simulated battery temperature value.
-
-Arguments:
-    Device - Supplies the device to set data for.
-
-    Temperature - Supplies the new temperature to set.
---*/
-{
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
-    WdfWaitLockAcquire(DevExt->StateLock, NULL);
-    DevExt->State.Temperature = Temperature;
     WdfWaitLockRelease(DevExt->StateLock);
     return STATUS_SUCCESS;
 }
