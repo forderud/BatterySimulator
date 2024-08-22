@@ -606,14 +606,12 @@ Arguments:
 {
     PBATTERY_INFORMATION BatteryInformation;
     PBATTERY_STATUS BatteryStatus;
-    PWCHAR DestinationString;
     PULONG EstimatedRunTime;
     ULONG GranularityEntries;
     PBATTERY_REPORTING_SCALE GranularityScale;
     size_t Length;
     PBATTERY_MANUFACTURE_DATE ManufactureDate;
     PULONG MaxCurrentDraw;
-    PWSTR String;
     PULONG Temperature;
     NTSTATUS TempStatus;
 
@@ -621,7 +619,6 @@ Arguments:
 
     ULONG BytesReturned = 0;
     WDFDEVICE Device = WdfIoQueueGetDevice(Queue);
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     DebugPrint(SIMBATT_INFO, "SimBattIoDeviceControl: 0x%p\n", Device);
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
     switch (IoControlCode) {
@@ -706,51 +703,6 @@ Arguments:
         }
 
         break;
-
-    case IOCTL_SIMBATT_SET_DEVICE_NAME:
-    case IOCTL_SIMBATT_SET_MANUFACTURE_NAME:
-    case IOCTL_SIMBATT_SET_SERIAL_NUMBER:
-    case IOCTL_SIMBATT_SET_UNIQUE_ID:
-        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(WCHAR), &String, &Length);
-
-        if (NT_SUCCESS(TempStatus) &&
-            (Length % sizeof(WCHAR) == 0) &&
-            (String[(Length / sizeof(WCHAR)) - 1] == UNICODE_NULL)) {
-
-            // Explicitly set the terminating null to silence prefast warnings.
-
-            String[(Length / sizeof(WCHAR)) - 1] = UNICODE_NULL;
-            switch (IoControlCode) {
-            case IOCTL_SIMBATT_SET_DEVICE_NAME:
-                DestinationString = DevExt->State.DeviceName;
-                break;
-
-            case IOCTL_SIMBATT_SET_MANUFACTURE_NAME:
-                DestinationString = DevExt->State.ManufacturerName;
-                break;
-
-            case IOCTL_SIMBATT_SET_SERIAL_NUMBER:
-                DestinationString = DevExt->State.SerialNumber;
-                break;
-
-            case IOCTL_SIMBATT_SET_UNIQUE_ID:
-                DestinationString = DevExt->State.UniqueId;
-                break;
-
-            default:
-                DestinationString = NULL;
-                break;
-            }
-
-            // Supress invalid failure: Redundant Pointer Test on DestinationString
-            #pragma warning(suppress: 28922)
-            if (DestinationString != NULL) {
-                WdfWaitLockAcquire(DevExt->StateLock, NULL);
-                SimBattUpdateTag(DevExt);
-                Status = SimBattSetBatteryString(String, DestinationString);
-                WdfWaitLockRelease(DevExt->StateLock);
-            }
-        }
 
     default:
         break;
