@@ -707,7 +707,6 @@ Arguments:
 
         break;
 
-    case IOCTL_SIMBATT_SET_MANUFACTURE_NAME:
     case IOCTL_SIMBATT_SET_SERIAL_NUMBER:
     case IOCTL_SIMBATT_SET_UNIQUE_ID:
         TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(WCHAR), &String, &Length);
@@ -720,10 +719,6 @@ Arguments:
 
             String[(Length / sizeof(WCHAR)) - 1] = UNICODE_NULL;
             switch (IoControlCode) {
-            case IOCTL_SIMBATT_SET_MANUFACTURE_NAME:
-                DestinationString = DevExt->State.ManufacturerName;
-                break;
-
             case IOCTL_SIMBATT_SET_SERIAL_NUMBER:
                 DestinationString = DevExt->State.SerialNumber;
                 break;
