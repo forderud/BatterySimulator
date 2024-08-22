@@ -47,14 +47,6 @@ SimBattSetBatteryInformation (
 _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
 NTSTATUS
-SimBattSetBatteryManufactureDate (
-    _In_ WDFDEVICE Device,
-    _In_ PBATTERY_MANUFACTURE_DATE ManufactureDate
-    );
-
-_Must_inspect_result_
-_Success_(return==STATUS_SUCCESS)
-NTSTATUS
 SimBattSetBatteryGranularityScale (
     _In_ WDFDEVICE Device,
     _In_reads_(ScaleCount) PBATTERY_REPORTING_SCALE Scale,
@@ -129,6 +121,10 @@ Arguments:
 
         DevExt->State.Temperature = 2931; // 20 degree Celsius [10ths of a degree Kelvin]
         DevExt->State.EstimatedTime = BATTERY_UNKNOWN_TIME; // battery run time, in seconds
+
+        //DevExt->State.ManufactureDate.Year =
+        //DevExt->State.ManufactureDate.Month =
+        //DevExt->State.ManufactureDate.Day =
 
         WdfWaitLockRelease(DevExt->StateLock);
     }
@@ -597,7 +593,6 @@ Arguments:
     ULONG GranularityEntries;
     PBATTERY_REPORTING_SCALE GranularityScale;
     size_t Length;
-    PBATTERY_MANUFACTURE_DATE ManufactureDate;
     PULONG MaxCurrentDraw;
     NTSTATUS TempStatus;
 
@@ -635,19 +630,6 @@ Arguments:
             if (NT_SUCCESS(Status)) {
                 BytesReturned = sizeof(*MaxCurrentDraw);
             }
-        }
-
-        break;
-
-    case IOCTL_SIMBATT_SET_MANUFACTURE_DATE:
-        TempStatus = WdfRequestRetrieveInputBuffer(
-                         Request,
-                         sizeof(BATTERY_MANUFACTURE_DATE),
-                         &ManufactureDate,
-                         &Length);
-
-        if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_MANUFACTURE_DATE))) {
-            Status = SimBattSetBatteryManufactureDate(Device, ManufactureDate);
         }
 
         break;
@@ -777,48 +759,6 @@ Arguments:
     Status = STATUS_SUCCESS;
 
 SetBatteryInformationEnd:
-    return Status;
-}
-
-_Use_decl_annotations_
-NTSTATUS
-SimBattSetBatteryManufactureDate (
-    WDFDEVICE Device,
-    PBATTERY_MANUFACTURE_DATE ManufactureDate
-    )
-/*++
-Routine Description:
-    Set the simulated battery manufacture date structure values.
-
-Arguments:
-    Device - Supplies the device to set data for.
-
-    ManufactureDate - Supplies the new manufacture date to set.
---*/
-{
-    NTSTATUS Status = STATUS_INVALID_PARAMETER;
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
-    if ((ManufactureDate->Year == 0) || (ManufactureDate->Month == 0) || (ManufactureDate->Day == 0)) {
-        // All zeroes indicates that the manufacture date is unknown.
-        if ((ManufactureDate->Year != 0) || (ManufactureDate->Month != 0) || (ManufactureDate->Day != 0)) {
-            goto SetBatteryManufactureDateEnd;
-        }
-    } else {
-        // Make sure the dates are close to reasonable.
-        if ((ManufactureDate->Month > 12) || (ManufactureDate->Day > 31)) {
-            goto SetBatteryManufactureDateEnd;
-        }
-    }
-
-    WdfWaitLockAcquire(DevExt->StateLock, NULL);
-    DevExt->State.ManufactureDate.Year = ManufactureDate->Year;
-    DevExt->State.ManufactureDate.Month = ManufactureDate->Month;
-    DevExt->State.ManufactureDate.Day = ManufactureDate->Day;
-    SimBattUpdateTag(DevExt);
-    WdfWaitLockRelease(DevExt->StateLock);
-    Status = STATUS_SUCCESS;
-
-SetBatteryManufactureDateEnd:
     return Status;
 }
 
