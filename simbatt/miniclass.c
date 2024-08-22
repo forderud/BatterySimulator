@@ -648,11 +648,10 @@ Arguments:
     }
 
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
-    DevExt->State.BatteryStatus.PowerState = BatteryStatus->PowerState;
-    DevExt->State.BatteryStatus.Capacity = BatteryStatus->Capacity;
-    DevExt->State.BatteryStatus.Voltage = BatteryStatus->Voltage;
-    DevExt->State.BatteryStatus.Rate = BatteryStatus->Rate;
+    static_assert(sizeof(DevExt->State.BatteryStatus) == sizeof(*BatteryStatus));
+    RtlCopyMemory(&DevExt->State.BatteryStatus, BatteryStatus, sizeof(BATTERY_STATUS));
     WdfWaitLockRelease(DevExt->StateLock);
+
     BatteryClassStatusNotify(DevExt->ClassHandle);
     Status = STATUS_SUCCESS;
 
@@ -691,26 +690,13 @@ Arguments:
     }
 
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
-    DevExt->State.BatteryInfo.Capabilities = BatteryInformation->Capabilities;
-    DevExt->State.BatteryInfo.Technology = BatteryInformation->Technology;
-    DevExt->State.BatteryInfo.Chemistry[0] = BatteryInformation->Chemistry[0];
-    DevExt->State.BatteryInfo.Chemistry[1] = BatteryInformation->Chemistry[1];
-    DevExt->State.BatteryInfo.Chemistry[2] = BatteryInformation->Chemistry[2];
-    DevExt->State.BatteryInfo.Chemistry[3] = BatteryInformation->Chemistry[3];
-    DevExt->State.BatteryInfo.DesignedCapacity = BatteryInformation->DesignedCapacity;
-
-    DevExt->State.BatteryInfo.FullChargedCapacity = BatteryInformation->FullChargedCapacity;
-
-    DevExt->State.BatteryInfo.DefaultAlert1 = BatteryInformation->DefaultAlert1;
-    DevExt->State.BatteryInfo.DefaultAlert2 = BatteryInformation->DefaultAlert2;
-    DevExt->State.BatteryInfo.CriticalBias = BatteryInformation->CriticalBias;
-    DevExt->State.BatteryInfo.CycleCount = BatteryInformation->CycleCount;
+    static_assert(sizeof(DevExt->State.BatteryInfo) == sizeof(*BatteryInformation));
+    RtlCopyMemory(&DevExt->State.BatteryInfo, BatteryInformation, sizeof(BATTERY_INFORMATION));
 
     // To indicate that battery information has changed, update the battery tag
     // and notify the class driver that the battery status has updated. The
     // status query will fail due to a different battery tag, causing the class
     // driver to query for the new tag and new information.
-
     SimBattUpdateTag(DevExt);
     WdfWaitLockRelease(DevExt->StateLock);
     BatteryClassStatusNotify(DevExt->ClassHandle);
