@@ -139,3 +139,13 @@ ULONG GetBatteryInfoUlong(HANDLE device, BATTERY_QUERY_INFORMATION_LEVEL level) 
 
     return value;
 }
+
+bool GetBatteryInfoDate(HANDLE device, BATTERY_MANUFACTURE_DATE& date) {
+    BATTERY_QUERY_INFORMATION bqi = {};
+    bqi.InformationLevel = BatteryManufactureDate;
+    bqi.BatteryTag = GetBatteryTag(device);
+
+    DWORD bytes_returned = 0;
+    BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &date, sizeof(date), &bytes_returned, nullptr);
+    return ok;
+}

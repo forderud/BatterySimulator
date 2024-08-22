@@ -38,13 +38,20 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    wprintf(L"Battery information fields:\n");
-    wprintf(L"  BatteryDeviceName:      %s\n", GetBatteryInfoStr(battery.Get(), BatteryDeviceName).c_str());
-    wprintf(L"  BatteryEstimatedTime:   %u\n", GetBatteryInfoUlong(battery.Get(), BatteryEstimatedTime));
-    wprintf(L"  BatteryManufactureName: %s\n", GetBatteryInfoStr(battery.Get(), BatteryManufactureName).c_str());
-    wprintf(L"  BatterySerialNumber:    %s\n", GetBatteryInfoStr(battery.Get(), BatterySerialNumber).c_str());
-    wprintf(L"  BatteryTemperature:     %u\n", GetBatteryInfoUlong(battery.Get(), BatteryTemperature));
-    wprintf(L"  BatteryUniqueID:        %s\n", GetBatteryInfoStr(battery.Get(), BatteryUniqueID).c_str());
+    {
+        wprintf(L"Battery information fields:\n");
+        wprintf(L"  BatteryDeviceName:      %s\n", GetBatteryInfoStr(battery.Get(), BatteryDeviceName).c_str());
+        wprintf(L"  BatteryEstimatedTime:   %u\n", GetBatteryInfoUlong(battery.Get(), BatteryEstimatedTime));
+        BATTERY_MANUFACTURE_DATE date = {};
+        if (GetBatteryInfoDate(battery.Get(), date))
+            wprintf(L"  BatteryManufactureDate: %u-%u-%u\n", date.Year, date.Month, date.Day);
+        else
+            wprintf(L"  BatteryManufactureDate: <unknown>\n");
+        wprintf(L"  BatteryManufactureName: %s\n", GetBatteryInfoStr(battery.Get(), BatteryManufactureName).c_str());
+        wprintf(L"  BatterySerialNumber:    %s\n", GetBatteryInfoStr(battery.Get(), BatterySerialNumber).c_str());
+        wprintf(L"  BatteryTemperature:     %u\n", GetBatteryInfoUlong(battery.Get(), BatteryTemperature));
+        wprintf(L"  BatteryUniqueID:        %s\n", GetBatteryInfoStr(battery.Get(), BatteryUniqueID).c_str());
+    }
 
     BatteryInformationWrap info(battery.Get());
     wprintf(L"\n"); 
