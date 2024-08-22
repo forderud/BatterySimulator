@@ -60,14 +60,6 @@ SimBattSetBatteryString (
     _Out_writes_(MAX_BATTERY_STRING_SIZE) PWCHAR Destination
     );
 
-_Must_inspect_result_
-_Success_(return==STATUS_SUCCESS)
-NTSTATUS
-SimBattGetBatteryMaxChargingCurrent (
-    _In_ WDFDEVICE Device,
-    _Out_ PULONG MaxChargingCurrent
-    );
-
 //------------------------------------------------------------ Battery Interface
 
 _Use_decl_annotations_
@@ -593,7 +585,6 @@ Arguments:
     ULONG GranularityEntries;
     PBATTERY_REPORTING_SCALE GranularityScale;
     size_t Length;
-    PULONG MaxCurrentDraw;
     NTSTATUS TempStatus;
 
     UNREFERENCED_PARAMETER(OutputBufferLength);
@@ -617,19 +608,6 @@ Arguments:
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_INFORMATION))) {
             Status = SimBattSetBatteryInformation(Device, BatteryInformation);
-        }
-
-        break;
-
-    case IOCTL_SIMBATT_GET_MAXCHARGINGCURRENT:
-        TempStatus = WdfRequestRetrieveOutputBuffer(Request, sizeof(*MaxCurrentDraw), &MaxCurrentDraw, &Length);
-
-        if (NT_SUCCESS(TempStatus) && (Length == sizeof(ULONG))) {
-            Status = SimBattGetBatteryMaxChargingCurrent(Device, MaxCurrentDraw);
-
-            if (NT_SUCCESS(Status)) {
-                BytesReturned = sizeof(*MaxCurrentDraw);
-            }
         }
 
         break;
@@ -830,27 +808,6 @@ Arguments:
 --*/
 {
     return RtlStringCchCopyW(Destination, MAX_BATTERY_STRING_SIZE, String);
-}
-
-_Use_decl_annotations_
-NTSTATUS
-SimBattGetBatteryMaxChargingCurrent (
-    WDFDEVICE Device,
-    PULONG MaxChargingCurrent
-    )
-/*
- Routine Description:
-    Called by the class driver to get the battery's maximum charging current.
-
-Arguments:
-    Context - Supplies the miniport context value for battery
-
-    MaxChargingCurrent - Supplies the pointer to return the value to
---*/
-{
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
-    *MaxChargingCurrent = DevExt->State.MaxCurrentDraw;
-    return STATUS_SUCCESS;
 }
 
 _Use_decl_annotations_
