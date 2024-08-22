@@ -6,7 +6,7 @@
 
 #include "simbatt.h"
 #include "simbattdriverif.h"
-#include "batclass_prepublish.h"
+#include <batclass.h>
 
 //------------------------------------------------------------------- Prototypes
 
