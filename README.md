@@ -47,7 +47,7 @@ Notification when simulating low-battery conditions:
 It's also possible to make an Arduino board emulate a UPS battery. This leverages the in-built Windows `hidbatt` driver, so there's no need for installing additional drivers. 
 The [abratchik/HIDPowerDevice](https://github.com/abratchik/HIDPowerDevice) project provides sample code for this. There's also a working setup on the `battery` branch in the [forderud/HIDPowerDevice](https://github.com/forderud/HIDPowerDevice/tree/battery) fork.
 
-Limitation: You might need to disable drivers for any physical batteries to make the [Arduino "battery" charge show up correctly](https://github.com/abratchik/HIDPowerDevice/issues/11).
+Notice: You might need to [change CapacityMode from 2 (%) to 1 (mWh)](https://github.com/abratchik/HIDPowerDevice/pull/14) to make the "battery" charge show up correctly on laptops with existing batteries.
 
 
 ## Configuring Windows power management
