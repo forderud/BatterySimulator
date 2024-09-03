@@ -53,6 +53,8 @@ Notice: You might need to [change CapacityMode from 2 (%) to 1 (mWh)](https://gi
 ## Configuring Windows power management
 Windows handling of low-battery situations can either be configured through the "Power Options" UI (run `powercfg.cpl` -> "Change plan settings" -> "Change advanced power settings"):  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/c98a64a4-1c29-43d8-9376-3feca6ce1130)
+![image](https://github.com/user-attachments/assets/e90c7e68-6fbb-46d3-9734-7bdfdfb762f1)
+
 
 ... or using [Powercfg](https://learn.microsoft.com/en-us/windows-hardware/design/device-experiences/powercfg-command-line-options):
 ```
