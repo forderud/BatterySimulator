@@ -76,7 +76,7 @@ PowerCfg.exe /setacvalueindex %SCHEME% SUB_VIDEO VIDEOIDLE 600
 Drivers can expose both standard and custom power setting parameters as documented on [Managing Device Performance States](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/managing-device-performance-states). These power settings can afterwards be configured using `PowerCfg`.
 
 
-Power event configuration:
+Power event configuration for AC & DC mode:
 ```
 :: Low battery level (percentage)
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATLEVELLOW 10
@@ -102,6 +102,22 @@ PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
 ```
+
+It's also possible to configure CPU power management for AC & DC mode:
+```
+:: Minimum processor state
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMIN 5
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMIN 5
+
+:: System cooling policy
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR SYSCOOLPOL 0
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_PROCESSOR SYSCOOLPOL 1
+
+:: Maximum processor state
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
+PowerCfg.exe /setacvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
+```
+
 
 ### WMI `Win32_Battery` parameters
 Battery parameters from the battery miniclass driver will automatically be exposed through the [`Win32_Battery`](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery) WMI class, so there's no need for implementing a WMI provider yourself.
