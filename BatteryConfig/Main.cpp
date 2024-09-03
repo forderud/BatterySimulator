@@ -6,13 +6,15 @@
 
 
 int wmain(int argc, wchar_t* argv[]) {
-    if (argc < 3) {
+    if (argc < 2) {
         wprintf(L"USAGE: \"BatteryConfig.exe <N> <Charge>\" where <N> is the battery index and <Charge> is the new charge.\n");
         return 1;
     }
 
     const wchar_t* instanceId = argv[1]; // 0 is first battery
-    const unsigned int newCharge = _wtoi(argv[2]);
+    unsigned int newCharge = static_cast<unsigned int>(-1); // skip updating by default
+    if (argc >= 3)
+        newCharge = _wtoi(argv[2]); // in [0,100] range
 
     std::wstring pdoPath;
     try {
@@ -84,7 +86,7 @@ int wmain(int argc, wchar_t* argv[]) {
 #endif
 
     // update battery charge level
-    {
+    if (newCharge != static_cast<unsigned int>(-1)) {
         // toggle between charge and dischage
         if (newCharge > status.Capacity)
             status.PowerState = BATTERY_POWER_ON_LINE | BATTERY_CHARGING; // charging while on AC power
