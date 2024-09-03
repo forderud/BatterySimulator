@@ -10,11 +10,11 @@ class DeviceInstance {
 public:
     DeviceInstance(const wchar_t* instanceId) {
         // device instance prefix search order
-        // try fake DevGen batteries first with fallback to real batteries
+        // try fake batteries first with fallback to real batteries
         static const wchar_t* InstancePathPrefix[] = {
-            L"SWD\\DEVGEN\\%s",   // DevGen SW device (disappears on reboot)
-            L"ROOT\\DEVGEN\\%s",  // DevGen "HW" device (persists across reboots)
-            L"ACPI\\PNP0C0A\\%s", // Real ACPI battery
+            L"SWD\\DEVGEN\\%s",   // fake DevGen SW battery (disappears on reboot)
+            L"ROOT\\DEVGEN\\%s",  // fake DevGen "HW" battery (persists across reboots)
+            L"ACPI\\PNP0C0A\\%s", // real ACPI compliant control method battery
         };
 
         for (size_t i = 0; i < std::size(InstancePathPrefix); ++i) {
