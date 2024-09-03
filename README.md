@@ -108,7 +108,7 @@ PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
 ```
 
-It's also possible to configure CPU power management for AC & DC mode:
+CPU power configuration for AC & DC mode:
 ```
 :: Minimum processor state (percentage)
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMIN 5
@@ -122,6 +122,8 @@ PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR SYSCOOLPOL 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
 ```
+
+There's also many other settings available. Use `PowerCfg.exe /query` to view all of settings.
 
 
 ### WMI `Win32_Battery` parameters
