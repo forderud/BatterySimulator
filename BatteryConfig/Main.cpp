@@ -71,7 +71,7 @@ int wmain(int argc, wchar_t* argv[]) {
             if (GetBatteryInfoUlong(battery.Get(), BatteryTemperature, temp))
                 wprintf(L"  BatteryTemperature:     %u\n", temp);
             else
-                wprintf(L"  BatteryTemperature: <unknown>\n");
+                wprintf(L"  BatteryTemperature:     <unknown>\n");
         }
         wprintf(L"  BatteryUniqueID:        %s\n", GetBatteryInfoStr(battery.Get(), BatteryUniqueID).c_str());
     }
