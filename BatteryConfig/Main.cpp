@@ -32,6 +32,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
+    wprintf(L"\n");
     wprintf(L"Opening %s\n", pdoPath.c_str());
     Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(pdoPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
@@ -41,6 +42,7 @@ int wmain(int argc, wchar_t* argv[]) {
     }
 
     {
+        wprintf(L"\n");
         wprintf(L"Battery information fields:\n");
         wprintf(L"  BatteryDeviceName:      %s\n", GetBatteryInfoStr(battery.Get(), BatteryDeviceName).c_str());
 
