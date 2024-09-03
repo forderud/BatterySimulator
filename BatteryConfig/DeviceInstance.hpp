@@ -9,23 +9,33 @@
 class DeviceInstance {
 public:
     DeviceInstance(const wchar_t* instanceId) {
-        wchar_t deviceInstancePath1[32] = {}; // SW device
+        wchar_t deviceInstancePath1[32] = {}; // DevGen SW device (disappears on reboot)
         swprintf_s(deviceInstancePath1, L"SWD\\DEVGEN\\%s", instanceId); // device instance ID
 
-        wchar_t deviceInstancePath2[32] = {}; // "HW" device
+        wchar_t deviceInstancePath2[32] = {}; // DevGen "HW" device (persists across reboots)
         swprintf_s(deviceInstancePath2, L"ROOT\\DEVGEN\\%s", instanceId); // device instance ID
 
-        // try to open as SW device first
+        wchar_t deviceInstancePath3[32] = {}; // Real ACPI battery
+        swprintf_s(deviceInstancePath3, L"ACPI\\PNP0C0A\\%s", instanceId); // device instance ID
+
+        // try to open as DevGen SW device first
         CONFIGRET res = CM_Locate_DevNodeW(&m_devInst, deviceInstancePath1, CM_LOCATE_DEVNODE_NORMAL);
         if (res == CR_SUCCESS) {
             wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath1);
             return;
         }
 
-        // fallback to opening as HW device
+        // fallback to opening as DevGen HW device
         res = CM_Locate_DevNodeW(&m_devInst, deviceInstancePath2, CM_LOCATE_DEVNODE_NORMAL);
         if (res == CR_SUCCESS) {
             wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath2);
+            return;
+        }
+
+        // fallback to real ACPI battery
+        res = CM_Locate_DevNodeW(&m_devInst, deviceInstancePath3, CM_LOCATE_DEVNODE_NORMAL);
+        if (res == CR_SUCCESS) {
+            wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath3);
             return;
         }
 
