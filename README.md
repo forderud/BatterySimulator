@@ -79,43 +79,43 @@ Drivers can expose both standard and custom power setting parameters as document
 Power event configuration for AC & DC mode:
 ```
 :: Low battery level (percentage)
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATLEVELLOW 10
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATLEVELLOW 10
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATLEVELLOW 10
 
 :: Low battery notification (0=off, 1=on)
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
 
 :: Low battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
 
 :: Critical battery level (percentage)
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATLEVELCRIT 5
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATLEVELCRIT 5
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATLEVELCRIT 5
 
 :: Critical battery notification (0=off, 1=on)
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
 
 :: Critical battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
 ```
 
 It's also possible to configure CPU power management for AC & DC mode:
 ```
 :: Minimum processor state
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMIN 5
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMIN 5
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMIN 5
 
 :: System cooling policy
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR SYSCOOLPOL 0
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_PROCESSOR SYSCOOLPOL 1
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR SYSCOOLPOL 0
 
 :: Maximum processor state
-PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
+PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
 ```
 
 
