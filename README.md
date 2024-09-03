@@ -59,12 +59,15 @@ Windows handling of low-battery situations can either be configured through the 
 :: Display current power configuration 
 PowerCfg.exe /query
 
-:: Select power scheme (SCHEME_MIN, SCHEME_MAX or SCHEME_BALANCED)
+:: Select power scheme (in-built schemes: SCHEME_MIN, SCHEME_MAX or SCHEME_BALANCED)
 set SCHEME=SCHEME_BALANCED
 ```
 
 Power saving configuration:
 ```
+:: Select power sheme
+PowerCfg.exe /setactive %SCHEME%
+
 :: Sleep after after 4min on DC and never sleep on AC
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_SLEEP STANDBYIDLE 240
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_SLEEP STANDBYIDLE 0
