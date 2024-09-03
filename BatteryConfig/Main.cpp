@@ -44,7 +44,8 @@ int wmain(int argc, wchar_t* argv[]) {
         wprintf(L"Battery information fields:\n");
         wprintf(L"  BatteryDeviceName:      %s\n", GetBatteryInfoStr(battery.Get(), BatteryDeviceName).c_str());
 
-        ULONG estimatedTime = GetBatteryInfoUlong(battery.Get(), BatteryEstimatedTime);
+        ULONG estimatedTime = BATTERY_UNKNOWN_TIME;
+        GetBatteryInfoUlong(battery.Get(), BatteryEstimatedTime, estimatedTime);
         if (estimatedTime != BATTERY_UNKNOWN_TIME)
             wprintf(L"  BatteryEstimatedTime:   %u\n", estimatedTime);
         else
@@ -65,7 +66,13 @@ int wmain(int argc, wchar_t* argv[]) {
         
         wprintf(L"  BatteryManufactureName: %s\n", GetBatteryInfoStr(battery.Get(), BatteryManufactureName).c_str());
         wprintf(L"  BatterySerialNumber:    %s\n", GetBatteryInfoStr(battery.Get(), BatterySerialNumber).c_str());
-        wprintf(L"  BatteryTemperature:     %u\n", GetBatteryInfoUlong(battery.Get(), BatteryTemperature));
+        {
+            ULONG temp = 0;
+            if (GetBatteryInfoUlong(battery.Get(), BatteryTemperature, temp))
+                wprintf(L"  BatteryTemperature:     %u\n", temp);
+            else
+                wprintf(L"  BatteryTemperature: <unknown>\n");
+        }
         wprintf(L"  BatteryUniqueID:        %s\n", GetBatteryInfoStr(battery.Get(), BatteryUniqueID).c_str());
     }
 
