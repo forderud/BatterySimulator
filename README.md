@@ -123,7 +123,7 @@ PowerCfg.exe /setacvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
 ```
 
-There's also many other settings available. Use `PowerCfg.exe /query` to view all of settings.
+There's also many other settings available. Use `PowerCfg.exe /query` to view all settings.
 
 
 ### WMI `Win32_Battery` parameters
