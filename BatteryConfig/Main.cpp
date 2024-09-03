@@ -100,10 +100,10 @@ int wmain(int argc, wchar_t* argv[]) {
         status.Voltage = BATTERY_UNKNOWN_VOLTAGE; // was -1
 
         status.Set(battery.Get());
-    }
 
-    wprintf(L"Battery status (after update):\n");
-    status.Print();
+        wprintf(L"Battery status (after update):\n");
+        status.Print();
+    }
 
     return 0;
 }
