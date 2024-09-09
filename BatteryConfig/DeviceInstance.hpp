@@ -15,6 +15,7 @@ public:
             L"SWD\\DEVGEN\\%s",   // fake DevGen SW battery (disappears on reboot)
             L"ROOT\\DEVGEN\\%s",  // fake DevGen "HW" battery (persists across reboots)
             L"ACPI\\PNP0C0A\\%s", // real ACPI compliant control method battery
+            L"%s",                // full Device Instance Path provided
         };
 
         for (size_t i = 0; i < std::size(InstancePathPrefix); ++i) {
