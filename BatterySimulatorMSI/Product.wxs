@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:difxapp='http://schemas.microsoft.com/wix/DifxAppExtension'>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Product Id="*" Name="BatterySimulator" Language="1033" Version="$(var.Version)" Manufacturer="OpenSource" UpgradeCode="E1C79D1B-49A9-45F8-AC07-2762C3B20005">
         <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" Description="Simulated battery driver" />
 
@@ -35,7 +35,6 @@
                 <File Id="simbatt.cer" Source="$(var.simbatt.TargetDir)simbatt\simbatt.cer" KeyPath="yes" />
             </Component>
             <Component Id="DriverFiles">
-                <difxapp:Driver Legacy="yes" PlugAndPlayPrompt="no" />
                 <File Id="simbatt.cat" Source="$(var.simbatt.TargetDir)simbatt\simbatt.cat" />
                 <File Id="simbatt.inf" Source="$(var.simbatt.TargetDir)simbatt\simbatt.inf" />
                 <File Id="simbatt.sys" Source="$(var.simbatt.TargetDir)simbatt\simbatt.sys" KeyPath="yes" Checksum="yes" />
