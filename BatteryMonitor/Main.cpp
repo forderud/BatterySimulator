@@ -82,7 +82,7 @@ int WINAPI wmain () {
     {
         // subscribe to PBT_APMSUSPEND, PBT_APMRESUMEAUTOMATIC & PBT_APMRESUMESUSPEND events
         HPOWERNOTIFY hp = RegisterSuspendResumeNotification(wnd, DEVICE_NOTIFY_WINDOW_HANDLE);
-        assert(hp);
+        assert(hp); hp;
         // unregister with UnregisterSuspendResumeNotification(hp);
     }
 
