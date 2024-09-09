@@ -53,10 +53,10 @@ struct BatteryStausWrap : BATTERY_STATUS {
     }
 
     void Print() {
-        wprintf(L"  Capacity=%i mWh\n", Capacity);
         wprintf(L"  PowerState=%x\n", PowerState);
-        wprintf(L"  Rate=%x\n", Rate);
+        wprintf(L"  Capacity=%i mWh\n", Capacity);
         wprintf(L"  Voltage=%i mV\n", Voltage);
+        wprintf(L"  Rate=%x\n", Rate);
     }
 };
 static_assert(sizeof(BatteryStausWrap) == sizeof(BATTERY_STATUS));
