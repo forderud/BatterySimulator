@@ -120,14 +120,14 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
 
     void Print() {
         wprintf(L"  Capabilities=%x\n", Capabilities);
+        wprintf(L"  Technology=%i\n", Technology);
         wprintf(L"  Chemistry=%hs\n", std::string((char*)Chemistry, 4).c_str()); // not null-terminated
-        wprintf(L"  CriticalBias=%i\n", CriticalBias);
-        wprintf(L"  CycleCount=%i\n", CycleCount);
-        wprintf(L"  DefaultAlert1=%i\n", DefaultAlert1);
-        wprintf(L"  DefaultAlert2=%i\n", DefaultAlert2);
         wprintf(L"  DesignedCapacity=%i\n", DesignedCapacity);
         wprintf(L"  FullChargedCapacity=%i\n", FullChargedCapacity);
-        wprintf(L"  Technology=%i\n", Technology);
+        wprintf(L"  DefaultAlert1=%i\n", DefaultAlert1);
+        wprintf(L"  DefaultAlert2=%i\n", DefaultAlert2);
+        wprintf(L"  CriticalBias=%i\n", CriticalBias);
+        wprintf(L"  CycleCount=%i\n", CycleCount);
     }
 };
 static_assert(sizeof(BatteryInformationWrap) == sizeof(BATTERY_INFORMATION));
