@@ -14,10 +14,14 @@
 
         <CustomAction Id="AddCertToRoot" Directory="INSTALLFOLDER" ExeCommand="certutil.exe -addstore root &quot;[INSTALLFOLDER]simbatt.cer&quot;" Execute="deferred" Impersonate="no" />
         <CustomAction Id="AddCertToTrustedPublisher" Directory="INSTALLFOLDER" ExeCommand="certutil.exe -f -addstore trustedpublisher &quot;[INSTALLFOLDER]simbatt.cer&quot;" Execute="deferred" Impersonate="no" />
+        <CustomAction Id="InstallDriver" Directory="INSTALLFOLDER" ExeCommand="pnputil.exe /add-driver &quot;[INSTALLFOLDER]simbatt.inf&quot; /install" Execute="deferred" Impersonate="no" />
+        <CustomAction Id="UninstallDriver" Directory="INSTALLFOLDER" ExeCommand="pnputil.exe /delete-driver &quot;[INSTALLFOLDER]simbatt.inf&quot; /uninstall /force" Execute="deferred" Impersonate="no" />
 
         <InstallExecuteSequence>
-            <Custom Action="AddCertToRoot" Before="MsiProcessDrivers">NOT Installed OR REINSTALL</Custom>
-            <Custom Action="AddCertToTrustedPublisher" Before="MsiProcessDrivers">NOT Installed OR REINSTALL</Custom>
+            <Custom Action="AddCertToRoot" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
+            <Custom Action="AddCertToTrustedPublisher" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
+            <Custom Action="InstallDriver" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
+            <Custom Action="UninstallDriver" After="InstallInitialize">REMOVE</Custom>
         </InstallExecuteSequence>
     </Product>
 
