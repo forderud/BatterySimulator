@@ -53,7 +53,34 @@ struct BatteryStausWrap : BATTERY_STATUS {
     }
 
     void Print() {
-        wprintf(L"  PowerState=%x\n", PowerState);
+        wprintf(L"  PowerState=");
+        if (PowerState) {
+            ULONG pstate = PowerState;
+            if (pstate & BATTERY_CHARGING) {
+                wprintf(L"| CHARGING ");
+                pstate &= ~BATTERY_CHARGING;
+            }
+            if (pstate & BATTERY_CRITICAL) {
+                wprintf(L"| CRITICAL ");
+                pstate &= ~BATTERY_CRITICAL;
+            }
+            if (pstate & BATTERY_DISCHARGING) {
+                wprintf(L"| DISCHARGING ");
+                pstate &= ~BATTERY_DISCHARGING;
+            }
+            if (pstate & BATTERY_POWER_ON_LINE) {
+                wprintf(L"| POWER_ON_LINE ");
+                pstate &= ~BATTERY_POWER_ON_LINE;
+            }
+            if (pstate) {
+                // residual bits
+                wprintf(L"| %x ", pstate);
+            }
+        } else {
+            wprintf(L"0");
+        }
+        wprintf(L"\n");
+
         wprintf(L"  Capacity=%i mWh\n", Capacity);
         wprintf(L"  Voltage=%i mV\n", Voltage);
         wprintf(L"  Rate=%x\n", Rate);
