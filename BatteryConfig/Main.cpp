@@ -80,12 +80,12 @@ int wmain(int argc, wchar_t* argv[]) {
 
     BatteryInformationWrap info(battery.Get());
     wprintf(L"\n"); 
-    wprintf(L"Battery information:\n");
+    wprintf(L"BATTERY_INFORMATION parameters:\n");
     info.Print();
     wprintf(L"\n");
 
     BatteryStausWrap status(battery.Get());
-    wprintf(L"Battery status (before update):\n");
+    wprintf(L"BATTERY_STATUS parameters (before update):\n");
     status.Print();
     wprintf(L"\n");
 
@@ -112,7 +112,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
         status.Set(battery.Get());
 
-        wprintf(L"Battery status (after update):\n");
+        wprintf(L"BATTERY_STATUS parameters (after update):\n");
         status.Print();
     }
 
