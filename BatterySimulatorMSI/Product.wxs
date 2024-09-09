@@ -4,9 +4,9 @@
         <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" Description="Simulated battery driver" />
 
         <!-- Disable downgrades, prevent side-by-side installations of same version -->
-        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." AllowSameVersionUpgrades="yes"/>
+        <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." AllowSameVersionUpgrades="yes" />
         <!-- Embed binaries inside MSI instead of separate CAB files -->
-        <MediaTemplate EmbedCab="yes"/>
+        <MediaTemplate EmbedCab="yes" />
 
         <Feature Id="ProductFeature" Title="BatterySimulator" Level="1">
             <ComponentGroupRef Id="ProductComponents" />
@@ -26,8 +26,8 @@
                   />
 
         <InstallExecuteSequence>
-            <Custom Action='AddCertToRoot' Before='MsiProcessDrivers'>NOT Installed OR REINSTALL</Custom>
-            <Custom Action='AddCertToTrustedPublisher' Before='MsiProcessDrivers'>NOT Installed OR REINSTALL</Custom>
+            <Custom Action="AddCertToRoot" Before="MsiProcessDrivers">NOT Installed OR REINSTALL</Custom>
+            <Custom Action="AddCertToTrustedPublisher" Before="MsiProcessDrivers">NOT Installed OR REINSTALL</Custom>
         </InstallExecuteSequence>
     </Product>
 
@@ -41,23 +41,23 @@
 
     <Fragment>
         <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-            <Component Id="Certificate" Guid="*">
-                <File Id="simbatt.cer" Source="$(var.simbatt.TargetDir)simbatt\simbatt.cer" KeyPath="yes"/>
+            <Component Id="Certificate">
+                <File Id="simbatt.cer" Source="$(var.simbatt.TargetDir)simbatt\simbatt.cer" KeyPath="yes" />
             </Component>
-            <Component Id="DriverFiles" Guid="*">
-                <difxapp:Driver Legacy='yes' PlugAndPlayPrompt='no' />
+            <Component Id="DriverFiles">
+                <difxapp:Driver Legacy="yes" PlugAndPlayPrompt="no" />
                 <File Id="simbatt.cat" Source="$(var.simbatt.TargetDir)simbatt\simbatt.cat" />
                 <File Id="simbatt.inf" Source="$(var.simbatt.TargetDir)simbatt\simbatt.inf" />
-                <File Id="simbatt.sys" Source="$(var.simbatt.TargetDir)simbatt\simbatt.sys" KeyPath="yes" Checksum="yes"/>
+                <File Id="simbatt.sys" Source="$(var.simbatt.TargetDir)simbatt\simbatt.sys" KeyPath="yes" Checksum="yes" />
             </Component>
-            <Component Id="DevGen" Guid="*">
-                <File Id="devgen.exe" Source="$(var.simbatt.TargetDir)simbatt\devgen.exe" KeyPath="yes" Checksum="yes"/>
+            <Component Id="DevGen">
+                <File Id="devgen.exe" Source="$(var.simbatt.TargetDir)simbatt\devgen.exe" KeyPath="yes" Checksum="yes" />
             </Component>
-            <Component Id="BatteryConfig" Guid="*">
-                <File Id="BatteryConfig.exe" Source="$(var.BatteryConfig.TargetDir)BatteryConfig.exe" KeyPath="yes" Checksum="yes"/>
+            <Component Id="BatteryConfig">
+                <File Id="BatteryConfig.exe" Source="$(var.BatteryConfig.TargetDir)BatteryConfig.exe" KeyPath="yes" Checksum="yes" />
             </Component>
-            <Component Id="BatteryParams" Guid="*">
-                <File Id="BatteryParams.ps1" Source="$(var.SolutionDir)BatteryParams.ps1" KeyPath="yes" Checksum="yes"/>
+            <Component Id="BatteryParams">
+                <File Id="BatteryParams.ps1" Source="$(var.SolutionDir)BatteryParams.ps1" KeyPath="yes" Checksum="yes" />
             </Component>
         </ComponentGroup>
     </Fragment>
