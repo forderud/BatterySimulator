@@ -18,7 +18,7 @@ public:
         };
 
         for (size_t i = 0; i < std::size(InstancePathPrefix); ++i) {
-            wchar_t deviceInstancePath[32] = {};
+            wchar_t deviceInstancePath[64] = {};
             swprintf_s(deviceInstancePath, InstancePathPrefix[i], instanceId); // device instance ID
 
             // try to open device
