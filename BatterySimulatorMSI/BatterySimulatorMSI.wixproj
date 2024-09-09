@@ -44,18 +44,6 @@
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <WixLibrary Include="difxapp_x64">
-      <HintPath>$(WixExtDir)\difxapp_x64.wixlib</HintPath>
-      <Name>difxapp_x64</Name>
-    </WixLibrary>
-  </ItemGroup>
-  <ItemGroup>
-    <WixExtension Include="WixDifxAppExtension">
-      <HintPath>$(WixExtDir)\WixDifxAppExtension.dll</HintPath>
-      <Name>WixDifxAppExtension</Name>
-    </WixExtension>
-  </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
   <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
