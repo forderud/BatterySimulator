@@ -79,9 +79,9 @@ Arguments:
         SimBattUpdateTag(DevExt);
 
         // manufactured on 8th September 2024
-        DevExt->State.ManufactureDate.Year = 2024;
-        DevExt->State.ManufactureDate.Month = 9;
         DevExt->State.ManufactureDate.Day = 8;
+        DevExt->State.ManufactureDate.Month = 9;
+        DevExt->State.ManufactureDate.Year = 2024;
 
         DevExt->State.BatteryInfo.Capabilities = BATTERY_SYSTEM_BATTERY;
         DevExt->State.BatteryInfo.Technology = 1;
