@@ -12,18 +12,8 @@
             <ComponentGroupRef Id="ProductComponents" />
         </Feature>
 
-        <CustomAction Id="AddCertToRoot"
-                  Directory="INSTALLFOLDER"
-                  ExeCommand="certutil.exe -addstore root &quot;[INSTALLFOLDER]simbatt.cer&quot;"
-                  Execute="deferred"
-                  Impersonate="no"
-                  />
-        <CustomAction Id="AddCertToTrustedPublisher"
-                  Directory="INSTALLFOLDER"
-                  ExeCommand="certutil.exe -f -addstore trustedpublisher &quot;[INSTALLFOLDER]simbatt.cer&quot;"
-                  Execute="deferred"
-                  Impersonate="no"
-                  />
+        <CustomAction Id="AddCertToRoot" Directory="INSTALLFOLDER" ExeCommand="certutil.exe -addstore root &quot;[INSTALLFOLDER]simbatt.cer&quot;" Execute="deferred" Impersonate="no" />
+        <CustomAction Id="AddCertToTrustedPublisher" Directory="INSTALLFOLDER" ExeCommand="certutil.exe -f -addstore trustedpublisher &quot;[INSTALLFOLDER]simbatt.cer&quot;" Execute="deferred" Impersonate="no" />
 
         <InstallExecuteSequence>
             <Custom Action="AddCertToRoot" Before="MsiProcessDrivers">NOT Installed OR REINSTALL</Custom>
