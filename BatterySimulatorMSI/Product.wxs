@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" Name="BatterySimulator" Language="1033" Version="$(var.Version)" Manufacturer="OpenSource" UpgradeCode="E1C79D1B-49A9-45F8-AC07-2762C3B20005">
-        <Package InstallerVersion="500" Compressed="yes" InstallScope="perMachine" Description="Simulated battery driver" />
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Package Name="BatterySimulator" Language="1033" Version="$(var.Version)" Manufacturer="OpenSource" UpgradeCode="E1C79D1B-49A9-45F8-AC07-2762C3B20005">
+        <SummaryInformation Description="Simulated battery driver" />
 
         <!-- Disable downgrades, prevent side-by-side installations of same version -->
         <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." AllowSameVersionUpgrades="yes" />
@@ -18,19 +17,17 @@
         <CustomAction Id="UninstallDriver" Directory="INSTALLFOLDER" ExeCommand="pnputil.exe /delete-driver &quot;[INSTALLFOLDER]simbatt.inf&quot; /uninstall /force" Execute="deferred" Impersonate="no" />
 
         <InstallExecuteSequence>
-            <Custom Action="AddCertToRoot" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
-            <Custom Action="AddCertToTrustedPublisher" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
-            <Custom Action="InstallDriver" After="InstallFiles">NOT Installed OR REINSTALL</Custom>
-            <Custom Action="UninstallDriver" After="InstallInitialize">REMOVE</Custom>
+            <Custom Action="AddCertToRoot" After="InstallFiles" Condition="NOT Installed OR REINSTALL" />
+            <Custom Action="AddCertToTrustedPublisher" After="InstallFiles" Condition="NOT Installed OR REINSTALL" />
+            <Custom Action="InstallDriver" After="InstallFiles" Condition="NOT Installed OR REINSTALL" />
+            <Custom Action="UninstallDriver" After="InstallInitialize" Condition="REMOVE" />
         </InstallExecuteSequence>
-    </Product>
+    </Package>
 
     <Fragment>
-        <Directory Id="TARGETDIR" Name="SourceDir">
-            <Directory Id="ProgramFiles64Folder">
-                <Directory Id="INSTALLFOLDER" Name="BatterySimulator" />
-            </Directory>
-        </Directory>
+        <StandardDirectory Id="ProgramFiles64Folder">
+            <Directory Id="INSTALLFOLDER" Name="BatterySimulator" />
+        </StandardDirectory>
     </Fragment>
 
     <Fragment>
