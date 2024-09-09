@@ -82,7 +82,7 @@ struct BatteryStausWrap : BATTERY_STATUS {
         wprintf(L"\n");
 
         wprintf(L"  Capacity=%i mWh\n", Capacity);
-        wprintf(L"  Voltage=%i mV\n", Voltage);
+        wprintf(L"  Voltage=%u mV\n", Voltage);
         wprintf(L"  Rate=%x\n", Rate);
     }
 };
