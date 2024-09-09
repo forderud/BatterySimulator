@@ -119,7 +119,39 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
     }
 
     void Print() {
-        wprintf(L"  Capabilities=%x\n", Capabilities);
+        wprintf(L"  Capabilities=");
+        if (Capabilities) {
+            ULONG cap = Capabilities;
+            if (cap & BATTERY_CAPACITY_RELATIVE) {
+                wprintf(L"| RELATIVE ");
+                cap &= ~BATTERY_CAPACITY_RELATIVE;
+            }
+            if (cap & BATTERY_IS_SHORT_TERM) {
+                wprintf(L"| IS_SHORT_TERM ");
+                cap &= ~BATTERY_IS_SHORT_TERM;
+            }
+            if (cap & BATTERY_SET_CHARGE_SUPPORTED) {
+                wprintf(L"| SET_CHARGE_SUPPORTED ");
+                cap &= ~BATTERY_SET_CHARGE_SUPPORTED;
+            }
+            if (cap & BATTERY_SET_DISCHARGE_SUPPORTED) {
+                wprintf(L"| SET_DISCHARGE_SUPPORTED ");
+                cap &= ~BATTERY_SET_DISCHARGE_SUPPORTED;
+            }
+            if (cap & BATTERY_SYSTEM_BATTERY) {
+                wprintf(L"| SYSTEM_BATTERY ");
+                cap &= ~BATTERY_SYSTEM_BATTERY;
+            }
+            if (cap) {
+                // residual bits
+                wprintf(L"| %x ", cap);
+            }
+        }
+        else {
+            wprintf(L"0");
+        }
+        wprintf(L"\n");
+
         wprintf(L"  Technology=%i\n", Technology);
         wprintf(L"  Chemistry=%hs\n", std::string((char*)Chemistry, 4).c_str()); // not null-terminated
         wprintf(L"  DesignedCapacity=%i\n", DesignedCapacity);
