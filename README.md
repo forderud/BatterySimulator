@@ -126,7 +126,7 @@ PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
 There are also many other settings available. Use `PowerCfg.exe /query` to view all settings. See [PowerSettings.ps1](./PowerSettings.ps1) for an example of programmatic access and modification of power settings.
 
 
-### WMI `Win32_Battery` parameters
+## WMI `Win32_Battery` parameters
 Battery parameters from the battery miniclass driver will automatically be exposed through the [`Win32_Battery`](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery) WMI class, so there's no need for implementing a WMI provider yourself.
 
 Query battery status from PowerShell: `Get-CimInstance -Namespace root\CIMV2 Win32_Battery`
