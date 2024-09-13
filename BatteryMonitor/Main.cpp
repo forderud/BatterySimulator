@@ -15,10 +15,20 @@ void ProcessPowerEvent(WPARAM wParam) {
         assert(ok); ok;
 
         // display battery/AC status
-        if (status.ACLineStatus == 1)
-            wprintf(L"  Connected to AC.\n");
-        else
-            wprintf(L"  On battery power: %i%%.\n", status.BatteryLifePercent);
+        if (status.ACLineStatus == 1) {
+            wprintf(L"  Connected to AC power.\n");
+
+            if (status.BatteryFullLifeTime != -1)
+                wprintf(L"  Time to full battery: %u sec.\n", status.BatteryFullLifeTime);
+        } else if (status.ACLineStatus == 0) {
+            wprintf(L"  Running on battery power.\n");
+
+            if (status.BatteryLifeTime != -1)
+                wprintf(L"  Remaining battery time: %u sec.\n", status.BatteryLifePercent);
+        }
+
+        if (status.BatteryLifePercent != 255)
+            wprintf(L"  Battery charge: %i%%.\n", status.BatteryLifePercent);
     } else if (wParam == PBT_APMSUSPEND) {
         wprintf(L"  Suspending to low-power state.\n");
     } else if (wParam == PBT_APMRESUMEAUTOMATIC) {
