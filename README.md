@@ -129,82 +129,8 @@ There are also many other settings available. Use `PowerCfg.exe /query` to view 
 ## WMI `Win32_Battery` parameters
 Battery parameters from the battery miniclass driver will automatically be exposed through the [`Win32_Battery`](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery) WMI class, so there's no need for implementing a WMI provider yourself.
 
-Query battery status from PowerShell: `Get-CimInstance -Namespace root\CIMV2 Win32_Battery`
+See the [BatteryParams.ps1](./BatteryParams.ps1) script for an example of how to retrieve these battery parameters.
 
-Sample output:
-```
-PS > Get-CimInstance -Namespace root\CIMV2 Win32_Battery
-
-Caption                     : Internal Battery
-Description                 : Internal Battery
-InstallDate                 :
-Name                        : SimulatedBattery
-Status                      : Service
-Availability                : 1
-ConfigManagerErrorCode      :
-ConfigManagerUserConfig     :
-CreationClassName           : Win32_Battery
-DeviceID                    : SimulatedBattery0000
-ErrorCleared                :
-ErrorDescription            :
-LastErrorCode               :
-PNPDeviceID                 :
-PowerManagementCapabilities : {1}
-PowerManagementSupported    : False
-StatusInfo                  :
-SystemCreationClassName     : Win32_ComputerSystem
-SystemName                  : WINDEV2211EVAL
-BatteryStatus               : 6
-Chemistry                   : 2
-DesignCapacity              :
-DesignVoltage               :
-EstimatedChargeRemaining    : 90
-EstimatedRunTime            : 0
-ExpectedLife                :
-FullChargeCapacity          :
-MaxRechargeTime             :
-SmartBatteryVersion         :
-TimeOnBattery               :
-TimeToFullCharge            :
-BatteryRechargeTime         :
-ExpectedBatteryLife         :
-PSComputerName              :
-
-Caption                     : Internal Battery
-Description                 : Internal Battery
-InstallDate                 :
-Name                        : SimulatedBattery
-Status                      : OK
-Availability                : 2
-ConfigManagerErrorCode      :
-ConfigManagerUserConfig     :
-CreationClassName           : Win32_Battery
-DeviceID                    : SimulatedBattery0000
-ErrorCleared                :
-ErrorDescription            :
-LastErrorCode               :
-PNPDeviceID                 :
-PowerManagementCapabilities : {1}
-PowerManagementSupported    : False
-StatusInfo                  :
-SystemCreationClassName     : Win32_ComputerSystem
-SystemName                  : WINDEV2211EVAL
-BatteryStatus               : 2
-Chemistry                   : 2
-DesignCapacity              :
-DesignVoltage               :
-EstimatedChargeRemaining    : 100
-EstimatedRunTime            : 0
-ExpectedLife                :
-FullChargeCapacity          :
-MaxRechargeTime             :
-SmartBatteryVersion         :
-TimeOnBattery               :
-TimeToFullCharge            :
-BatteryRechargeTime         :
-ExpectedBatteryLife         :
-PSComputerName              :
-```
 
 ### Windows power events
 Windows applications receive [`WM_POWERBROADCAST`](https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast) events when the machine transitions between AC and battery power, as well as when suspening or resuming from low-power modes. Applications can also call [`GetSystemPowerStatus`](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getsystempowerstatus) to retrieve details about the power state and aggregated battery charge level. Take a look at the `BatteryMonitor` project for sample code.  
