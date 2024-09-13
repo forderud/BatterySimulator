@@ -34,7 +34,7 @@ foreach ($settingidx in $settings) {
     Write-Host # blank line
     PrintPowerSetting $setting $acValue $dcValue
 
-    # modify DC settings to match AC
+    # uncomment to modify DC settings to match AC
     #$settingidx.SettingIndexValue = $acValue
     #[void]$settingidx.Put() # store change
 
