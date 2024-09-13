@@ -1,4 +1,4 @@
-## Implementation details
+## simbatt implementation notes
 This section is only intended for internal bookkeeping. Testers doesn't need to care about this.
 
 ### Persistent state
