@@ -126,13 +126,16 @@ PowerCfg.exe /setdcvalueindex %SCHEME% SUB_PROCESSOR PROCTHROTTLEMAX 100
 There are also many other settings available. Use `PowerCfg.exe /query` to view all settings. See [PowerSettings.ps1](./PowerSettings.ps1) for an example of API access and modification of power settings from a script.
 
 
-## WMI `Win32_Battery` parameters
+## Battery parameters
 Battery parameters from the battery miniclass driver will automatically be exposed through the [`Win32_Battery`](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery) WMI class, so there's no need for implementing a WMI provider yourself.
 
-See the [BatteryParams.ps1](./BatteryParams.ps1) script for an example of how to retrieve these battery parameters.
+### Accessing per-battery parameters
+Per-battery parameters can either be accessed through a WMI high-level or IOCTL low-level interface:
+* See the [BatteryParams.ps1](./BatteryParams.ps1) script for how to retrieve battery parameters through WMI.
+* See the [\BatteryConfig](./\BatteryConfig) project for how to retrieve battery parameters through [`IOCTL_BATTERY_QUERY_INFORMATION`](https://learn.microsoft.com/en-us/windows/win32/power/ioctl-battery-query-information) and [`IOCTL_BATTERY_QUERY_STATUS`](https://learn.microsoft.com/en-us/windows/win32/power/ioctl-battery-query-status) control codes.
 
 
-### Windows power events
+### Windows power events and aggregated parameters
 Windows applications receive [`WM_POWERBROADCAST`](https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast) events when the machine transitions between AC and battery power, as well as when suspening or resuming from low-power modes. Applications can also call [`GetSystemPowerStatus`](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getsystempowerstatus) to retrieve details about the power state and aggregated battery charge level. Take a look at the `BatteryMonitor` project for sample code.  
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/622a8e92-8535-46ce-85b9-72d4fd52b798)
 
