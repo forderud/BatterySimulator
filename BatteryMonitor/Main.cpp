@@ -20,11 +20,15 @@ void ProcessPowerEvent(WPARAM wParam) {
 
             if (status.BatteryFullLifeTime != -1)
                 wprintf(L"  Time to full battery: %u sec.\n", status.BatteryFullLifeTime);
+            else
+                wprintf(L"  Time to full battery: <unknown>\n");
         } else if (status.ACLineStatus == 0) {
             wprintf(L"  Running on battery power.\n");
 
             if (status.BatteryLifeTime != -1)
-                wprintf(L"  Remaining battery time: %u sec.\n", status.BatteryLifePercent);
+                wprintf(L"  Remaining battery time: %u sec.\n", status.BatteryLifeTime);
+            else
+                wprintf(L"  Remaining battery time: <unknown>\n");
         }
 
         if (status.BatteryLifePercent != 255)
