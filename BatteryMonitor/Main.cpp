@@ -3,6 +3,33 @@
 #include <iostream>
 
 
+void PrintPowerStatus(const SYSTEM_POWER_STATUS& status) {
+    if (status.ACLineStatus == 0) {
+        // DC case
+        wprintf(L"  Running on battery power.\n");
+
+        if (status.BatteryLifeTime != -1)
+            wprintf(L"  Remaining battery time: %u sec\n", status.BatteryLifeTime);
+        else
+            wprintf(L"  Remaining battery time: <unknown>\n");
+    } else if (status.ACLineStatus == 1) {
+        // AC case
+        wprintf(L"  Connected to AC power.\n");
+
+        if (status.BatteryFullLifeTime != -1)
+            wprintf(L"  Time to full battery: %u sec\n", status.BatteryFullLifeTime);
+        else
+            wprintf(L"  Time to full battery: <unknown>\n");
+    } else {
+        // AC/DC unknown
+    }
+
+    if (status.BatteryLifePercent != 255)
+        wprintf(L"  Battery charge: %i%%.\n", status.BatteryLifePercent);
+    else
+        wprintf(L"  Battery charge: <unknown>\n");
+}
+
 /** Process WM_POWERBROADCAST events. */
 void ProcessPowerEvent(WPARAM wParam) {
     wprintf(L"Power broadcast message:\n");
@@ -14,28 +41,7 @@ void ProcessPowerEvent(WPARAM wParam) {
         BOOL ok = GetSystemPowerStatus(&status);
         assert(ok); ok;
 
-        // display battery/AC status
-        if (status.ACLineStatus == 1) {
-            wprintf(L"  Connected to AC power.\n");
-
-            if (status.BatteryFullLifeTime != -1)
-                wprintf(L"  Time to full battery: %u sec\n", status.BatteryFullLifeTime);
-            else
-                wprintf(L"  Time to full battery: <unknown>\n");
-        } else if (status.ACLineStatus == 0) {
-            wprintf(L"  Running on battery power.\n");
-
-            if (status.BatteryLifeTime != -1)
-                wprintf(L"  Remaining battery time: %u sec\n", status.BatteryLifeTime);
-            else
-                wprintf(L"  Remaining battery time: <unknown>\n");
-        }
-
-        if (status.BatteryLifePercent != 255)
-            wprintf(L"  Battery charge: %i%%.\n", status.BatteryLifePercent);
-        else
-            wprintf(L"  Battery charge: <unknown>\n");
-
+        PrintPowerStatus(status);
     } else if (wParam == PBT_APMSUSPEND) {
         wprintf(L"  Suspending to low-power state.\n");
     } else if (wParam == PBT_APMRESUMEAUTOMATIC) {
