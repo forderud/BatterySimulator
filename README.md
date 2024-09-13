@@ -129,7 +129,7 @@ There are also many other settings available. Use `PowerCfg.exe /query` to view 
 ## Battery parameters
 Battery parameters from the battery miniclass driver will automatically be exposed through the [`Win32_Battery`](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-battery) WMI class, so there's no need for implementing a WMI provider yourself.
 
-### Accessing per-battery parameters
+### Per-battery parameters
 Per-battery parameters can either be accessed through a WMI high-level or IOCTL low-level interface:
 * See the [BatteryParams.ps1](./BatteryParams.ps1) script for how to retrieve battery parameters through WMI.
 * See the [BatteryConfig](./BatteryConfig) project for how to retrieve battery parameters through [`IOCTL_BATTERY_QUERY_INFORMATION`](https://learn.microsoft.com/en-us/windows/win32/power/ioctl-battery-query-information) and [`IOCTL_BATTERY_QUERY_STATUS`](https://learn.microsoft.com/en-us/windows/win32/power/ioctl-battery-query-status) control codes.
