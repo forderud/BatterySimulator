@@ -14,7 +14,7 @@ void PrintPowerStatus() {
         wprintf(L"  Running on battery power (DC).\n");
 
         if (status.BatteryLifeTime != -1)
-            wprintf(L"  Remaining battery time: %u sec\n", status.BatteryLifeTime);
+            wprintf(L"  Remaining battery time: %u min\n", status.BatteryLifeTime/60);
         else
             wprintf(L"  Remaining battery time: <unknown>\n");
     } else if (status.ACLineStatus == 1) {
@@ -22,7 +22,7 @@ void PrintPowerStatus() {
         wprintf(L"  Connected to AC power.\n");
 
         if (status.BatteryFullLifeTime != -1)
-            wprintf(L"  Time to full battery: %u sec\n", status.BatteryFullLifeTime);
+            wprintf(L"  Time to full battery: %u min\n", status.BatteryFullLifeTime/60);
         else
             wprintf(L"  Time to full battery: <unknown>\n");
     } else {
