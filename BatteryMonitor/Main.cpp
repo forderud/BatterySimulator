@@ -3,7 +3,11 @@
 #include <iostream>
 
 
-void PrintPowerStatus(const SYSTEM_POWER_STATUS& status) {
+void PrintPowerStatus() {
+    SYSTEM_POWER_STATUS status = {};
+    BOOL ok = GetSystemPowerStatus(&status);
+    assert(ok); ok;
+
     if (status.ACLineStatus == 0) {
         // DC case
         wprintf(L"  Running on battery power.\n");
@@ -30,18 +34,14 @@ void PrintPowerStatus(const SYSTEM_POWER_STATUS& status) {
         wprintf(L"  Battery charge: <unknown>\n");
 }
 
+
 /** Process WM_POWERBROADCAST events. */
 void ProcessPowerEvent(WPARAM wParam) {
     wprintf(L"Power broadcast message:\n");
 
     if (wParam == PBT_APMPOWERSTATUSCHANGE) {
         wprintf(L"  Power status change.\n");
-
-        SYSTEM_POWER_STATUS status = {};
-        BOOL ok = GetSystemPowerStatus(&status);
-        assert(ok); ok;
-
-        PrintPowerStatus(status);
+        PrintPowerStatus();
     } else if (wParam == PBT_APMSUSPEND) {
         wprintf(L"  Suspending to low-power state.\n");
     } else if (wParam == PBT_APMRESUMEAUTOMATIC) {
