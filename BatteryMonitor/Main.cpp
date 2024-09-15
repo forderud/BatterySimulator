@@ -8,9 +8,10 @@ void PrintPowerStatus() {
     BOOL ok = GetSystemPowerStatus(&status);
     assert(ok); ok;
 
+    wprintf(L"Power status:\n");
     if (status.ACLineStatus == 0) {
         // DC case
-        wprintf(L"  Running on battery power.\n");
+        wprintf(L"  Running on battery power (DC).\n");
 
         if (status.BatteryLifeTime != -1)
             wprintf(L"  Remaining battery time: %u sec\n", status.BatteryLifeTime);
@@ -110,6 +111,8 @@ int WINAPI wmain () {
     }
 
     // don't call ShowWindow to keep the window hidden
+
+    PrintPowerStatus();
 
     // run message loop
     MSG msg = {};
