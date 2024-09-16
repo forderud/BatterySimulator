@@ -86,6 +86,23 @@ LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 }
 
 
+/** Win32 timer RAII wrappers.
+    TODO: Figure out how to replace with std::unique_ptr or similar. */
+class TimerWrap {
+public:
+    TimerWrap(HWND wnd, UINT_PTR timer) : m_wnd(wnd), m_timer(timer) {
+    }
+
+    ~TimerWrap() {
+        KillTimer(m_wnd, m_timer);
+    }
+
+private:
+    HWND     m_wnd = 0;
+    UINT_PTR m_timer = 0;
+};
+
+
 int WINAPI wmain () {
     HINSTANCE instance = GetModuleHandleW(NULL);
 
@@ -116,8 +133,8 @@ int WINAPI wmain () {
     std::unique_ptr<std::remove_pointer<HPOWERNOTIFY>::type, BOOL(*)(HPOWERNOTIFY)> powNotify(RegisterSuspendResumeNotification(wnd, DEVICE_NOTIFY_WINDOW_HANDLE), UnregisterSuspendResumeNotification);
     assert(powNotify);
 
-    // register to callbacks every 5sec
-    UINT_PTR timer = SetTimer(wnd, 0, 5000, TimerCallback);
+    // register for callback every 5sec
+    TimerWrap timer(wnd, SetTimer(wnd, 0, 5000, TimerCallback));
 
     PrintPowerStatus();
 
@@ -130,8 +147,6 @@ int WINAPI wmain () {
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
-
-    KillTimer(wnd, timer);
 
     return 0;
 }
