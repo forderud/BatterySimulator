@@ -103,12 +103,9 @@ int WINAPI wmain () {
     );
     assert(wnd);
 
-    {
-        // subscribe to PBT_APMSUSPEND, PBT_APMRESUMEAUTOMATIC & PBT_APMRESUMESUSPEND events
-        HPOWERNOTIFY hp = RegisterSuspendResumeNotification(wnd, DEVICE_NOTIFY_WINDOW_HANDLE);
-        assert(hp); hp;
-        // unregister with UnregisterSuspendResumeNotification(hp);
-    }
+    // subscribe to PBT_APMSUSPEND, PBT_APMRESUMEAUTOMATIC & PBT_APMRESUMESUSPEND events
+    std::unique_ptr<std::remove_pointer<HPOWERNOTIFY>::type, BOOL(*)(HPOWERNOTIFY)> powNotify(RegisterSuspendResumeNotification(wnd, DEVICE_NOTIFY_WINDOW_HANDLE), UnregisterSuspendResumeNotification);
+    assert(powNotify);
 
     // don't call ShowWindow to keep the window hidden
 
