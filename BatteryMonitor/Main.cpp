@@ -87,7 +87,7 @@ LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 /** Win32 timer RAII wrappers.
-    TODO: Figure out how to replace with std::unique_ptr or similar. */
+    TODO: Figure out how to replace with std::unique_ptr or other standard RAII wrapper. */
 class TimerWrap {
 public:
     TimerWrap(HWND wnd, UINT_PTR timer) : m_wnd(wnd), m_timer(timer) {
