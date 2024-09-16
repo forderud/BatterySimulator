@@ -33,6 +33,8 @@ void PrintPowerStatus() {
         wprintf(L"  Battery charge: %i%%.\n", status.BatteryLifePercent);
     else
         wprintf(L"  Battery charge: <unknown>\n");
+
+    wprintf(L"\n");
 }
 
 
