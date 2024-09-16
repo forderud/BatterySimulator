@@ -139,4 +139,4 @@ Per-battery parameters can either be accessed through a WMI high-level or IOCTL 
 Windows applications receive [`WM_POWERBROADCAST`](https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast) events when the machine transitions between AC and battery power, as well as when suspening or resuming from low-power modes. Details about the power state and aggregated battery charge level can be retrieved by calling [`GetSystemPowerStatus`](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getsystempowerstatus).
 
 The [BatteryMonitor](./BatteryMonitor) project demonstrates how to handle power events and query power state.  
-![image](https://github.com/forderud/BatterySimulator/assets/2671400/622a8e92-8535-46ce-85b9-72d4fd52b798)
+![image](https://github.com/user-attachments/assets/5df449cd-e2af-47c4-b127-da6505207a8e)
