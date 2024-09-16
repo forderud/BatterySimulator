@@ -38,6 +38,11 @@ void PrintPowerStatus() {
 }
 
 
+void TimerCallback(HWND, UINT, UINT_PTR, DWORD) {
+    PrintPowerStatus();
+}
+
+
 /** Process WM_POWERBROADCAST events. */
 void ProcessPowerEvent(WPARAM wParam) {
     wprintf(L"Power broadcast message:\n");
@@ -105,11 +110,14 @@ int WINAPI wmain () {
     );
     assert(wnd);
 
+    // don't call ShowWindow to keep the window hidden
+
     // subscribe to PBT_APMSUSPEND, PBT_APMRESUMEAUTOMATIC & PBT_APMRESUMESUSPEND events
     std::unique_ptr<std::remove_pointer<HPOWERNOTIFY>::type, BOOL(*)(HPOWERNOTIFY)> powNotify(RegisterSuspendResumeNotification(wnd, DEVICE_NOTIFY_WINDOW_HANDLE), UnregisterSuspendResumeNotification);
     assert(powNotify);
 
-    // don't call ShowWindow to keep the window hidden
+    // register to callbacks every 5sec
+    UINT_PTR timer = SetTimer(wnd, 0, 5000, TimerCallback);
 
     PrintPowerStatus();
 
@@ -122,6 +130,8 @@ int WINAPI wmain () {
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
+
+    KillTimer(wnd, timer);
 
     return 0;
 }
