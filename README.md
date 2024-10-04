@@ -90,10 +90,14 @@ PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATLEVELLOW 10
 :: Low battery notification (0=off, 1=on)
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSLOW 0
+:: Delete Low battery notification rule
+:: PowerCfg.exe /deletesetting SUB_BATTERY BATFLAGSLOW
 
 :: Low battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONLOW 0
+:: Delete Low battery action rule
+:: PowerCfg.exe /deletesetting SUB_BATTERY BATACTIONLOW
 
 :: Critical battery level (percentage)
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATLEVELCRIT 5
@@ -102,10 +106,14 @@ PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATLEVELCRIT 5
 :: Critical battery notification (0=off, 1=on)
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATFLAGSCRIT 0
+:: Delete Critical battery notification rule
+:: PowerCfg.exe /deletesetting SUB_BATTERY BATFLAGSCRIT
 
 :: Critical battery action (0=do nothing, 1=sleep, 2=hibernate, 3=shut down)
 PowerCfg.exe /setacvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
 PowerCfg.exe /setdcvalueindex %SCHEME% SUB_BATTERY BATACTIONCRIT 0
+:: Delete Critical battery action rule
+:: PowerCfg.exe /deletesetting SUB_BATTERY BATACTIONCRIT
 ```
 
 CPU power configuration for AC & DC mode:
