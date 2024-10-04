@@ -12,6 +12,7 @@ function PrintPowerSetting ($setting, $acValue, $dcValue) {
 # Get current power plan (Balanced, High performance, Power saver, ..)
 $powerplan = Get-WmiObject -Namespace "root\cimv2\power" -Class Win32_powerplan | where {$_.IsActive}
 
+# Doc: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/powerwmiprov/win32-powersettingdataindex
 $settings = $powerplan.GetRelated("Win32_PowerSettingDataIndex")
 foreach ($settingidx in $settings) {
     # will iterate over S0_AC, S0_DC, S1_AC, S1_DC, S2_AC, S2_DC, ...
@@ -30,6 +31,7 @@ foreach ($settingidx in $settings) {
         Exit
     }
 
+    # Doc: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/powerwmiprov/win32-powersetting
     $setting = $settingidx.GetRelated("Win32_PowerSetting")
     Write-Host # blank line
     PrintPowerSetting $setting $acValue $dcValue
