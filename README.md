@@ -23,9 +23,9 @@ You can with the driver **make Windows believe that it’s being powered by one 
 
 Steps:
 * Build solution in Visual Studio or download binaries from [releases](../../releases).
-* Copy `BatteryConfig.exe`, `BatteryMonitor.exe` and the `simbatt` folder to the target machine.
+* Copy `BatteryQuery.exe`, `BatteryMonitor.exe` and the `simbatt` folder to the target machine.
 * Run `INSTALL.bat` with admin privileges to install the driver with two simulated batteries.
-* Run `BatteryConfig.exe <N> <Charge>`, where `<N>` is the simulated battery index and `<Charge>` is the new charge level, to modify the battery state. Example: `BatteryConfig.exe 1 90` to set the charge level of the first battery to 90%.
+* Run `BatteryQuery.exe <N> <Charge>`, where `<N>` is the simulated battery index and `<Charge>` is the new charge level, to modify the battery state. Example: `BatteryQuery.exe 1 90` to set the charge level of the first battery to 90%.
 * Run `BatteryMonitor.exe` to monitor power events broadcasted to all application.
 * Run `UNINSTALL.bat` with admin privileges to uninstall the driver and delete simulated batteries.
 
@@ -140,7 +140,7 @@ Battery parameters from the battery miniclass driver will automatically be expos
 ### Per-battery parameters
 Per-battery parameters can either be accessed through a WMI high-level or IOCTL low-level interface:
 * See the [BatteryParams.ps1](./BatteryParams.ps1) script for how to retrieve battery parameters through WMI.
-* See the [BatteryConfig](./BatteryConfig) project for how to retrieve battery parameters through [`IOCTL_BATTERY_QUERY_INFORMATION`](https://learn.microsoft.com/en-us/windows/win32/power/ioctl-battery-query-information) and [`IOCTL_BATTERY_QUERY_STATUS`](https://learn.microsoft.com/en-us/windows/win32/power/ioctl-battery-query-status) control codes.
+* See the [BatteryQuery](./BatteryQuery) project for how to retrieve battery parameters through [`IOCTL_BATTERY_QUERY_INFORMATION`](https://learn.microsoft.com/en-us/windows/win32/power/ioctl-battery-query-information) and [`IOCTL_BATTERY_QUERY_STATUS`](https://learn.microsoft.com/en-us/windows/win32/power/ioctl-battery-query-status) control codes.
 
 
 ### Windows power events and aggregated parameters

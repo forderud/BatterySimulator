@@ -14,8 +14,8 @@
     <DefineConstants>Version=$(MajorVer).$(MinorVer).$(PatchVer).$(BuildVer)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BatteryConfig\BatteryConfig.vcxproj">
-      <Name>BatteryConfig</Name>
+    <ProjectReference Include="..\BatteryQuery\BatteryQuery.vcxproj">
+      <Name>BatteryQuery</Name>
       <Project>{1802dab1-0769-4e39-bf84-e4f05c5ea917}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
