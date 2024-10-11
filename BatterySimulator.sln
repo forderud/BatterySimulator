@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.34302.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BatteryConfig", "BatteryQuery\BatteryConfig.vcxproj", "{1802DAB1-0769-4E39-BF84-E4F05C5EA917}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BatteryQuery", "BatteryQuery\BatteryQuery.vcxproj", "{1802DAB1-0769-4E39-BF84-E4F05C5EA917}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simbatt", "simbatt\simbatt.vcxproj", "{49F35704-9A04-4CCF-A290-BBE79906C901}"
 EndProject

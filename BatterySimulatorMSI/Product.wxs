@@ -43,8 +43,8 @@
             <Component Id="DevGen">
                 <File Id="devgen.exe" Source="$(var.simbatt.TargetDir)simbatt\devgen.exe" KeyPath="yes" Checksum="yes" />
             </Component>
-            <Component Id="BatteryConfig">
-                <File Id="BatteryConfig.exe" Source="$(var.BatteryConfig.TargetDir)BatteryConfig.exe" KeyPath="yes" Checksum="yes" />
+            <Component Id="BatteryQuery">
+                <File Id="BatteryQuery.exe" Source="$(var.BatteryQuery.TargetDir)BatteryQuery.exe" KeyPath="yes" Checksum="yes" />
             </Component>
             <Component Id="BatteryParams">
                 <File Id="BatteryParams.ps1" Source="$(var.SolutionDir)BatteryParams.ps1" KeyPath="yes" Checksum="yes" />

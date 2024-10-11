@@ -7,7 +7,7 @@
 
 int wmain(int argc, wchar_t* argv[]) {
     if (argc < 2) {
-        wprintf(L"USAGE: \"BatteryConfig.exe <N> <Charge>\" where <N> is the battery index and <Charge> is the new charge.\n");
+        wprintf(L"USAGE: \"BatteryQuery.exe <N> <Charge>\" where <N> is the battery index and <Charge> is the new charge.\n");
         return 1;
     }
 
