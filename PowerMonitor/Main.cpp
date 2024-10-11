@@ -107,7 +107,7 @@ int WINAPI wmain () {
     HINSTANCE instance = GetModuleHandleW(NULL);
 
     // register window class
-    const wchar_t CLASS_NAME[] = L"BatteryMonitor class";
+    const wchar_t CLASS_NAME[] = L"PowerMonitor class";
     WNDCLASS wc = {};
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = instance;
@@ -117,7 +117,7 @@ int WINAPI wmain () {
     // create offscreen window 
     HWND wnd = CreateWindowExW(0, // optional window styles
         CLASS_NAME,               // window class
-        L"BatteryMonitor",        // window text
+        L"PowerMonitor",          // window text
         WS_OVERLAPPEDWINDOW,      // window style
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, // size & position
         NULL,      // parent

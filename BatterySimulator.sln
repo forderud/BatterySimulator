@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BatteryQuery", "BatteryQuer
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simbatt", "simbatt\simbatt.vcxproj", "{49F35704-9A04-4CCF-A290-BBE79906C901}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BatteryMonitor", "BatteryMonitor\BatteryMonitor.vcxproj", "{C4C362F7-890A-4957-9CAC-084FCFA9BDC6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PowerMonitor", "PowerMonitor\PowerMonitor.vcxproj", "{C4C362F7-890A-4957-9CAC-084FCFA9BDC6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PowerStateQuery", "PowerStateQuery\PowerStateQuery.vcxproj", "{69FC5E7A-2743-4FBF-9621-763E43CE9E0F}"
 EndProject
