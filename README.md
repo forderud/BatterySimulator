@@ -23,10 +23,10 @@ You can with the driver **make Windows believe that it’s being powered by one 
 
 Steps:
 * Build solution in Visual Studio or download binaries from [releases](../../releases).
-* Copy `BatteryQuery.exe`, `BatteryMonitor.exe` and the `simbatt` folder to the target machine.
+* Copy `BatteryQuery.exe`, `PowerMonitor.exe` and the `simbatt` folder to the target machine.
 * Run `INSTALL.bat` with admin privileges to install the driver with two simulated batteries.
 * Run `BatteryQuery.exe <N> <Charge>`, where `<N>` is the simulated battery index and `<Charge>` is the new charge level, to modify the battery state. Example: `BatteryQuery.exe 1 90` to set the charge level of the first battery to 90%.
-* Run `BatteryMonitor.exe` to monitor power events broadcasted to all application.
+* Run `PowerMonitor.exe` to monitor power events broadcasted to all application.
 * Run `UNINSTALL.bat` with admin privileges to uninstall the driver and delete simulated batteries.
 
 ### Examples
@@ -146,5 +146,5 @@ Per-battery parameters can either be accessed through a WMI high-level or IOCTL 
 ### Windows power events and aggregated parameters
 Windows applications receive [`WM_POWERBROADCAST`](https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast) events when the machine transitions between AC and battery power, as well as when suspening or resuming from low-power modes. Details about the power state and aggregated battery charge level can be retrieved by calling [`GetSystemPowerStatus`](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getsystempowerstatus).
 
-The [BatteryMonitor](./BatteryMonitor) project demonstrates how to handle power events and query power state.  
+The [PowerMonitor](./PowerMonitor) project demonstrates how to handle power events and query power state.  
 ![image](https://github.com/user-attachments/assets/5df449cd-e2af-47c4-b127-da6505207a8e)
