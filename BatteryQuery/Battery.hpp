@@ -81,7 +81,10 @@ struct BatteryStausWrap : BATTERY_STATUS {
         }
         wprintf(L"\n");
 
-        wprintf(L"  Capacity=%i mWh\n", Capacity);
+        if (Capacity != BATTERY_UNKNOWN_CAPACITY)
+            wprintf(L"  Capacity=%u mWh\n", Capacity);
+        else
+            wprintf(L"  Capacity=<unknown>\n");
 
         if (Voltage != BATTERY_UNKNOWN_VOLTAGE)
             wprintf(L"  Voltage=%u mV\n", Voltage);
