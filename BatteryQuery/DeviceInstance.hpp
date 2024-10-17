@@ -58,7 +58,7 @@ public:
         ULONG buffer_size = (ULONG)buffer.size();
         CONFIGRET res = CM_Get_DevNode_PropertyW(m_devInst, &propertyKey, &propertyType, buffer.data(), &buffer_size, 0);
         if (res != CR_SUCCESS) {
-            wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%i).\n", res);
+            wprintf(L"ERROR: CM_Get_DevNode_PropertyW (res=%u).\n", res);
             return {};
         }
         buffer.resize(buffer_size);
@@ -77,7 +77,7 @@ public:
         BOOL ok = FileTimeToSystemTime(&fileTime, &time);
         if (!ok) {
             DWORD err = GetLastError();
-            wprintf(L"ERROR: FileTimeToSystemTime failure (res=%i).\n", err);
+            wprintf(L"ERROR: FileTimeToSystemTime failure (res=%u).\n", err);
             return {};
         }
 

@@ -17,7 +17,7 @@ ULONG GetBatteryTag(HANDLE device) {
     BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_TAG, &wait, sizeof(wait), &battery_tag, sizeof(battery_tag), &bytes_returned, nullptr);
     if (!ok) {
         DWORD err = GetLastError();
-        wprintf(L"ERROR: IOCTL_BATTERY_QUERY_TAG (err=%i).\n", err);
+        wprintf(L"ERROR: IOCTL_BATTERY_QUERY_TAG (err=%u).\n", err);
         return (ULONG)-1;
     }
     return battery_tag;
