@@ -167,14 +167,14 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
         if (Capabilities & BATTERY_CAPACITY_RELATIVE)
             unit = L"";
 
-        wprintf(L"  Technology=%i\n", Technology);
+        wprintf(L"  Technology=%u\n", Technology);
         wprintf(L"  Chemistry=%hs\n", std::string((char*)Chemistry, 4).c_str()); // not null-terminated
-        wprintf(L"  DesignedCapacity=%i%s\n", DesignedCapacity, unit.c_str());
-        wprintf(L"  FullChargedCapacity=%i%s\n", FullChargedCapacity, unit.c_str());
-        wprintf(L"  DefaultAlert1=%i%s\n", DefaultAlert1, unit.c_str());
-        wprintf(L"  DefaultAlert2=%i%s\n", DefaultAlert2, unit.c_str());
-        wprintf(L"  CriticalBias=%i%s\n", CriticalBias, unit.c_str());
-        wprintf(L"  CycleCount=%i\n", CycleCount);
+        wprintf(L"  DesignedCapacity=%u%s\n", DesignedCapacity, unit.c_str());
+        wprintf(L"  FullChargedCapacity=%u%s\n", FullChargedCapacity, unit.c_str());
+        wprintf(L"  DefaultAlert1=%u%s\n", DefaultAlert1, unit.c_str());
+        wprintf(L"  DefaultAlert2=%u%s\n", DefaultAlert2, unit.c_str());
+        wprintf(L"  CriticalBias=%u%s\n", CriticalBias, unit.c_str());
+        wprintf(L"  CycleCount=%u\n", CycleCount);
     }
 };
 static_assert(sizeof(BatteryInformationWrap) == sizeof(BATTERY_INFORMATION));
