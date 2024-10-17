@@ -77,9 +77,9 @@ int wmain(int argc, wchar_t* argv[]) {
         }
         wprintf(L"  BatteryUniqueID:        %s\n", GetBatteryInfoStr(battery.Get(), BatteryUniqueID).c_str());
     }
+    wprintf(L"\n");
 
     BatteryInformationWrap info(battery.Get());
-    wprintf(L"\n"); 
     wprintf(L"BATTERY_INFORMATION parameters:\n");
     info.Print();
     wprintf(L"\n");
