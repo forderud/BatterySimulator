@@ -160,13 +160,17 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
         }
         wprintf(L"\n");
 
+        std::wstring unit = L" mWh";
+        if (Capabilities & BATTERY_CAPACITY_RELATIVE)
+            unit = L"";
+
         wprintf(L"  Technology=%i\n", Technology);
         wprintf(L"  Chemistry=%hs\n", std::string((char*)Chemistry, 4).c_str()); // not null-terminated
-        wprintf(L"  DesignedCapacity=%i\n", DesignedCapacity);
-        wprintf(L"  FullChargedCapacity=%i\n", FullChargedCapacity);
-        wprintf(L"  DefaultAlert1=%i\n", DefaultAlert1);
-        wprintf(L"  DefaultAlert2=%i\n", DefaultAlert2);
-        wprintf(L"  CriticalBias=%i\n", CriticalBias);
+        wprintf(L"  DesignedCapacity=%i%s\n", DesignedCapacity, unit.c_str());
+        wprintf(L"  FullChargedCapacity=%i%s\n", FullChargedCapacity, unit.c_str());
+        wprintf(L"  DefaultAlert1=%i%s\n", DefaultAlert1, unit.c_str());
+        wprintf(L"  DefaultAlert2=%i%s\n", DefaultAlert2, unit.c_str());
+        wprintf(L"  CriticalBias=%i%s\n", CriticalBias, unit.c_str());
         wprintf(L"  CycleCount=%i\n", CycleCount);
     }
 };
