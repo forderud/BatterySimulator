@@ -163,12 +163,19 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
         }
         wprintf(L"\n");
 
+        if (Technology == 0)
+            wprintf(L"  Technology=Nonrechargeable\n");
+        else if (Technology == 1)
+            wprintf(L"  Technology=Rechargeable\n");
+        else
+            wprintf(L"  Technology=<unknown>\n");
+
+        wprintf(L"  Chemistry=%hs\n", std::string((char*)Chemistry, 4).c_str()); // not null-terminated
+
         std::wstring unit = L" mWh";
         if (Capabilities & BATTERY_CAPACITY_RELATIVE)
             unit = L"";
 
-        wprintf(L"  Technology=%u\n", Technology);
-        wprintf(L"  Chemistry=%hs\n", std::string((char*)Chemistry, 4).c_str()); // not null-terminated
         wprintf(L"  DesignedCapacity=%u%s\n", DesignedCapacity, unit.c_str());
         wprintf(L"  FullChargedCapacity=%u%s\n", FullChargedCapacity, unit.c_str());
         wprintf(L"  DefaultAlert1=%u%s\n", DefaultAlert1, unit.c_str());
