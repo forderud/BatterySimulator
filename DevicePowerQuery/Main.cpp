@@ -53,7 +53,7 @@ static void PrintPowerData(CM_POWER_DATA powerData) {
     wprintf(L"\n");
 }
 
-static std::wstring GetDevicePropertyStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, DWORD property) {
+static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, DWORD property) {
     std::wstring result;
     result.resize(128, L'\0');
     DWORD requiredSize = 0;
@@ -96,8 +96,8 @@ int GetDeviceDriverPowerData() {
             abort();
         }
 
-        wprintf(L"\n== Device %i: %s ==\n", idx, GetDevicePropertyStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str()); // SPDRP_FRIENDLYNAME or SPDRP_DEVICEDESC
-        wprintf(L"HWID: %s\n", GetDevicePropertyStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str());
+        wprintf(L"\n== Device %i: %s ==\n", idx, GetDevRegPropStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str()); // SPDRP_FRIENDLYNAME or SPDRP_DEVICEDESC
+        wprintf(L"HWID: %s\n", GetDevRegPropStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str());
 
 #if 1
         // TODO: Also query DEVPKEY_Device_PowerRelations
