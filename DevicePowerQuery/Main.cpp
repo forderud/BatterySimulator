@@ -98,9 +98,13 @@ static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, c
 }
 
 int GetDeviceDriverPowerData() {
+    GUID ClassGuid{};
+    // "USB Device" device setup class
+    wchar_t USBDevice_str[] = L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}";
+    CLSIDFromString(USBDevice_str, &ClassGuid);
+
     // query all connected devices
-    GUID ClassGuid{}; // no filtering
-    HDEVINFO hDevInfo = SetupDiGetClassDevsW(&ClassGuid, 0, 0, DIGCF_ALLCLASSES | DIGCF_PRESENT);
+    HDEVINFO hDevInfo = SetupDiGetClassDevsW(&ClassGuid, 0, 0, DIGCF_PRESENT);
     assert(hDevInfo != INVALID_HANDLE_VALUE);
 
     // iterate over all devices
