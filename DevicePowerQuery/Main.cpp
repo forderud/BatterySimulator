@@ -10,10 +10,12 @@
 #pragma comment (lib, "SetupAPI.lib")
 
 
-int EnumerateDevices(bool printPowerData) {
-    // query all connected devices
-    GUID ClassGuid{}; // no filtering
-    HDEVINFO hDevInfo = SetupDiGetClassDevsW(&ClassGuid, 0, 0, DIGCF_ALLCLASSES | DIGCF_PRESENT);
+int EnumerateDevices(GUID ClassGuid, bool printPowerData) {
+    DWORD flags = DIGCF_PRESENT;
+    if (ClassGuid == GUID_NULL)
+        flags |= DIGCF_ALLCLASSES; // query all connected devices
+
+    HDEVINFO hDevInfo = SetupDiGetClassDevsW(&ClassGuid, 0, 0, flags);
     assert(hDevInfo != INVALID_HANDLE_VALUE);
 
     // iterate over all devices
@@ -58,6 +60,13 @@ int EnumerateDevices(bool printPowerData) {
 
 
 int main() {
-    EnumerateDevices(true);
+    GUID ClassGuid{};
+#ifdef ONLY_USB_DEVICES
+    // "USB Device" device setup class
+    wchar_t USBDevice_str[] = L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}";
+    CLSIDFromString(USBDevice_str, &ClassGuid);
+#endif
+
+    EnumerateDevices(ClassGuid, true);
     return 0;
 }
