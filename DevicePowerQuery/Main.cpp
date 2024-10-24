@@ -2,6 +2,8 @@
 #include <setupapi.h>
 #include <cassert>
 #include <iostream>
+#include <initguid.h>
+#include <Devpkey.h>
 
 #pragma comment (lib, "SetupAPI.lib")
 
@@ -78,6 +80,23 @@ static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo
     return result;
 }
 
+static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, const DEVPROPKEY*  property) {
+    std::wstring result;
+    result.resize(128, L'\0');
+    DWORD requiredSize = 0;
+    DEVPROPTYPE dataType = 0;
+    BOOL ok = SetupDiGetDevicePropertyW(hDevInfo, &devInfo, property, &dataType, (BYTE*)result.data(), (DWORD)result.size() * sizeof(wchar_t), &requiredSize, 0);
+    if (!ok) {
+        DWORD res = GetLastError(); res;
+        return {};
+    }
+    assert(dataType == 18);
+
+    // single string
+    result.resize(requiredSize / sizeof(wchar_t) - 1); // exclude null-termination
+    return result;
+}
+
 int GetDeviceDriverPowerData() {
     // query all connected devices
     HDEVINFO hDevInfo = SetupDiGetClassDevsW(NULL, 0, 0, DIGCF_ALLCLASSES | DIGCF_PRESENT);
@@ -98,6 +117,7 @@ int GetDeviceDriverPowerData() {
 
         wprintf(L"\n== Device %i: %s ==\n", idx, GetDevRegPropStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str()); // SPDRP_FRIENDLYNAME or SPDRP_DEVICEDESC
         wprintf(L"HWID: %s\n", GetDevRegPropStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str());
+        wprintf(L"PDO : %s\n", GetDevPropStr(hDevInfo, devInfo, &DEVPKEY_Device_PDOName).c_str());
 
 #if 1
         // TODO: Also query DEVPKEY_Device_PowerRelations
