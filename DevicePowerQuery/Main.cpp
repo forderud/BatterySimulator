@@ -105,16 +105,21 @@ int GetDeviceDriverPowerData() {
 
     // iterate over all devices
     for (int idx = 0; ; idx++) {
-        SP_DEVINFO_DATA devInfo = {};
-        devInfo.cbSize = sizeof(devInfo);
-
-        BOOL ok = SetupDiEnumDeviceInfo(hDevInfo, idx, &devInfo);
+        SP_DEVICE_INTERFACE_DATA interfaceData{};
+        interfaceData.cbSize = sizeof(SP_DEVICE_INTERFACE_DATA);
+        BOOL ok = SetupDiEnumDeviceInterfaces(hDevInfo, nullptr, &ClassGuid, idx, &interfaceData);
         if (!ok) {
             DWORD err = GetLastError();
             if (err == ERROR_NO_MORE_ITEMS)
                 break;
             abort();
         }
+
+        SP_DEVINFO_DATA devInfo = {};
+        devInfo.cbSize = sizeof(devInfo);
+        unsigned long deviceInfoDataSize = 0;
+        ok = SetupDiGetDeviceInterfaceDetail(hDevInfo, &interfaceData, nullptr, 0, &deviceInfoDataSize, &devInfo);
+        assert(ok);
 
         wprintf(L"\n== Device %i: %s ==\n", idx, GetDevRegPropStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str()); // SPDRP_FRIENDLYNAME or SPDRP_DEVICEDESC
         wprintf(L"HWID: %s\n", GetDevRegPropStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str());
