@@ -101,6 +101,7 @@ int GetDeviceDriverPowerData() {
         wprintf(L"HWID: %s\n", GetDevicePropertyStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str());
 
 
+#if 1
         // TODO: Also query DEVPKEY_Device_PowerRelations
 
         CM_POWER_DATA powerData = {};
@@ -111,6 +112,7 @@ int GetDeviceDriverPowerData() {
         }
 
         PrintPowerData(powerData);
+#endif
     }
 
     SetupDiDestroyDeviceInfoList(hDevInfo);
