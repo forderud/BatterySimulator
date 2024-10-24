@@ -96,10 +96,8 @@ int GetDeviceDriverPowerData() {
             abort();
         }
 
-        wprintf(L"== Device: %s ==\n", GetDevicePropertyStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str()); // SPDRP_FRIENDLYNAME or SPDRP_DEVICEDESC
-        
+        wprintf(L"\n== Device: %s ==\n", GetDevicePropertyStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str()); // SPDRP_FRIENDLYNAME or SPDRP_DEVICEDESC
         wprintf(L"HWID: %s\n", GetDevicePropertyStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str());
-
 
 #if 1
         // TODO: Also query DEVPKEY_Device_PowerRelations
