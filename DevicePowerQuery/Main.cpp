@@ -99,7 +99,8 @@ static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, c
 
 int GetDeviceDriverPowerData() {
     // query all connected devices
-    HDEVINFO hDevInfo = SetupDiGetClassDevsW(NULL, 0, 0, DIGCF_ALLCLASSES | DIGCF_PRESENT);
+    GUID ClassGuid{}; // no filtering
+    HDEVINFO hDevInfo = SetupDiGetClassDevsW(&ClassGuid, 0, 0, DIGCF_ALLCLASSES | DIGCF_PRESENT);
     assert(hDevInfo != INVALID_HANDLE_VALUE);
 
     // iterate over all devices
