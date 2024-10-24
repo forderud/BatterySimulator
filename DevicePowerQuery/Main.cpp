@@ -90,7 +90,7 @@ static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, c
         DWORD res = GetLastError(); res;
         return {};
     }
-    assert(dataType == 18);
+    assert(dataType == DEVPROP_TYPE_STRING);
 
     // single string
     result.resize(requiredSize / sizeof(wchar_t) - 1); // exclude null-termination
