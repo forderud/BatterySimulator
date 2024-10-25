@@ -49,7 +49,8 @@ public:
     /** Get the virtual file physical device object (PDO) path of a device driver instance. */
     std::wstring GetPDOPath() const {
         auto res = GetProperty(DEVPKEY_Device_PDOName);
-        return L"\\\\?\\GLOBALROOT" + std::get<std::wstring>(res); // add prefix before PDO name
+        // add prefix before PDO name (see https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file)
+        return L"\\\\?\\GLOBALROOT" + std::get<std::wstring>(res);
     }
 
     std::variant<std::wstring, FILETIME> GetProperty(const DEVPROPKEY& propertyKey) const {
