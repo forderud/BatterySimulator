@@ -6,7 +6,7 @@ static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo
     result.resize(128, L'\0');
     DWORD requiredSize = 0;
     DWORD dataType = 0;
-    BOOL ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, property, &dataType, (BYTE*)result.data(), (DWORD)result.size() * sizeof(wchar_t), &requiredSize);
+    BOOL ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, property, &dataType, (BYTE*)result.data(), (DWORD)result.size()*sizeof(wchar_t), &requiredSize);
     if (!ok) {
         DWORD res = GetLastError(); res;
         return {};
@@ -14,7 +14,7 @@ static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo
 
     if (dataType == REG_SZ) {
         // single string
-        result.resize(requiredSize / sizeof(wchar_t) - 1); // exclude null-termination
+        result.resize(requiredSize/sizeof(wchar_t) - 1); // exclude null-termination
     } else if (dataType == REG_MULTI_SZ) {
         // multiple zero-terminated strings
         size_t len = wcslen(result.c_str());
@@ -32,7 +32,7 @@ static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, c
     result.resize(128, L'\0');
     DWORD requiredSize = 0;
     DEVPROPTYPE propertyType = 0;
-    BOOL ok = SetupDiGetDevicePropertyW(hDevInfo, &devInfo, property, &propertyType, (BYTE*)result.data(), (DWORD)result.size() * sizeof(wchar_t), &requiredSize, 0);
+    BOOL ok = SetupDiGetDevicePropertyW(hDevInfo, &devInfo, property, &propertyType, (BYTE*)result.data(), (DWORD)result.size()*sizeof(wchar_t), &requiredSize, 0);
     if (!ok) {
         DWORD res = GetLastError(); res;
         return {};
@@ -40,6 +40,6 @@ static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, c
     assert(propertyType == DEVPROP_TYPE_STRING);
 
     // single string
-    result.resize(requiredSize / sizeof(wchar_t) - 1); // exclude null-termination
+    result.resize(requiredSize/sizeof(wchar_t) - 1); // exclude null-termination
     return result;
 }
