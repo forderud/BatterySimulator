@@ -121,8 +121,7 @@ int main() {
     if (printPowerData)
         visitor = VisitDevicePowerData;
 
-
-    bool enumDevices = false;
+    bool enumDevices = true;
     if (enumDevices) {
         GUID ClassGuid{};
 #ifdef ONLY_USB_DEVICES
@@ -130,8 +129,10 @@ int main() {
         wchar_t USBDevice_str[] = L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}";
         CLSIDFromString(USBDevice_str, &ClassGuid);
 #endif
+        // search DOES includes logical devices beneath a composite USB device
         EnumerateDevices(ClassGuid, visitor);
     } else {
+        // search does NOT include logical devices beneath a composite USB device
         EnumerateInterfaces(GUID_DEVINTERFACE_USB_DEVICE, visitor);
     }
     return 0;
