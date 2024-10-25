@@ -1,4 +1,10 @@
-Mock driver to simulate multi-battery setups and test Windows power management. Based on the Microsoft [Simulated Battery Driver Sample](https://github.com/microsoft/Windows-driver-samples/tree/main/simbatt) sample with [modifications](/simbatt) to ease multi-battery testing and failure handling without requiring physical battery packs.
+| Project      | Description                                            |
+|--------------|--------------------------------------------------------|
+| **BatteryQuery** | Tool for retrieving battery parameters. |
+| **DevicePowerQuery** | Tool for querying connected devices and their power state and parameters. |
+| **PowerMonitor** | Sample code for handling power events and query power state. |
+| **simbatt** | Mock driver to simulate multi-battery setups and test Windows power management. Based on the Microsoft [Simulated Battery Driver Sample](https://github.com/microsoft/Windows-driver-samples/tree/main/simbatt) sample with [modifications](/simbatt) to ease multi-battery testing and failure handling without requiring physical battery packs. |
+
 
 Tutorial: [Writing Battery Miniclass Drivers](https://learn.microsoft.com/en-us/windows-hardware/drivers/battery/writing-battery-miniclass-drivers)
 
