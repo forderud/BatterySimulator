@@ -9,26 +9,26 @@
 
 #pragma comment (lib, "SetupAPI.lib")
 
-typedef void (*DeviceVisitor)(int idx, HDEVINFO hDevInfo, SP_DEVINFO_DATA devInfo);
+typedef void (*DeviceVisitor)(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData);
 
 
-void VisitDevicePlain(int idx, HDEVINFO hDevInfo, SP_DEVINFO_DATA devInfo) {
+void VisitDevicePlain(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData) {
     wprintf(L"\n");
-    wprintf(L"== Device %i: %s ==\n", idx, GetDevRegPropStr(hDevInfo, devInfo, SPDRP_FRIENDLYNAME).c_str());
-    wprintf(L"Description: %s\n", GetDevRegPropStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str());
-    wprintf(L"HWID       : %s\n", GetDevRegPropStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str()); // HW type ID
-    wprintf(L"InstanceID : %s\n", GetDevPropStr(hDevInfo, devInfo, &DEVPKEY_Device_InstanceId).c_str()); // HWID with instance suffix
-    wprintf(L"PDO        : %s\n", GetDevPropStr(hDevInfo, devInfo, &DEVPKEY_Device_PDOName).c_str()); // Physical Device Object
+    wprintf(L"== Device %i: %s ==\n", idx, GetDevRegPropStr(devInfo, devInfoData, SPDRP_FRIENDLYNAME).c_str());
+    wprintf(L"Description: %s\n", GetDevRegPropStr(devInfo, devInfoData, SPDRP_DEVICEDESC).c_str());
+    wprintf(L"HWID       : %s\n", GetDevRegPropStr(devInfo, devInfoData, SPDRP_HARDWAREID).c_str()); // HW type ID
+    wprintf(L"InstanceID : %s\n", GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId).c_str()); // HWID with instance suffix
+    wprintf(L"PDO        : %s\n", GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName).c_str()); // Physical Device Object
     wprintf(L"\n");
 }
 
-void VisitDevicePowerData(int idx, HDEVINFO hDevInfo, SP_DEVINFO_DATA devInfo) {
-    VisitDevicePlain(idx, hDevInfo, devInfo);
+void VisitDevicePowerData(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData) {
+    VisitDevicePlain(idx, devInfo, devInfoData);
 
     // TODO: Also query DEVPKEY_Device_PowerRelations
 
     CM_POWER_DATA powerData = {};
-    BOOL ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, SPDRP_DEVICE_POWER_DATA, nullptr, (BYTE*)&powerData, sizeof(powerData), nullptr);
+    BOOL ok = SetupDiGetDeviceRegistryPropertyW(devInfo, &devInfoData, SPDRP_DEVICE_POWER_DATA, nullptr, (BYTE*)&powerData, sizeof(powerData), nullptr);
     if (ok) {
         PrintPowerData(powerData);
     } else {
@@ -44,15 +44,15 @@ int EnumerateDevices(GUID ClassGuid, DeviceVisitor visitor) {
     if (ClassGuid == GUID_NULL)
         flags |= DIGCF_ALLCLASSES; // query all connected devices
 
-    HDEVINFO hDevInfo = SetupDiGetClassDevsW(&ClassGuid, 0, 0, flags);
-    assert(hDevInfo != INVALID_HANDLE_VALUE);
+    HDEVINFO devInfo = SetupDiGetClassDevsW(&ClassGuid, 0, 0, flags);
+    assert(devInfo != INVALID_HANDLE_VALUE);
 
     // iterate over all devices
     for (int idx = 0; ; idx++) {
-        SP_DEVINFO_DATA devInfo = {};
-        devInfo.cbSize = sizeof(devInfo);
+        SP_DEVINFO_DATA devInfoData = {};
+        devInfoData.cbSize = sizeof(devInfoData);
 
-        BOOL ok = SetupDiEnumDeviceInfo(hDevInfo, idx, &devInfo);
+        BOOL ok = SetupDiEnumDeviceInfo(devInfo, idx, &devInfoData);
         if (!ok) {
             DWORD err = GetLastError();
             if (err == ERROR_NO_MORE_ITEMS)
@@ -60,10 +60,10 @@ int EnumerateDevices(GUID ClassGuid, DeviceVisitor visitor) {
             abort();
         }
 
-        visitor(idx, hDevInfo, devInfo);
+        visitor(idx, devInfo, devInfoData);
     }
 
-    SetupDiDestroyDeviceInfoList(hDevInfo);
+    SetupDiDestroyDeviceInfoList(devInfo);
 
     return 0;
 }
