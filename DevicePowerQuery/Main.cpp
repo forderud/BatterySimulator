@@ -48,7 +48,8 @@ int EnumerateDevices(GUID ClassGuid, DeviceVisitor visitor) {
     assert(devInfo != INVALID_HANDLE_VALUE);
 
     // iterate over all devices
-    for (int idx = 0; ; idx++) {
+    int idx = 0;
+    for (; ; idx++) {
         SP_DEVINFO_DATA devInfoData = {};
         devInfoData.cbSize = sizeof(devInfoData);
 
@@ -64,8 +65,7 @@ int EnumerateDevices(GUID ClassGuid, DeviceVisitor visitor) {
     }
 
     SetupDiDestroyDeviceInfoList(devInfo);
-
-    return 0;
+    return idx;
 }
 
 
