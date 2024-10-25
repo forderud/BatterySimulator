@@ -111,11 +111,17 @@ int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor) {
 
         wprintf(L"DeviceInterfacePath: %s\n", detailData->DevicePath); // can be passsed to CreateFile
 #endif
-}
+    }
 
     SetupDiDestroyDeviceInfoList(devInfo);
     return idx;
 }
+
+enum class SCAN_MODE {
+    ALL_DEVICES,
+    USB_DEVICES,
+    USB_INTERFACES,
+};
 
 
 int main() {
@@ -124,19 +130,27 @@ int main() {
     if (printPowerData)
         visitor = VisitDevicePowerData;
 
-    bool enumDevices = true;
-    if (enumDevices) {
-        GUID ClassGuid{};
-#ifdef ONLY_USB_DEVICES
-        // "USB Device" device setup class
-        wchar_t USBDevice_str[] = L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}";
-        CLSIDFromString(USBDevice_str, &ClassGuid);
-#endif
+    SCAN_MODE mode = SCAN_MODE::USB_DEVICES;
+    switch (mode) {
+    case SCAN_MODE::ALL_DEVICES:
         // search DOES includes logical devices beneath a composite USB device
-        EnumerateDevices(ClassGuid, visitor);
-    } else {
+        EnumerateDevices(GUID_NULL, visitor);
+        break;
+    case SCAN_MODE::USB_DEVICES:
+        {
+            // "USB Device" device setup class
+            wchar_t USBDevice_str[] = L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}";
+            GUID classGuid{};
+            CLSIDFromString(USBDevice_str, &classGuid);
+            // search DOES includes logical devices beneath a composite USB device
+            EnumerateDevices(classGuid, visitor);
+        }
+        break;
+    case SCAN_MODE::USB_INTERFACES:
         // search does NOT include logical devices beneath a composite USB device
         EnumerateInterfaces(GUID_DEVINTERFACE_USB_DEVICE, visitor);
+        break;
     }
+
     return 0;
 }
