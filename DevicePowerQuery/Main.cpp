@@ -44,12 +44,13 @@ int EnumerateDevices(GUID ClassGuid, bool printPowerData) {
 
             CM_POWER_DATA powerData = {};
             ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, SPDRP_DEVICE_POWER_DATA, nullptr, (BYTE*)&powerData, sizeof(powerData), nullptr);
-            if (!ok) {
-                DWORD res = GetLastError(); res;
-                continue;
+            if (ok) {
+                PrintPowerData(powerData);
+            } else {
+                DWORD err = GetLastError();
+                err;
+                abort();
             }
-
-            PrintPowerData(powerData);
         }
     }
 
