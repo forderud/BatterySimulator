@@ -12,6 +12,12 @@
 
 typedef void (*DeviceVisitor)(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData);
 
+GUID ToGUID(const wchar_t* str) {
+    GUID guid{};
+    if (FAILED(CLSIDFromString(str, &guid)))
+        abort();
+    return guid;
+}
 
 void VisitDevicePlain(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData) {
     wprintf(L"\n");
@@ -137,18 +143,12 @@ int main() {
         EnumerateDevices(GUID_NULL, visitor);
         break;
     case SCAN_MODE::USB_DEVICES:
-        {
-            // "USB Device" device setup class
-            wchar_t USBDevice_str[] = L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}";
-            GUID classGuid{};
-            CLSIDFromString(USBDevice_str, &classGuid);
-            // search DOES includes logical devices beneath a composite USB device
-            EnumerateDevices(classGuid, visitor);
-        }
+        // search DOES includes logical devices beneath a composite USB device
+        EnumerateDevices(ToGUID(L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}"), visitor); // "USB Device" device setup class
         break;
     case SCAN_MODE::USB_INTERFACES:
         // search does NOT include logical devices beneath a composite USB device
-        EnumerateInterfaces(GUID_DEVINTERFACE_USB_DEVICE, visitor);
+        EnumerateInterfaces(GUID_DEVINTERFACE_USB_DEVICE, visitor); // physical USB devices
         break;
     }
 
