@@ -80,17 +80,17 @@ static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo
     return result;
 }
 
-static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, const DEVPROPKEY*  property) {
+static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, const DEVPROPKEY* property) {
     std::wstring result;
     result.resize(128, L'\0');
     DWORD requiredSize = 0;
-    DEVPROPTYPE dataType = 0;
-    BOOL ok = SetupDiGetDevicePropertyW(hDevInfo, &devInfo, property, &dataType, (BYTE*)result.data(), (DWORD)result.size() * sizeof(wchar_t), &requiredSize, 0);
+    DEVPROPTYPE propertyType = 0;
+    BOOL ok = SetupDiGetDevicePropertyW(hDevInfo, &devInfo, property, &propertyType, (BYTE*)result.data(), (DWORD)result.size() * sizeof(wchar_t), &requiredSize, 0);
     if (!ok) {
         DWORD res = GetLastError(); res;
         return {};
     }
-    assert(dataType == DEVPROP_TYPE_STRING);
+    assert(propertyType == DEVPROP_TYPE_STRING);
 
     // single string
     result.resize(requiredSize / sizeof(wchar_t) - 1); // exclude null-termination
