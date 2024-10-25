@@ -74,7 +74,6 @@ int EnumerateDevices(GUID classGuid, DeviceVisitor visitor) {
     for (; ; idx++) {
         SP_DEVINFO_DATA devInfoData = {};
         devInfoData.cbSize = sizeof(devInfoData);
-
         BOOL ok = SetupDiEnumDeviceInfo(devInfo, idx, &devInfoData);
         if (!ok) {
             DWORD err = GetLastError();
@@ -129,7 +128,6 @@ enum class SCAN_MODE {
     USB_DEVICES,
     USB_INTERFACES,
 };
-
 
 int main() {
     bool printPowerData = true;
