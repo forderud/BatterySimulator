@@ -56,8 +56,8 @@ void PrintDevicePath(HDEVINFO devInfo, SP_DEVICE_INTERFACE_DATA interfaceData) {
         assert(err == ERROR_INSUFFICIENT_BUFFER);
     }
 
-    std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA, decltype(&free)> detailData{static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA*>(malloc(detailDataSize)), &free};
-    detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
+    std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA_W, decltype(&free)> detailData{static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA_W*>(malloc(detailDataSize)), &free};
+    detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 
     ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, detailData.get(), detailDataSize, &detailDataSize, nullptr);
     assert(ok);
