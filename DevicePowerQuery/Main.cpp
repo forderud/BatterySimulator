@@ -47,6 +47,19 @@ void VisitDevicePowerData(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData
     }
 }
 
+void PrintDevicePath(HDEVINFO devInfo, SP_DEVICE_INTERFACE_DATA interfaceData, DWORD detailDataSize) {
+    std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA, decltype(&free)> detailData{ static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA*>(malloc(detailDataSize)), &free };
+    detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
+
+    BOOL ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, detailData.get(), detailDataSize, &detailDataSize, nullptr);
+    if (!ok) {
+        DWORD err = GetLastError();
+        assert(err == ERROR_INSUFFICIENT_BUFFER);
+    }
+
+    wprintf(L"DeviceInterfacePath: %s\n", detailData->DevicePath); // can be passsed to CreateFile
+}
+
 
 int EnumerateDevices(GUID classGuid, DeviceVisitor visitor) {
     DWORD flags = DIGCF_PRESENT;
@@ -96,7 +109,7 @@ int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor) {
 
         SP_DEVINFO_DATA devInfoData = {};
         devInfoData.cbSize = sizeof(devInfoData);
-        unsigned long detailDataSize = 0;
+        DWORD detailDataSize = 0;
         ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, nullptr, 0, &detailDataSize, &devInfoData);
         if (!ok) {
             DWORD err = GetLastError();
@@ -104,19 +117,7 @@ int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor) {
         }
 
         visitor(idx, devInfo, devInfoData);
-
-#if 0
-        std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA, decltype(&free)> detailData{ static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA*>(malloc(detailDataSize)), &free };
-        detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
-
-        ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, detailData.get(), detailDataSize, &detailDataSize, nullptr);
-        if (!ok) {
-            DWORD err = GetLastError();
-            assert(err == ERROR_INSUFFICIENT_BUFFER);
-        }
-
-        wprintf(L"DeviceInterfacePath: %s\n", detailData->DevicePath); // can be passsed to CreateFile
-#endif
+        PrintDevicePath(devInfo, interfaceData, detailDataSize);
     }
 
     SetupDiDestroyDeviceInfoList(devInfo);
