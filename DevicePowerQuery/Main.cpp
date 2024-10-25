@@ -48,7 +48,7 @@ void VisitDevicePowerData(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoDat
     }
 }
 
-void PrintDevicePath(HDEVINFO devInfo, SP_DEVICE_INTERFACE_DATA interfaceData) {
+void PrintDevicePath(HDEVINFO devInfo, SP_DEVICE_INTERFACE_DATA& interfaceData) {
     DWORD detailDataSize = 0;
     BOOL ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, nullptr, 0, &detailDataSize, nullptr);
     if (!ok) {
