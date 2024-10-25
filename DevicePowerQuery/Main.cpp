@@ -115,6 +115,12 @@ int EnumerateInterfaces(GUID ClassGuid, DeviceVisitor visitor) {
 
 
 int main() {
+    bool printPowerData = true;
+    DeviceVisitor visitor = VisitDevicePlain;
+    if (printPowerData)
+        visitor = VisitDevicePowerData;
+
+
     bool enumDevices = false;
     if (enumDevices) {
         GUID ClassGuid{};
@@ -123,9 +129,9 @@ int main() {
         wchar_t USBDevice_str[] = L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}";
         CLSIDFromString(USBDevice_str, &ClassGuid);
 #endif
-        EnumerateDevices(ClassGuid, VisitDevicePowerData);
+        EnumerateDevices(ClassGuid, visitor);
     } else {
-        EnumerateInterfaces(GUID_DEVINTERFACE_USB_DEVICE, VisitDevicePowerData);
+        EnumerateInterfaces(GUID_DEVINTERFACE_USB_DEVICE, visitor);
     }
     return 0;
 }
