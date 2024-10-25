@@ -130,10 +130,24 @@ enum class SCAN_MODE {
     USB_INTERFACES,
 };
 
-int main() {
-    // TODO: Parse these parameters from command-line
-    bool printPowerData = true;
-    SCAN_MODE mode = SCAN_MODE::USB_DEVICES;
+int wmain(int argc, wchar_t* argv[]) {
+    bool printPowerData = false;
+    SCAN_MODE mode = SCAN_MODE::ALL_DEVICES;
+
+    // Parse command-line arguments
+    for (int idx = 1; idx < argc; idx++) {
+        std::wstring arg = argv[idx];
+        if (arg == L"--power")
+            printPowerData = true;
+        else if (arg == L"--all-devices")
+            mode = SCAN_MODE::ALL_DEVICES;
+        else if (arg == L"--usb-devices")
+            mode = SCAN_MODE::USB_DEVICES;
+        else if (arg == L"--usb-interfaces")
+            mode = SCAN_MODE::USB_INTERFACES;
+        else
+            wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces] [--power]\n");
+    }
 
     DeviceVisitor visitor = VisitDeviceBasic;
     if (printPowerData)
