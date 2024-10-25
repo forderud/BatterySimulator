@@ -117,8 +117,9 @@ int GetDeviceDriverPowerData() {
         }
 
         wprintf(L"\n== Device %i: %s ==\n", idx, GetDevRegPropStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str()); // SPDRP_FRIENDLYNAME or SPDRP_DEVICEDESC
-        wprintf(L"HWID: %s\n", GetDevRegPropStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str());
-        wprintf(L"PDO : %s\n", GetDevPropStr(hDevInfo, devInfo, &DEVPKEY_Device_PDOName).c_str());
+        wprintf(L"HWID      : %s\n", GetDevRegPropStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str()); // HW type
+        wprintf(L"InstanceID: %s\n", GetDevPropStr(hDevInfo, devInfo, &DEVPKEY_Device_InstanceId).c_str()); // HWID with instance suffix
+        wprintf(L"PDO       : %s\n", GetDevPropStr(hDevInfo, devInfo, &DEVPKEY_Device_PDOName).c_str());
 
 #if 1
         // TODO: Also query DEVPKEY_Device_PowerRelations
