@@ -42,12 +42,12 @@ void VisitDevicePowerData(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData
 }
 
 
-int EnumerateDevices(GUID ClassGuid, DeviceVisitor visitor) {
+int EnumerateDevices(GUID classGuid, DeviceVisitor visitor) {
     DWORD flags = DIGCF_PRESENT;
-    if (ClassGuid == GUID_NULL)
+    if (classGuid == GUID_NULL)
         flags |= DIGCF_ALLCLASSES; // query all connected devices
 
-    HDEVINFO devInfo = SetupDiGetClassDevsW(&ClassGuid, 0, 0, flags);
+    HDEVINFO devInfo = SetupDiGetClassDevsW(&classGuid, 0, 0, flags);
     assert(devInfo != INVALID_HANDLE_VALUE);
 
     // iterate over all devices
@@ -71,8 +71,8 @@ int EnumerateDevices(GUID ClassGuid, DeviceVisitor visitor) {
     return idx;
 }
 
-int EnumerateInterfaces(GUID ClassGuid, DeviceVisitor visitor) {
-    HDEVINFO devInfo = SetupDiGetClassDevsW(&ClassGuid, 0, 0, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
+int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor) {
+    HDEVINFO devInfo = SetupDiGetClassDevsW(&classGuid, 0, 0, DIGCF_DEVICEINTERFACE | DIGCF_PRESENT);
     assert(devInfo != INVALID_HANDLE_VALUE);
 
     // iterate over all interfaces
@@ -80,7 +80,7 @@ int EnumerateInterfaces(GUID ClassGuid, DeviceVisitor visitor) {
     for (; ; idx++) {
         SP_DEVICE_INTERFACE_DATA interfaceData{};
         interfaceData.cbSize = sizeof(interfaceData);
-        BOOL ok = SetupDiEnumDeviceInterfaces(devInfo, nullptr, &ClassGuid, idx, &interfaceData);
+        BOOL ok = SetupDiEnumDeviceInterfaces(devInfo, nullptr, &classGuid, idx, &interfaceData);
         if (!ok) {
             DWORD err = GetLastError();
             if (err == ERROR_NO_MORE_ITEMS)
