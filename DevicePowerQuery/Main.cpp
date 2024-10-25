@@ -117,10 +117,11 @@ int EnumerateDevices(bool printPowerData) {
         }
 
         wprintf(L"\n");
-        wprintf(L"== Device %i: %s ==\n", idx, GetDevRegPropStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str()); // SPDRP_FRIENDLYNAME or SPDRP_DEVICEDESC
-        wprintf(L"HWID      : %s\n", GetDevRegPropStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str()); // HW type ID
-        wprintf(L"InstanceID: %s\n", GetDevPropStr(hDevInfo, devInfo, &DEVPKEY_Device_InstanceId).c_str()); // HWID with instance suffix
-        wprintf(L"PDO       : %s\n", GetDevPropStr(hDevInfo, devInfo, &DEVPKEY_Device_PDOName).c_str()); // Physical Device Object
+        wprintf(L"== Device %i: %s ==\n", idx, GetDevRegPropStr(hDevInfo, devInfo, SPDRP_FRIENDLYNAME).c_str());
+        wprintf(L"Description: %s\n", GetDevRegPropStr(hDevInfo, devInfo, SPDRP_DEVICEDESC).c_str());
+        wprintf(L"HWID       : %s\n", GetDevRegPropStr(hDevInfo, devInfo, SPDRP_HARDWAREID).c_str()); // HW type ID
+        wprintf(L"InstanceID : %s\n", GetDevPropStr(hDevInfo, devInfo, &DEVPKEY_Device_InstanceId).c_str()); // HWID with instance suffix
+        wprintf(L"PDO        : %s\n", GetDevPropStr(hDevInfo, devInfo, &DEVPKEY_Device_PDOName).c_str()); // Physical Device Object
         wprintf(L"\n");
 
         if (printPowerData) {
