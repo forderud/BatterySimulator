@@ -1,8 +1,8 @@
 | Project      | Description                                            |
 |--------------|--------------------------------------------------------|
-| **BatteryQuery** | Tool for retrieving battery parameters. |
-| **DevicePowerQuery** | Tool for querying connected devices and their power state and parameters. |
-| **PowerMonitor** | Sample code for handling power events and query power state. |
+| **BatteryQuery** | Tool for querying battery parameters. |
+| **DevicePowerQuery** | Tool for enumerating connected devices and their power state and parameters. |
+| **PowerMonitor** | Sample code for handling power events and query system power state. |
 | **simbatt** | Mock driver to simulate multi-battery setups and test Windows power management. Based on the Microsoft [Simulated Battery Driver Sample](https://github.com/microsoft/Windows-driver-samples/tree/main/simbatt) sample with [modifications](/simbatt) to ease multi-battery testing and failure handling without requiring physical battery packs. |
 
 
@@ -149,5 +149,5 @@ Per-battery parameters can either be accessed through a WMI high-level or IOCTL 
 ### Windows power events and aggregated parameters
 Windows applications receive [`WM_POWERBROADCAST`](https://learn.microsoft.com/en-us/windows/win32/power/wm-powerbroadcast) events when the machine transitions between AC and battery power, as well as when suspening or resuming from low-power modes. Details about the power state and aggregated battery charge level can be retrieved by calling [`GetSystemPowerStatus`](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getsystempowerstatus).
 
-The [PowerMonitor](./PowerMonitor) project demonstrates how to handle power events and query power state.  
+The [PowerMonitor](./PowerMonitor) project demonstrates how to handle power events and query system power state.  
 ![image](https://github.com/user-attachments/assets/5df449cd-e2af-47c4-b127-da6505207a8e)
