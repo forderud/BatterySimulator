@@ -135,18 +135,24 @@ int wmain(int argc, wchar_t* argv[]) {
     SCAN_MODE mode = SCAN_MODE::ALL_DEVICES;
 
     // Parse command-line arguments
+    if (argc < 2) {
+        wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces] [--power]\n");
+        return 1;
+    }
     for (int idx = 1; idx < argc; idx++) {
         std::wstring arg = argv[idx];
-        if (arg == L"--power")
+        if (arg == L"--power") {
             printPowerData = true;
-        else if (arg == L"--all-devices")
+        } else if (arg == L"--all-devices") {
             mode = SCAN_MODE::ALL_DEVICES;
-        else if (arg == L"--usb-devices")
+        } else if (arg == L"--usb-devices") {
             mode = SCAN_MODE::USB_DEVICES;
-        else if (arg == L"--usb-interfaces")
+        } else if (arg == L"--usb-interfaces") {
             mode = SCAN_MODE::USB_INTERFACES;
-        else
+        } else {
             wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces] [--power]\n");
+            return 1;
+        }
     }
 
     DeviceVisitor visitor = VisitDeviceBasic;
