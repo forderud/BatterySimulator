@@ -10,7 +10,7 @@
 
 #pragma comment (lib, "SetupAPI.lib")
 
-typedef void (*DeviceVisitor)(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData);
+typedef void (*DeviceVisitor)(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData);
 
 GUID ToGUID(const wchar_t* str) {
     GUID guid{};
@@ -19,7 +19,7 @@ GUID ToGUID(const wchar_t* str) {
     return guid;
 }
 
-void VisitDeviceBasic(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData) {
+void VisitDeviceBasic(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData) {
     wprintf(L"\n");
     wprintf(L"== Device %i: %s ==\n", idx, GetDevRegPropStr(devInfo, devInfoData, SPDRP_FRIENDLYNAME).c_str());
     wprintf(L"Description: %s\n", GetDevRegPropStr(devInfo, devInfoData, SPDRP_DEVICEDESC).c_str());
@@ -31,7 +31,7 @@ void VisitDeviceBasic(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData) {
     // L"\\\\?\\GLOBALROOT" + PDOName can be passed to CreateFile (see https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file)
 }
 
-void VisitDevicePowerData(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData) {
+void VisitDevicePowerData(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData) {
     VisitDeviceBasic(idx, devInfo, devInfoData); // print basic parameters first
 
     // TODO: Also query DEVPKEY_Device_PowerRelations
