@@ -29,7 +29,7 @@ static const wchar_t* DevicePowerStateStr(DEVICE_POWER_STATE state) {
     }
 }
 
-static void PrintPowerData(CM_POWER_DATA powerData) {
+static void PrintPowerData(const CM_POWER_DATA& powerData) {
     wprintf(L"Current power state: %s.\n", DevicePowerStateStr(powerData.PD_MostRecentPowerState));
 
     wprintf(L"\n");
