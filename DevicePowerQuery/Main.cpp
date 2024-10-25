@@ -106,7 +106,8 @@ int EnumerateInterfaces(GUID ClassGuid, DeviceVisitor visitor) {
             DWORD err = GetLastError();
             assert(err == ERROR_INSUFFICIENT_BUFFER);
         }
-        // detailData->DevicePath parameter can be passsed to CreateFile
+
+        wprintf(L"DevicePath : %s\n", detailData->DevicePath); // can be passsed to CreateFile
 #endif
 
         visitor(idx, devInfo, devInfoData);
