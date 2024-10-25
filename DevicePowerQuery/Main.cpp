@@ -19,7 +19,7 @@ GUID ToGUID(const wchar_t* str) {
     return guid;
 }
 
-void VisitDevicePlain(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData) {
+void VisitDeviceBasic(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData) {
     wprintf(L"\n");
     wprintf(L"== Device %i: %s ==\n", idx, GetDevRegPropStr(devInfo, devInfoData, SPDRP_FRIENDLYNAME).c_str());
     wprintf(L"Description: %s\n", GetDevRegPropStr(devInfo, devInfoData, SPDRP_DEVICEDESC).c_str());
@@ -32,10 +32,11 @@ void VisitDevicePlain(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData) {
 }
 
 void VisitDevicePowerData(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData) {
-    VisitDevicePlain(idx, devInfo, devInfoData);
+    VisitDeviceBasic(idx, devInfo, devInfoData); // print basic parameters first
 
     // TODO: Also query DEVPKEY_Device_PowerRelations
 
+    // then print power data
     CM_POWER_DATA powerData = {};
     BOOL ok = SetupDiGetDeviceRegistryPropertyW(devInfo, &devInfoData, SPDRP_DEVICE_POWER_DATA, nullptr, (BYTE*)&powerData, sizeof(powerData), nullptr);
     if (ok) {
@@ -48,7 +49,7 @@ void VisitDevicePowerData(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA devInfoData
 }
 
 void PrintDevicePath(HDEVINFO devInfo, SP_DEVICE_INTERFACE_DATA interfaceData, DWORD detailDataSize) {
-    std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA, decltype(&free)> detailData{ static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA*>(malloc(detailDataSize)), &free };
+    std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA, decltype(&free)> detailData{static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA*>(malloc(detailDataSize)), &free};
     detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
 
     BOOL ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, detailData.get(), detailDataSize, &detailDataSize, nullptr);
@@ -131,7 +132,7 @@ enum class SCAN_MODE {
 
 int main() {
     bool printPowerData = true;
-    DeviceVisitor visitor = VisitDevicePlain;
+    DeviceVisitor visitor = VisitDeviceBasic;
     if (printPowerData)
         visitor = VisitDevicePowerData;
 
