@@ -90,18 +90,20 @@ int EnumerateInterfaces(GUID ClassGuid, DeviceVisitor visitor) {
 
         SP_DEVINFO_DATA devInfoData = {};
         devInfoData.cbSize = sizeof(devInfoData);
-        unsigned long deviceInfoDataSize = 0;
-        ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, nullptr, 0, &deviceInfoDataSize, &devInfoData);
+        unsigned long detailDataSize = 0;
+        ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, nullptr, 0, &detailDataSize, &devInfoData);
         if (!ok) {
             DWORD err = GetLastError();
             assert(err == ERROR_INSUFFICIENT_BUFFER);
         }
 
+        visitor(idx, devInfo, devInfoData);
+
 #if 0
-        std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA, decltype(&free)> detailData{ static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA*>(malloc(deviceInfoDataSize)), &free };
+        std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA, decltype(&free)> detailData{ static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA*>(malloc(detailDataSize)), &free };
         detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
 
-        ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, detailData.get(), deviceInfoDataSize, &deviceInfoDataSize, nullptr);
+        ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, detailData.get(), detailDataSize, &detailDataSize, nullptr);
         if (!ok) {
             DWORD err = GetLastError();
             assert(err == ERROR_INSUFFICIENT_BUFFER);
@@ -109,8 +111,6 @@ int EnumerateInterfaces(GUID ClassGuid, DeviceVisitor visitor) {
 
         wprintf(L"DeviceInterfacePath: %s\n", detailData->DevicePath); // can be passsed to CreateFile
 #endif
-
-        visitor(idx, devInfo, devInfoData);
 }
 
     SetupDiDestroyDeviceInfoList(devInfo);
