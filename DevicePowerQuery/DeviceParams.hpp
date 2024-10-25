@@ -15,8 +15,7 @@ static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo
     if (dataType == REG_SZ) {
         // single string
         result.resize(requiredSize / sizeof(wchar_t) - 1); // exclude null-termination
-    }
-    else if (dataType == REG_MULTI_SZ) {
+    } else if (dataType == REG_MULTI_SZ) {
         // multiple zero-terminated strings
         size_t len = wcslen(result.c_str());
         result.resize(len); // return first string
