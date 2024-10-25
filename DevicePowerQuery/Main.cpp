@@ -99,11 +99,12 @@ int EnumerateInterfaces(GUID ClassGuid, DeviceVisitor visitor) {
         std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA, decltype(&free)> detailData{ static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA*>(malloc(deviceInfoDataSize)), &free };
         detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA);
 
-        ok = SetupDiGetDeviceInterfaceDetailW(hDevInfo, &interfaceData, detailData.get(), deviceInfoDataSize, &deviceInfoDataSize, &devInfo);
+        ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, detailData.get(), deviceInfoDataSize, &deviceInfoDataSize, nullptr);
         if (!ok) {
             DWORD err = GetLastError();
             assert(err == ERROR_INSUFFICIENT_BUFFER);
         }
+        // detailData->DevicePath parameter can be passsed to CreateFile
 #endif
 
         visitor(idx, devInfo, devInfoData);
