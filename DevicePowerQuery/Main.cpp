@@ -134,6 +134,7 @@ enum class SCAN_MODE {
     USB_INTERFACES,
     HID_DEVICES,
     HID_INTERFACES,
+    BATTERY_DEVICES,
 };
 
 int wmain(int argc, wchar_t* argv[]) {
@@ -142,7 +143,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
     // Parse command-line arguments
     if (argc < 2) {
-        wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-devices | --hid-interfaces] [--power]\n");
+        wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-devices | --hid-interfaces | --battery-devices] [--power]\n");
         return 1;
     }
     for (int idx = 1; idx < argc; idx++) {
@@ -159,8 +160,10 @@ int wmain(int argc, wchar_t* argv[]) {
             mode = SCAN_MODE::HID_DEVICES;
         } else if (arg == L"--hid-interfaces") {
             mode = SCAN_MODE::HID_INTERFACES;
+        } else if (arg == L"--battery-devices") {
+            mode = SCAN_MODE::BATTERY_DEVICES;
         } else {
-            wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-devices | --hid-interfaces] [--power]\n");
+            wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-devices | --hid-interfaces | --battery-devices] [--power]\n");
             return 1;
         }
     }
@@ -185,6 +188,9 @@ int wmain(int argc, wchar_t* argv[]) {
     case SCAN_MODE::HID_INTERFACES:
         // search does NOT include logical devices beneath a composite USB device
         EnumerateInterfaces(GUID_DEVINTERFACE_HID, visitor); // HID devices
+        break;
+    case SCAN_MODE::BATTERY_DEVICES:
+        EnumerateDevices(ToGUID(L"{72631e54-78a4-11d0-bcf7-00aa00b7b32a}"), visitor); // "Battery Device" device setup class
         break;
     }
 
