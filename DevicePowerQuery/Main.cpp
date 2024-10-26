@@ -134,8 +134,8 @@ enum class SCAN_MODE {
 };
 
 int wmain(int argc, wchar_t* argv[]) {
-    bool printPowerData = false;
     SCAN_MODE mode = SCAN_MODE::ALL_DEVICES;
+    DeviceVisitor visitor = VisitDeviceBasic; // only print basic device information
 
     // Parse command-line arguments
     if (argc < 2) {
@@ -145,7 +145,7 @@ int wmain(int argc, wchar_t* argv[]) {
     for (int idx = 1; idx < argc; idx++) {
         std::wstring arg = argv[idx];
         if (arg == L"--power") {
-            printPowerData = true;
+            visitor = VisitDevicePowerData; // also print power data
         } else if (arg == L"--all-devices") {
             mode = SCAN_MODE::ALL_DEVICES;
         } else if (arg == L"--usb-devices") {
@@ -157,10 +157,6 @@ int wmain(int argc, wchar_t* argv[]) {
             return 1;
         }
     }
-
-    DeviceVisitor visitor = VisitDeviceBasic;
-    if (printPowerData)
-        visitor = VisitDevicePowerData;
 
     switch (mode) {
     case SCAN_MODE::ALL_DEVICES:
