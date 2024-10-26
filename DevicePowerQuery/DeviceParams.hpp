@@ -5,8 +5,8 @@ static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo
     DWORD requiredSize = 0;
     BOOL ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, property, nullptr, nullptr, 0, &requiredSize);
     if (!ok) {
-        DWORD res = GetLastError(); res;
-        if (res != ERROR_INSUFFICIENT_BUFFER)
+        DWORD err = GetLastError();
+        if (err != ERROR_INSUFFICIENT_BUFFER)
             return {};
     }
 
@@ -14,7 +14,7 @@ static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo
     std::wstring result(requiredSize/sizeof(wchar_t), L'\0');
     ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, property, &dataType, (BYTE*)result.data(), (DWORD)result.size()*sizeof(wchar_t), &requiredSize);
     if (!ok) {
-        DWORD res = GetLastError(); res;
+        DWORD err = GetLastError(); err;
         return {};
     }
 
@@ -37,15 +37,15 @@ static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, c
     DEVPROPTYPE propertyType = 0;
     BOOL ok = SetupDiGetDevicePropertyW(hDevInfo, &devInfo, property, &propertyType, nullptr, 0, &requiredSize, 0);
     if (!ok) {
-        DWORD res = GetLastError();
-        if (res != ERROR_INSUFFICIENT_BUFFER)
+        DWORD err = GetLastError();
+        if (err != ERROR_INSUFFICIENT_BUFFER)
             return {};
     }
 
     std::wstring result(requiredSize/sizeof(wchar_t), L'\0');
     ok = SetupDiGetDevicePropertyW(hDevInfo, &devInfo, property, &propertyType, (BYTE*)result.data(), (DWORD)result.size()*sizeof(wchar_t), &requiredSize, 0);
     if (!ok) {
-        DWORD res = GetLastError(); res;
+        DWORD err = GetLastError(); err;
         return {};
     }
     assert(propertyType == DEVPROP_TYPE_STRING);
