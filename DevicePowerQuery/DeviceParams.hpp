@@ -3,7 +3,7 @@
 
 static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, DWORD property) {
     std::wstring result;
-    result.resize(128, L'\0');
+    result.resize(256, L'\0');
     DWORD requiredSize = 0;
     DWORD dataType = 0;
     BOOL ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, property, &dataType, (BYTE*)result.data(), (DWORD)result.size()*sizeof(wchar_t), &requiredSize);
@@ -29,7 +29,7 @@ static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo
 
 static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, const DEVPROPKEY* property) {
     std::wstring result;
-    result.resize(128, L'\0');
+    result.resize(256, L'\0');
     DWORD requiredSize = 0;
     DEVPROPTYPE propertyType = 0;
     BOOL ok = SetupDiGetDevicePropertyW(hDevInfo, &devInfo, property, &propertyType, (BYTE*)result.data(), (DWORD)result.size()*sizeof(wchar_t), &requiredSize, 0);
