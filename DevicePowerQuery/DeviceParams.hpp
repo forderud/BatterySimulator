@@ -2,11 +2,17 @@
 
 
 static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, DWORD property) {
-    std::wstring result;
-    result.resize(256, L'\0');
     DWORD requiredSize = 0;
+    BOOL ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, property, nullptr, nullptr, 0, &requiredSize);
+    if (!ok) {
+        DWORD res = GetLastError(); res;
+        if (res != ERROR_INSUFFICIENT_BUFFER)
+            return {};
+    }
+
     DWORD dataType = 0;
-    BOOL ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, property, &dataType, (BYTE*)result.data(), (DWORD)result.size()*sizeof(wchar_t), &requiredSize);
+    std::wstring result(requiredSize/sizeof(wchar_t), L'\0');
+    ok = SetupDiGetDeviceRegistryPropertyW(hDevInfo, &devInfo, property, &dataType, (BYTE*)result.data(), (DWORD)result.size()*sizeof(wchar_t), &requiredSize);
     if (!ok) {
         DWORD res = GetLastError(); res;
         return {};
@@ -14,13 +20,12 @@ static std::wstring GetDevRegPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo
 
     if (dataType == REG_SZ) {
         // single string
-        result.resize(requiredSize/sizeof(wchar_t) - 1); // exclude null-termination
+        result.resize(result.size()-1); // exclude null-termination
     } else if (dataType == REG_MULTI_SZ) {
         // multiple zero-terminated strings
         size_t len = wcslen(result.c_str());
         result.resize(len); // return first string
-    }
-    else {
+    } else {
         assert(false);
     }
 
