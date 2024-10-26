@@ -132,6 +132,7 @@ enum class SCAN_MODE {
     ALL_DEVICES,
     USB_DEVICES,
     USB_INTERFACES,
+    HID_DEVICES,
     HID_INTERFACES,
 };
 
@@ -141,7 +142,7 @@ int wmain(int argc, wchar_t* argv[]) {
 
     // Parse command-line arguments
     if (argc < 2) {
-        wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-interfaces] [--power]\n");
+        wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-devices | --hid-interfaces] [--power]\n");
         return 1;
     }
     for (int idx = 1; idx < argc; idx++) {
@@ -154,10 +155,12 @@ int wmain(int argc, wchar_t* argv[]) {
             mode = SCAN_MODE::USB_DEVICES;
         } else if (arg == L"--usb-interfaces") {
             mode = SCAN_MODE::USB_INTERFACES;
+        } else if (arg == L"--hid-devices") {
+            mode = SCAN_MODE::HID_DEVICES;
         } else if (arg == L"--hid-interfaces") {
             mode = SCAN_MODE::HID_INTERFACES;
         } else {
-            wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-interfaces] [--power]\n");
+            wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-devices | --hid-interfaces] [--power]\n");
             return 1;
         }
     }
@@ -175,11 +178,14 @@ int wmain(int argc, wchar_t* argv[]) {
         // search does NOT include logical devices beneath a composite USB device
         EnumerateInterfaces(GUID_DEVINTERFACE_USB_DEVICE, visitor); // physical USB devices
         break;
+    case SCAN_MODE::HID_DEVICES:
+        // search DOES includes logical devices beneath a composite USB device
+        EnumerateDevices(ToGUID(L"{745a17a0-74d3-11d0-b6fe-00a0c90f57da}"), visitor); // "HID Device" device setup class
+        break;
     case SCAN_MODE::HID_INTERFACES:
         // search does NOT include logical devices beneath a composite USB device
         EnumerateInterfaces(GUID_DEVINTERFACE_HID, visitor); // HID devices
         break;
-
     }
 
     return 0;
