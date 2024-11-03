@@ -56,7 +56,7 @@ int wmain(int argc, wchar_t* argv[]) {
         BATTERY_REPORTING_SCALE scale[4] = {};
         unsigned int count = GetBatteryInfoGranularity(battery.Get(), scale);
         for (unsigned int idx = 0; idx < count; ++idx)
-            wprintf(L"  BatteryGranularityInformation: Granularity=%u, Capacity=%u\n", scale[idx].Granularity, scale[idx].Capacity);
+            wprintf(L"  BatteryGranularityInformation %u: Granularity=%u mWh, Capacity=%u mWh\n", idx, scale[idx].Granularity, scale[idx].Capacity);
         if (count == 0)
             wprintf(L"  BatteryGranularityInformation: <unknown>\n");
 
