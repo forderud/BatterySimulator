@@ -182,11 +182,9 @@ int wmain(int argc, wchar_t* argv[]) {
         EnumerateInterfaces(GUID_DEVINTERFACE_USB_DEVICE, visitor); // physical USB devices
         break;
     case SCAN_MODE::HID_DEVICES:
-        // search DOES includes logical devices beneath a composite USB device
         EnumerateDevices(ToGUID(L"{745a17a0-74d3-11d0-b6fe-00a0c90f57da}"), visitor); // "HID Device" device setup class
         break;
     case SCAN_MODE::HID_INTERFACES:
-        // search does NOT include logical devices beneath a composite USB device
         EnumerateInterfaces(GUID_DEVINTERFACE_HID, visitor); // HID devices
         break;
     case SCAN_MODE::BATTERY_DEVICES:
