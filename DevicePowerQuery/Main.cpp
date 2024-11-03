@@ -56,24 +56,6 @@ void VisitDevicePowerData(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoDat
     }
 }
 
-void PrintDevicePath(HDEVINFO devInfo, SP_DEVICE_INTERFACE_DATA& interfaceData) {
-    DWORD detailDataSize = 0;
-    BOOL ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, nullptr, 0, &detailDataSize, nullptr);
-    if (!ok) {
-        DWORD err = GetLastError();
-        assert(err == ERROR_INSUFFICIENT_BUFFER);
-    }
-
-    std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA_W, decltype(&free)> detailData{static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA_W*>(malloc(detailDataSize)), &free};
-    detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
-
-    ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, detailData.get(), detailDataSize, &detailDataSize, nullptr);
-    assert(ok);
-
-    wprintf(L"DeviceInterfacePath: %s\n", detailData->DevicePath); // can be passsed to CreateFile
-}
-
-
 int EnumerateDevices(GUID classGuid, DeviceVisitor visitor) {
     DWORD flags = DIGCF_PRESENT;
     if (classGuid == GUID_NULL)
@@ -132,7 +114,8 @@ int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor) {
         }
 
         visitor(idx, devInfo, devInfoData);
-        PrintDevicePath(devInfo, interfaceData);
+
+        wprintf(L"DeviceInterfacePath: %s\n", GetDevicePath(devInfo, interfaceData).c_str()); // can be passsed to CreateFile
     }
 
     SetupDiDestroyDeviceInfoList(devInfo);
