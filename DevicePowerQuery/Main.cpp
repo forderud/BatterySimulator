@@ -189,7 +189,7 @@ int wmain(int argc, wchar_t* argv[]) {
         EnumerateInterfaces(GUID_DEVINTERFACE_HID, visitor); // HID devices
         break;
     case SCAN_MODE::BATTERY_DEVICES:
-        EnumerateDevices(GUID_DEVICE_BATTERY, visitor); // "Battery Device" device setup class
+        EnumerateDevices(GUID_DEVICE_BATTERY, visitor); // "Battery Device" device interface class
         break;
     }
 
