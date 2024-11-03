@@ -136,15 +136,18 @@ enum class SCAN_MODE {
     HID_DEVICES,
     HID_INTERFACES,
     BATTERY_DEVICES,
+    BATTERY_INTERFACES,
 };
 
 int wmain(int argc, wchar_t* argv[]) {
     SCAN_MODE mode = SCAN_MODE::ALL_DEVICES;
     DeviceVisitor visitor = VisitDeviceBasic; // only print basic device information
 
+    const wchar_t usage_helpstring[] = L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-devices | --hid-interfaces | --battery-devices | --battery-interfaces] [--power]\n";
+
     // Parse command-line arguments
     if (argc < 2) {
-        wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-devices | --hid-interfaces | --battery-devices] [--power]\n");
+        wprintf(usage_helpstring);
         return 1;
     }
     for (int idx = 1; idx < argc; idx++) {
@@ -163,8 +166,10 @@ int wmain(int argc, wchar_t* argv[]) {
             mode = SCAN_MODE::HID_INTERFACES;
         } else if (arg == L"--battery-devices") {
             mode = SCAN_MODE::BATTERY_DEVICES;
+        } else if (arg == L"--battery-interfaces") {
+            mode = SCAN_MODE::BATTERY_INTERFACES;
         } else {
-            wprintf(L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-devices | --hid-interfaces | --battery-devices] [--power]\n");
+            wprintf(usage_helpstring);
             return 1;
         }
     }
@@ -189,7 +194,12 @@ int wmain(int argc, wchar_t* argv[]) {
         EnumerateInterfaces(GUID_DEVINTERFACE_HID, visitor); // HID devices
         break;
     case SCAN_MODE::BATTERY_DEVICES:
+        // detects both batteries and AC adapters
         EnumerateDevices(GUID_DEVICE_BATTERY, visitor); // "Battery Device" device interface class
+        break;
+    case SCAN_MODE::BATTERY_INTERFACES:
+        // only detects batteries, and _not_ AC adapters
+        EnumerateInterfaces(GUID_DEVICE_BATTERY, visitor); // "Battery Device" device interface class
         break;
     }
 
