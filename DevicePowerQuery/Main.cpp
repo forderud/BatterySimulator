@@ -6,6 +6,7 @@
 #include <Devpkey.h>
 #include "DeviceParams.hpp"
 #include "PowerData.hpp"
+#include <Batclass.h> // for GUID_DEVICE_BATTERY
 #include <Hidclass.h> // for GUID_DEVINTERFACE_HID
 #include <Usbiodef.h> // for GUID_DEVINTERFACE_USB_DEVICE
 
@@ -188,7 +189,7 @@ int wmain(int argc, wchar_t* argv[]) {
         EnumerateInterfaces(GUID_DEVINTERFACE_HID, visitor); // HID devices
         break;
     case SCAN_MODE::BATTERY_DEVICES:
-        EnumerateDevices(ToGUID(L"{72631e54-78a4-11d0-bcf7-00aa00b7b32a}"), visitor); // "Battery Device" device setup class
+        EnumerateDevices(GUID_DEVICE_BATTERY, visitor); // "Battery Device" device setup class
         break;
     }
 
