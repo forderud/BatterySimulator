@@ -137,7 +137,7 @@ int wmain(int argc, wchar_t* argv[]) {
     EnumerateFunction enumerator = EnumerateDevices;
     DeviceVisitor visitor = VisitDeviceBasic; // only print basic device information
 
-    const wchar_t usage_helpstring[] = L"USAGE DevicePowerQuery.exe [--all | --usb | --hid | --battery ] [--devices | --interfaces] [--power]\n";
+    const wchar_t usage_helpstring[] = L"USAGE DevicePowerQuery.exe [--all | --usb | --hid | --battery] [--devices | --interfaces] [--power]\n";
 
     // Parse command-line arguments
     if (argc < 2) {
