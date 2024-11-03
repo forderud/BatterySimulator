@@ -141,6 +141,7 @@ enum class SCAN_MODE {
 
 int wmain(int argc, wchar_t* argv[]) {
     SCAN_MODE mode = SCAN_MODE::ALL_DEVICES;
+    GUID device_class = GUID_NULL;
     DeviceVisitor visitor = VisitDeviceBasic; // only print basic device information
 
     const wchar_t usage_helpstring[] = L"USAGE DevicePowerQuery.exe [--all-devices | --usb-devices | --usb-interfaces | --hid-devices | --hid-interfaces | --battery-devices | --battery-interfaces] [--power]\n";
@@ -155,19 +156,31 @@ int wmain(int argc, wchar_t* argv[]) {
         if (arg == L"--power") {
             visitor = VisitDevicePowerData; // also print power data
         } else if (arg == L"--all-devices") {
+            // search DOES includes logical devices beneath a composite USB device
             mode = SCAN_MODE::ALL_DEVICES;
+            device_class = GUID_NULL;
         } else if (arg == L"--usb-devices") {
+            // search DOES includes logical devices beneath a composite USB devices
             mode = SCAN_MODE::USB_DEVICES;
+            device_class = ToGUID(L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}"); // "USB Device" device setup class
         } else if (arg == L"--usb-interfaces") {
+            // search does NOT include logical devices beneath a composite USB device
             mode = SCAN_MODE::USB_INTERFACES;
+            device_class = GUID_DEVINTERFACE_USB_DEVICE; // physical USB devices
         } else if (arg == L"--hid-devices") {
             mode = SCAN_MODE::HID_DEVICES;
+            device_class = ToGUID(L"{745a17a0-74d3-11d0-b6fe-00a0c90f57da}"); // "HID Device" device setup class
         } else if (arg == L"--hid-interfaces") {
             mode = SCAN_MODE::HID_INTERFACES;
+            device_class = GUID_DEVINTERFACE_HID; // HID devices
         } else if (arg == L"--battery-devices") {
+            // detects both batteries and AC adapters
             mode = SCAN_MODE::BATTERY_DEVICES;
+            device_class = GUID_DEVICE_BATTERY; // "Battery Device" device interface class
         } else if (arg == L"--battery-interfaces") {
+            // only detects batteries, and _not_ AC adapters
             mode = SCAN_MODE::BATTERY_INTERFACES;
+            device_class = GUID_DEVICE_BATTERY; // "Battery Device" device interface class
         } else {
             wprintf(usage_helpstring);
             return 1;
@@ -176,30 +189,25 @@ int wmain(int argc, wchar_t* argv[]) {
 
     switch (mode) {
     case SCAN_MODE::ALL_DEVICES:
-        // search DOES includes logical devices beneath a composite USB device
-        EnumerateDevices(GUID_NULL, visitor);
+        EnumerateDevices(device_class, visitor);
         break;
     case SCAN_MODE::USB_DEVICES:
-        // search DOES includes logical devices beneath a composite USB device
-        EnumerateDevices(ToGUID(L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}"), visitor); // "USB Device" device setup class
+        EnumerateDevices(device_class, visitor);
         break;
     case SCAN_MODE::USB_INTERFACES:
-        // search does NOT include logical devices beneath a composite USB device
-        EnumerateInterfaces(GUID_DEVINTERFACE_USB_DEVICE, visitor); // physical USB devices
+        EnumerateInterfaces(device_class, visitor);
         break;
     case SCAN_MODE::HID_DEVICES:
-        EnumerateDevices(ToGUID(L"{745a17a0-74d3-11d0-b6fe-00a0c90f57da}"), visitor); // "HID Device" device setup class
+        EnumerateDevices(device_class, visitor);
         break;
     case SCAN_MODE::HID_INTERFACES:
-        EnumerateInterfaces(GUID_DEVINTERFACE_HID, visitor); // HID devices
+        EnumerateInterfaces(device_class, visitor);
         break;
     case SCAN_MODE::BATTERY_DEVICES:
-        // detects both batteries and AC adapters
-        EnumerateDevices(GUID_DEVICE_BATTERY, visitor); // "Battery Device" device interface class
+        EnumerateDevices(device_class, visitor);
         break;
     case SCAN_MODE::BATTERY_INTERFACES:
-        // only detects batteries, and _not_ AC adapters
-        EnumerateInterfaces(GUID_DEVICE_BATTERY, visitor); // "Battery Device" device interface class
+        EnumerateInterfaces(device_class, visitor);
         break;
     }
 
