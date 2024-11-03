@@ -104,6 +104,8 @@ int EnumerateDevices(GUID classGuid, DeviceVisitor visitor) {
 
 int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor) {
     DWORD flags = DIGCF_DEVICEINTERFACE | DIGCF_PRESENT;
+    //if (classGuid == GUID_NULL)
+    //    flags |= DIGCF_ALLCLASSES;
 
     HDEVINFO devInfo = SetupDiGetClassDevsW(&classGuid, 0, 0, flags);
     assert(devInfo != INVALID_HANDLE_VALUE);
