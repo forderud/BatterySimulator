@@ -6,6 +6,7 @@
 #include <Devpkey.h>
 #include "DeviceParams.hpp"
 #include "PowerData.hpp"
+#include <Devguid.h>  // for GUID_DEVCLASS_*
 #include <Batclass.h> // for GUID_DEVICE_BATTERY
 #include <Hidclass.h> // for GUID_DEVINTERFACE_HID
 #include <Usbiodef.h> // for GUID_DEVINTERFACE_USB_DEVICE
@@ -156,15 +157,17 @@ int wmain(int argc, wchar_t* argv[]) {
             device_class = GUID_NULL; // devices mode (DOES includes logical devices beneath a composite USB device)
             interface_class = GUID_NULL; // (empty search)
         } else if (arg == L"--usb") {
+            //device_class = GUID_DEVCLASS_USB;
             device_class = ToGUID(L"{88bae032-5a81-49f0-bc3d-a4ff138216d6}"); // "USB Device" device setup class for custom devices that doesn't belong to another class (DOES includes logical devices beneath a composite USB device)
             interface_class = GUID_DEVINTERFACE_USB_DEVICE; // physical USB devices (does _not_ include logical devices beneath a composite USB device)
         } else if (arg == L"--hid") {
-            device_class = ToGUID(L"{745a17a0-74d3-11d0-b6fe-00a0c90f57da}"); // "HID Device" device setup class
+            device_class = GUID_DEVCLASS_HIDCLASS;// "HID Device" device setup class
             interface_class = GUID_DEVINTERFACE_HID; // HID devices
         } else if (arg == L"--battery") {
             // "Battery Device" device interface class
-            device_class = GUID_DEVICE_BATTERY; // detects both batteries and AC adapters
+            device_class = GUID_DEVCLASS_BATTERY; // detects both batteries and AC adapters
             interface_class = GUID_DEVICE_BATTERY; // only detects batteries, and _not_ AC adapters
+            assert(GUID_DEVCLASS_BATTERY == GUID_DEVICE_BATTERY);
         } else if (arg == L"--devices") {
             enumerator = EnumerateDevices;
         } else if (arg == L"--interfaces") {
