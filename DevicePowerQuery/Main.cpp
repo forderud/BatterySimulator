@@ -23,8 +23,12 @@ GUID ToGUID(const wchar_t* str) {
 }
 
 void VisitDeviceBasic(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData) {
+    std::wstring friendlyName = GetDevRegPropStr(devInfo, devInfoData, SPDRP_FRIENDLYNAME).c_str();
+    if (friendlyName.empty())
+        friendlyName = L"<unknown>";
+
     wprintf(L"\n");
-    wprintf(L"== Device %i: %s ==\n", idx, GetDevRegPropStr(devInfo, devInfoData, SPDRP_FRIENDLYNAME).c_str());
+    wprintf(L"== Device %i: %s ==\n", idx, friendlyName.c_str());
     wprintf(L"Description: %s\n", GetDevRegPropStr(devInfo, devInfoData, SPDRP_DEVICEDESC).c_str());
     wprintf(L"HWID       : %s\n", GetDevRegPropStr(devInfo, devInfoData, SPDRP_HARDWAREID).c_str()); // HW type ID
     wprintf(L"InstanceID : %s\n", GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId).c_str()); // HWID with instance suffix
