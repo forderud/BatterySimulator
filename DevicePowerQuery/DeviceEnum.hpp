@@ -9,11 +9,11 @@
 
 
 typedef void (*DeviceVisitor)(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData);
-typedef int (*EnumerateFunction)(GUID classGuid, DeviceVisitor visitor);
+typedef int (*EnumerateFunction)(GUID classGuid, DeviceVisitor visitor, bool verbose);
 
 
 /** Returns the device count. */
-int EnumerateDevices(GUID classGuid, DeviceVisitor visitor) {
+int EnumerateDevices(GUID classGuid, DeviceVisitor visitor, bool /*verbose*/) {
     DWORD flags = DIGCF_PRESENT;
     if (classGuid == GUID_NULL)
         flags |= DIGCF_ALLCLASSES; // query all connected devices
@@ -42,7 +42,7 @@ int EnumerateDevices(GUID classGuid, DeviceVisitor visitor) {
 }
 
 /** Returns the device count. */
-int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor) {
+int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor, bool verbose) {
     DWORD flags = DIGCF_DEVICEINTERFACE | DIGCF_PRESENT;
     //if (classGuid == GUID_NULL)
     //    flags |= DIGCF_ALLCLASSES;
@@ -73,7 +73,8 @@ int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor) {
 
         visitor(idx, devInfo, devInfoData);
 
-        wprintf(L"DeviceInterfacePath: %s\n", GetDevicePath(devInfo, interfaceData).c_str()); // can be passsed to CreateFile
+        if (verbose)
+            wprintf(L"DeviceInterfacePath: %s\n", GetDevicePath(devInfo, interfaceData).c_str()); // can be passsed to CreateFile
     }
 
     SetupDiDestroyDeviceInfoList(devInfo);

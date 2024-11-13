@@ -93,9 +93,9 @@ int wmain(int argc, wchar_t* argv[]) {
 
     // search for devices or interfaces
     if (enumerator == EnumerateDevices)
-        enumerator(device_class, visitor);
+        enumerator(device_class, visitor, true);
     else if (enumerator == EnumerateInterfaces)
-        enumerator(interface_class, visitor);
+        enumerator(interface_class, visitor, true);
 
     return 0;
 }

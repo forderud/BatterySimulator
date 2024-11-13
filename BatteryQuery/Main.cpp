@@ -103,7 +103,7 @@ void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData)
 int wmain(int argc, wchar_t* argv[]) {
     if (argc < 2) {
         wprintf(L"Querying all batteries:\n");
-        EnumerateInterfaces(GUID_DEVICE_BATTERY, BatteryVisitor);
+        EnumerateInterfaces(GUID_DEVICE_BATTERY, BatteryVisitor, false);
         return 0;
     }
 
