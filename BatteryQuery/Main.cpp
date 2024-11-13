@@ -98,7 +98,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return 1;
     }
 
-    const wchar_t* instanceId = argv[1]; // 0 is first battery
+    const wchar_t* instanceId = argv[1]; // 1 is first battery
     unsigned int newCharge = static_cast<unsigned int>(-1); // skip updating by default
     if (argc >= 3)
         newCharge = _wtoi(argv[2]); // in [0,100] range
