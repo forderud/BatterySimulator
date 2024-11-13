@@ -1,6 +1,6 @@
 #pragma once
 #include <Windows.h>
-#include <poclass.h>
+#include <poclass.h> // for IOCTL_BATTERY_QUERY_TAG
 #include "../simbatt/simbattdriverif.h"
 #include <string>
 #include <stdexcept>
