@@ -3,7 +3,7 @@
 #include <Devpkey.h>
 #include "PowerData.hpp"
 #include <Devguid.h>  // for GUID_DEVCLASS_*
-#include <Batclass.h> // for GUID_DEVICE_BATTERY
+#include <poclass.h>  // for GUID_DEVICE_BATTERY
 #include <Hidclass.h> // for GUID_DEVINTERFACE_HID
 #include <Usbiodef.h> // for GUID_DEVINTERFACE_USB_DEVICE
 
