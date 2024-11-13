@@ -9,11 +9,10 @@
 
 
 typedef void (*DeviceVisitor)(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData);
-typedef int (*EnumerateFunction)(GUID classGuid, DeviceVisitor visitor, bool verbose);
 
 
 /** Returns the device count. */
-int EnumerateDevices(GUID classGuid, DeviceVisitor visitor, bool /*verbose*/) {
+int EnumerateDevices(GUID classGuid, DeviceVisitor visitor) {
     DWORD flags = DIGCF_PRESENT;
     if (classGuid == GUID_NULL)
         flags |= DIGCF_ALLCLASSES; // query all connected devices

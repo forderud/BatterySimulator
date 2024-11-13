@@ -48,11 +48,15 @@ void VisitDevicePowerData(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoDat
     }
 }
 
+enum class EnumType {
+    Devices,
+    Interfaces,
+};
 
 int wmain(int argc, wchar_t* argv[]) {
     GUID device_class = GUID_NULL;
     GUID interface_class = GUID_NULL;
-    EnumerateFunction enumerator = EnumerateDevices;
+    EnumType enumerator = EnumType::Devices;
     DeviceVisitor visitor = VisitDeviceBasic; // only print basic device information
 
     const wchar_t usage_helpstring[] = L"USAGE DevicePowerQuery.exe [--all | --usb | --hid | --battery] [--devices | --interfaces] [--power]\n";
@@ -82,9 +86,9 @@ int wmain(int argc, wchar_t* argv[]) {
             interface_class = GUID_DEVICE_BATTERY; // only detects batteries, and _not_ AC adapters
             assert(GUID_DEVCLASS_BATTERY == GUID_DEVICE_BATTERY);
         } else if (arg == L"--devices") {
-            enumerator = EnumerateDevices;
+            enumerator = EnumType::Devices;
         } else if (arg == L"--interfaces") {
-            enumerator = EnumerateInterfaces;
+            enumerator = EnumType::Interfaces;
         } else {
             wprintf(usage_helpstring);
             return 1;
@@ -92,10 +96,10 @@ int wmain(int argc, wchar_t* argv[]) {
     }
 
     // search for devices or interfaces
-    if (enumerator == EnumerateDevices)
-        enumerator(device_class, visitor, true);
-    else if (enumerator == EnumerateInterfaces)
-        enumerator(interface_class, visitor, true);
+    if (enumerator == EnumType::Devices)
+        EnumerateDevices(device_class, visitor);
+    else if (enumerator == EnumType::Interfaces)
+        EnumerateInterfaces(interface_class, visitor, true);
 
     return 0;
 }
