@@ -14,6 +14,10 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <ProjectGuid>{1802dab1-0769-4e39-bf84-e4f05c5ea917}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <MajorVer>0</MajorVer>
+    <MinorVer>0</MinorVer>
+    <PatchVer>0</PatchVer>
+    <BuildVer>0</BuildVer>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -52,6 +56,9 @@
     <PostBuildEvent>
       <Command>signtool.exe sign /a /fd sha256 "$(TargetPath)"</Command>
     </PostBuildEvent>
+    <ResourceCompile>
+      <PreprocessorDefinitions>VERSION_MAJOR=$(MajorVer);VERSION_MINOR=$(MinorVer);VERSION_PATCH=$(PatchVer);VERSION_BUILD=$(BuildVer);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -73,6 +80,9 @@
     <PostBuildEvent>
       <Command>signtool.exe sign /a /fd sha256 "$(TargetPath)"</Command>
     </PostBuildEvent>
+    <ResourceCompile>
+      <PreprocessorDefinitions>VERSION_MAJOR=$(MajorVer);VERSION_MINOR=$(MinorVer);VERSION_PATCH=$(PatchVer);VERSION_BUILD=$(BuildVer);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -80,6 +90,9 @@
   <ItemGroup>
     <ClInclude Include="Battery.hpp" />
     <ClInclude Include="DeviceInstance.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="module.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
