@@ -70,6 +70,7 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DeviceEnum.hpp" />
     <ClInclude Include="DeviceParams.hpp" />
     <ClInclude Include="PowerData.hpp" />
   </ItemGroup>
