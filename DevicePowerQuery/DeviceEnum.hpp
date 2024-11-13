@@ -12,6 +12,7 @@ typedef void (*DeviceVisitor)(int idx, HDEVINFO devInfo, SP_DEVINFO_DATA& devInf
 typedef int (*EnumerateFunction)(GUID classGuid, DeviceVisitor visitor);
 
 
+/** Returns the device count. */
 int EnumerateDevices(GUID classGuid, DeviceVisitor visitor) {
     DWORD flags = DIGCF_PRESENT;
     if (classGuid == GUID_NULL)
@@ -40,6 +41,7 @@ int EnumerateDevices(GUID classGuid, DeviceVisitor visitor) {
     return idx;
 }
 
+/** Returns the device count. */
 int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor) {
     DWORD flags = DIGCF_DEVICEINTERFACE | DIGCF_PRESENT;
     //if (classGuid == GUID_NULL)
