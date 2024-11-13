@@ -60,7 +60,7 @@ static std::wstring GetDevicePath(HDEVINFO devInfo, SP_DEVICE_INTERFACE_DATA& in
     BOOL ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, nullptr, 0, &detailDataSize, nullptr);
     if (!ok) {
         DWORD err = GetLastError();
-        assert(err == ERROR_INSUFFICIENT_BUFFER);
+        assert(err == ERROR_INSUFFICIENT_BUFFER); err;
     }
 
     std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA_W, decltype(&free)> detailData{ static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA_W*>(malloc(detailDataSize)), &free };

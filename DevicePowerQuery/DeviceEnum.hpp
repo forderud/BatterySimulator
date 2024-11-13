@@ -67,7 +67,7 @@ int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor, bool verbose) {
         ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, nullptr, 0, nullptr, &devInfoData);
         if (!ok) {
             DWORD err = GetLastError();
-            assert(err == ERROR_INSUFFICIENT_BUFFER);
+            assert(err == ERROR_INSUFFICIENT_BUFFER); err;
         }
 
         visitor(idx, devInfo, devInfoData);
