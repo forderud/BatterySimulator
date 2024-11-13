@@ -23,12 +23,12 @@ VS_VERSION_INFO VERSIONINFO
 		BEGIN
 			BLOCK "040904B0" /*0x0409=U.S. English, 0x04B0/1200=Unicode*/
 			BEGIN
-				VALUE "CompanyName", "forderud\0"
-				VALUE "FileDescription", "Power event monitor\0"
+				VALUE "CompanyName", "forderud"
+				VALUE "FileDescription", "Power event monitor"
 				VALUE "FileVersion", VER_PRODUCTVERSION_STR
-				VALUE "LegalCopyright", "Fredrik Orderud\0"
-				VALUE "OriginalFilename", "PowerMonitor.exe\0"
-				VALUE "ProductName", "PowerMonitor\0"
+				VALUE "LegalCopyright", "Fredrik Orderud"
+				VALUE "OriginalFilename", "PowerMonitor.exe"
+				VALUE "ProductName", "PowerMonitor"
 				VALUE "ProductVersion", VER_PRODUCTVERSION_STR
 			END
 		END
