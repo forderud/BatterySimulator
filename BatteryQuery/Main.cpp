@@ -1,4 +1,3 @@
-#define INITGUID
 #include "Battery.hpp"
 #include "DeviceInstance.hpp"
 #include <wrl/wrappers/corewrappers.h> // for FileHandle
