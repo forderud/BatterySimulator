@@ -1,7 +1,9 @@
 #include "Battery.hpp"
-#include "DeviceInstance.hpp"
+#include <batclass.h>
 #include <wrl/wrappers/corewrappers.h> // for FileHandle
 #include <cassert>
+#include "DeviceInstance.hpp"
+#include "../DevicePowerQuery/DeviceEnum.hpp"
 
 
 int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
@@ -92,11 +94,17 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
     return 0;
 }
 
+void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData) {
+    auto PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
+    AccessBattery(L"\\\\?\\GLOBALROOT" + PDOName);
+}
+
 
 int wmain(int argc, wchar_t* argv[]) {
     if (argc < 2) {
-        wprintf(L"USAGE: \"BatteryQuery.exe <N> <Charge>\" where <N> is the battery index and <Charge> is the new charge.\n");
-        return 1;
+        wprintf(L"Querying all batteries:\n");
+        EnumerateInterfaces(GUID_DEVICE_BATTERY, BatteryVisitor);
+        return 0;
     }
 
     const wchar_t* instanceId = argv[1]; // 1 is first battery
