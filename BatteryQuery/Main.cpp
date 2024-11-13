@@ -5,33 +5,7 @@
 #include <cassert>
 
 
-int wmain(int argc, wchar_t* argv[]) {
-    if (argc < 2) {
-        wprintf(L"USAGE: \"BatteryQuery.exe <N> <Charge>\" where <N> is the battery index and <Charge> is the new charge.\n");
-        return 1;
-    }
-
-    const wchar_t* instanceId = argv[1]; // 0 is first battery
-    unsigned int newCharge = static_cast<unsigned int>(-1); // skip updating by default
-    if (argc >= 3)
-        newCharge = _wtoi(argv[2]); // in [0,100] range
-
-    std::wstring pdoPath;
-    try {
-        DeviceInstance dev(instanceId);
-
-        auto ver = dev.GetDriverVersion();
-        wprintf(L"  Driver version: %s.\n", ver.c_str());
-        auto time = dev.GetDriverDate();
-        wprintf(L"  Driver date: %s.\n", DeviceInstance::FileTimeToDateStr(time).c_str());
-
-        pdoPath = dev.GetPDOPath();
-    } catch (std::exception& e) {
-        wprintf(L"ERROR: Unable to locate battery %s\n", instanceId);
-        wprintf(L"ERROR: what: %hs\n", e.what());
-        return -1;
-    }
-
+int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
     wprintf(L"\n");
     wprintf(L"Opening %s\n", pdoPath.c_str());
     Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(pdoPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
@@ -52,7 +26,7 @@ int wmain(int argc, wchar_t* argv[]) {
             wprintf(L"  BatteryEstimatedTime:   %u\n", estimatedTime);
         else
             wprintf(L"  BatteryEstimatedTime:   <unknown>\n");
-        
+
         BATTERY_REPORTING_SCALE scale[4] = {};
         unsigned int count = GetBatteryInfoGranularity(battery.Get(), scale);
         for (unsigned int idx = 0; idx < count; ++idx)
@@ -65,7 +39,7 @@ int wmain(int argc, wchar_t* argv[]) {
             wprintf(L"  BatteryManufactureDate: %u-%u-%u\n", date.Year, date.Month, date.Day);
         else
             wprintf(L"  BatteryManufactureDate: <unknown>\n");
-        
+
         wprintf(L"  BatteryManufactureName: %s\n", GetBatteryInfoStr(battery.Get(), BatteryManufactureName).c_str());
         wprintf(L"  BatterySerialNumber:    %s\n", GetBatteryInfoStr(battery.Get(), BatterySerialNumber).c_str());
         {
@@ -115,6 +89,36 @@ int wmain(int argc, wchar_t* argv[]) {
         wprintf(L"BATTERY_STATUS parameters (after update):\n");
         status.Print();
     }
+}
 
-    return 0;
+
+int wmain(int argc, wchar_t* argv[]) {
+    if (argc < 2) {
+        wprintf(L"USAGE: \"BatteryQuery.exe <N> <Charge>\" where <N> is the battery index and <Charge> is the new charge.\n");
+        return 1;
+    }
+
+    const wchar_t* instanceId = argv[1]; // 0 is first battery
+    unsigned int newCharge = static_cast<unsigned int>(-1); // skip updating by default
+    if (argc >= 3)
+        newCharge = _wtoi(argv[2]); // in [0,100] range
+
+    std::wstring pdoPath;
+    try {
+        DeviceInstance dev(instanceId);
+
+        auto ver = dev.GetDriverVersion();
+        wprintf(L"  Driver version: %s.\n", ver.c_str());
+        auto time = dev.GetDriverDate();
+        wprintf(L"  Driver date: %s.\n", DeviceInstance::FileTimeToDateStr(time).c_str());
+
+        pdoPath = dev.GetPDOPath();
+    } catch (std::exception& e) {
+        wprintf(L"ERROR: Unable to locate battery %s\n", instanceId);
+        wprintf(L"ERROR: what: %hs\n", e.what());
+        return -1;
+    }
+
+    int res = AccessBattery(pdoPath, newCharge);
+    return res;
 }
