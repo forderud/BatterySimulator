@@ -7,4 +7,7 @@
     <ClInclude Include="Battery.hpp" />
     <ClInclude Include="DeviceInstance.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="module.rc" />
+  </ItemGroup>
 </Project>

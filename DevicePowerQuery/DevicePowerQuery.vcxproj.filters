@@ -8,4 +8,7 @@
     <ClInclude Include="PowerData.hpp" />
     <ClInclude Include="DeviceEnum.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="module.rc" />
+  </ItemGroup>
 </Project>
