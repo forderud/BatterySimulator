@@ -89,6 +89,8 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
         wprintf(L"BATTERY_STATUS parameters (after update):\n");
         status.Print();
     }
+
+    return 0;
 }
 
 
