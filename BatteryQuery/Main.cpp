@@ -3,6 +3,7 @@
 #include <wrl/wrappers/corewrappers.h> // for FileHandle
 #include <cassert>
 #include "DeviceInstance.hpp"
+#include "HID.hpp"
 #include "../DevicePowerQuery/DeviceEnum.hpp"
 
 
@@ -94,9 +95,50 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
     return 0;
 }
 
+void PrintReport(const std::vector<BYTE>& report) {
+    wprintf(L"  Data: {");
+    for (BYTE elm : report)
+        wprintf(L" %02x,", elm);
+    wprintf(L"}\n");
+}
+
+bool AccessHidDevice(const std::wstring& pdoPath) {
+    hid::Device dev(pdoPath.c_str(), false);
+    if (!dev.IsValid())
+        return false; // not a HID device
+
+    wprintf(L"Accessing HID device %s:\n", dev.Name().c_str());
+    dev.PrintInfo();
+    wprintf(L"\n");
+
+    wprintf(L"Available INPUT reports:\n");
+    std::vector<HIDP_VALUE_CAPS> valueCaps = dev.GetValueCaps(HidP_Input);
+    for (auto& elm : valueCaps) {
+        wprintf(L"  ReportID: %#04x\n", elm.ReportID);
+        PrintReport(dev.GetReport(HidP_Input, elm.ReportID));
+    }
+    wprintf(L"Available OUTPUT reports:\n");
+    valueCaps = dev.GetValueCaps(HidP_Output);
+    for (auto& elm : valueCaps) {
+        wprintf(L"  ReportID: %#04x\n", elm.ReportID);
+        // cannot print output reports, since they're sent to the device
+    }
+    wprintf(L"Available FEATURE reports:\n");
+    valueCaps = dev.GetValueCaps(HidP_Feature);
+    for (auto& elm : valueCaps) {
+        wprintf(L"  ReportID: %#04x\n", elm.ReportID);
+        PrintReport(dev.GetReport(HidP_Feature, elm.ReportID));
+    }
+    wprintf(L"\n");
+    return true;
+}
+
+
 void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData) {
-    auto PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
-    AccessBattery(L"\\\\?\\GLOBALROOT" + PDOName);
+    std::wstring PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
+    std::wstring PDOPrefix = L"\\\\?\\GLOBALROOT";
+    AccessBattery(PDOPrefix + PDOName);
+    AccessHidDevice(PDOPrefix + PDOName); // check if it's also a HID device
 }
 
 
@@ -128,6 +170,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    int res = AccessBattery(pdoPath, newCharge);
+    int res = AccessBattery(pdoPath, newCharge); // access battery APIs
+    AccessHidDevice(pdoPath); // check if it's also a HID device
     return res;
 }
