@@ -170,7 +170,7 @@ public:
         }
 
         // remove report ID prefix
-        report.erase(report.begin());
+        //report.erase(report.begin());
 
         return report;
     }
