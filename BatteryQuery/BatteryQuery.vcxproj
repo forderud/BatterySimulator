@@ -90,6 +90,7 @@
   <ItemGroup>
     <ClInclude Include="Battery.hpp" />
     <ClInclude Include="DeviceInstance.hpp" />
+    <ClInclude Include="HID.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="module.rc" />
