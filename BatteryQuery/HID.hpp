@@ -6,6 +6,7 @@
 #include <comdef.h>
 #include <wrl/wrappers/corewrappers.h> // for FileHandle RAII wrapper
 
+#include <algorithm> // for std::sort
 #include <cassert>
 #include <string>
 #include <vector>
@@ -238,6 +239,20 @@ public:
 
         assert(status == HIDP_STATUS_SUCCESS); status;
         return buttonCaps;
+    }
+
+    /** Return a list of unique ReportID values found in the input. */
+    template <class T> // T might be HIDP_VALUE_CAPS or HIDP_BUTTON_CAPS
+    static std::vector<UCHAR> GetReportIDs(const std::vector<HIDP_BUTTON_CAPS> input) {
+        std::vector<UCHAR> result;
+        for (auto& elm : input)
+            result.push_back(elm.ReportID);
+
+        // sort and remove duplicates
+        std::sort(result.begin(), result.end());
+        result.erase(std::unique(result.begin(), result.end()), result.end());
+
+        return result;
     }
 
     std::wstring Name() const {
