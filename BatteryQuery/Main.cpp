@@ -117,7 +117,7 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         PrintReport(dev.GetReport(HidP_Input, elm.ReportID));
     }
-    for (UCHAR reportId : hid::Device::GetReportIDs< HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Input))) {
+    for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Input))) {
         wprintf(L"  ReportID: %#04x\n", reportId);
         PrintReport(dev.GetReport(HidP_Input, reportId));
     }    
@@ -128,7 +128,7 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         // cannot print output reports, since they're sent to the device
     }
-    for (UCHAR reportId : hid::Device::GetReportIDs< HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Output))) {
+    for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Output))) {
         wprintf(L"  ReportID: %#04x\n", reportId);
         PrintReport(dev.GetReport(HidP_Input, reportId));
     }
@@ -139,7 +139,7 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         PrintReport(dev.GetReport(HidP_Feature, elm.ReportID));
     }
-    for (UCHAR reportId : hid::Device::GetReportIDs< HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Feature))) {
+    for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Feature))) {
         wprintf(L"  ReportID: %#04x\n", reportId);
         PrintReport(dev.GetReport(HidP_Input, reportId));
     }
