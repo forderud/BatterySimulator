@@ -207,7 +207,7 @@ public:
         if (valueCapsLen == 0)
             return {};
 
-        std::vector<HIDP_VALUE_CAPS> valueCaps(valueCapsLen, HIDP_VALUE_CAPS{});
+        std::vector<HIDP_VALUE_CAPS> valueCaps(valueCapsLen, {});
         NTSTATUS status = HidP_GetValueCaps(type, valueCaps.data(), &valueCapsLen, preparsed);
         if (status == HIDP_STATUS_INVALID_PREPARSED_DATA) {
             wprintf(L"WARNING: Invalid preparsed data.\n");
@@ -216,6 +216,28 @@ public:
 
         assert(status == HIDP_STATUS_SUCCESS); status;
         return valueCaps;
+    }
+
+    std::vector<HIDP_BUTTON_CAPS> GetButtonCaps(HIDP_REPORT_TYPE type) const {
+        USHORT buttonCapsLen = 0;
+        if (type == HidP_Input)
+            buttonCapsLen = caps.NumberInputButtonCaps;
+        else if (type == HidP_Output)
+            buttonCapsLen = caps.NumberOutputButtonCaps;
+        else if (type == HidP_Feature)
+            buttonCapsLen = caps.NumberFeatureButtonCaps;
+        if (buttonCapsLen == 0)
+            return {};
+
+        std::vector<HIDP_BUTTON_CAPS> buttonCaps(buttonCapsLen, {});
+        NTSTATUS status = HidP_GetButtonCaps(type, buttonCaps.data(), &buttonCapsLen, preparsed);
+        if (status == HIDP_STATUS_INVALID_PREPARSED_DATA) {
+            wprintf(L"WARNING: Invalid preparsed data.\n");
+            return {};
+        }
+
+        assert(status == HIDP_STATUS_SUCCESS); status;
+        return buttonCaps;
     }
 
     std::wstring Name() const {
