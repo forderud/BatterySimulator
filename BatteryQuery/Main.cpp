@@ -117,18 +117,33 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         PrintReport(dev.GetReport(HidP_Input, elm.ReportID));
     }
+    for (UCHAR reportId : hid::Device::GetReportIDs< HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Input))) {
+        wprintf(L"  ReportID: %#04x\n", reportId);
+        PrintReport(dev.GetReport(HidP_Input, reportId));
+    }    
+
     wprintf(L"Available OUTPUT reports:\n");
     valueCaps = dev.GetValueCaps(HidP_Output);
     for (auto& elm : valueCaps) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         // cannot print output reports, since they're sent to the device
     }
+    for (UCHAR reportId : hid::Device::GetReportIDs< HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Output))) {
+        wprintf(L"  ReportID: %#04x\n", reportId);
+        PrintReport(dev.GetReport(HidP_Input, reportId));
+    }
+
     wprintf(L"Available FEATURE reports:\n");
     valueCaps = dev.GetValueCaps(HidP_Feature);
     for (auto& elm : valueCaps) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         PrintReport(dev.GetReport(HidP_Feature, elm.ReportID));
     }
+    for (UCHAR reportId : hid::Device::GetReportIDs< HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Feature))) {
+        wprintf(L"  ReportID: %#04x\n", reportId);
+        PrintReport(dev.GetReport(HidP_Input, reportId));
+    }
+
     wprintf(L"\n");
     return true;
 }
