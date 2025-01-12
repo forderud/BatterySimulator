@@ -153,7 +153,7 @@ void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData)
     std::wstring PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
     std::wstring PDOPrefix = L"\\\\?\\GLOBALROOT";
     AccessBattery(PDOPrefix + PDOName);
-    AccessHidDevice(PDOPrefix + PDOName); // check if it's also a HID device
+    //AccessHidDevice(PDOPrefix + PDOName); // check if it's also a HID device
 }
 
 
