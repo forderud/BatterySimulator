@@ -208,7 +208,7 @@ public:
         if (valueCapsLen == 0)
             return {};
 
-        std::vector<HIDP_VALUE_CAPS> valueCaps(valueCapsLen, {});
+        std::vector<HIDP_VALUE_CAPS> valueCaps(valueCapsLen, HIDP_VALUE_CAPS{});
         NTSTATUS status = HidP_GetValueCaps(type, valueCaps.data(), &valueCapsLen, preparsed);
         if (status == HIDP_STATUS_INVALID_PREPARSED_DATA) {
             wprintf(L"WARNING: Invalid preparsed data.\n");
@@ -230,7 +230,7 @@ public:
         if (buttonCapsLen == 0)
             return {};
 
-        std::vector<HIDP_BUTTON_CAPS> buttonCaps(buttonCapsLen, {});
+        std::vector<HIDP_BUTTON_CAPS> buttonCaps(buttonCapsLen, HIDP_BUTTON_CAPS{});
         NTSTATUS status = HidP_GetButtonCaps(type, buttonCaps.data(), &buttonCapsLen, preparsed);
         if (status == HIDP_STATUS_INVALID_PREPARSED_DATA) {
             wprintf(L"WARNING: Invalid preparsed data.\n");
