@@ -50,8 +50,7 @@ Notification when simulating low-battery conditions:
 ![image](https://github.com/forderud/BatterySimulator/assets/2671400/80707d03-8ffc-4209-bfff-8bfaa1c4181c)
 
 ## Alternative approach
-It's also possible to make an Arduino board emulate a UPS battery. This leverages the in-built Windows `hidbatt` driver, so there's no need for installing additional drivers. 
-The [forderud/HIDPowerDevice](https://github.com/forderud/HIDPowerDevice) project provides sample code for this.
+The [HidBattery](https://github.com/forderud/HidBattery) project provides firmware for making an Arduino board emulate a battery. It leverages the in-built Windows `hidbatt` driver, so there's no need for installing additional drivers.
 
 ## Configuring Windows power management
 Windows handling of low-battery situations can either be configured through the "Power Options" UI (run `powercfg.cpl` -> "Change plan settings" -> "Change advanced power settings"):  
