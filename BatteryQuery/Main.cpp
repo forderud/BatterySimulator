@@ -96,7 +96,7 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
 }
 
 void PrintReport(const std::vector<BYTE>& report) {
-    wprintf(L"  Data: {");
+    wprintf(L"    {");
     for (BYTE elm : report)
         wprintf(L" %02x,", elm);
     wprintf(L"}\n");
