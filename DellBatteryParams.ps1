@@ -1,4 +1,5 @@
 # Script for retrieving Dell battery parameters that are not exposed through the standard APIs
+# NOTICE: Script MUST run as Administrator.
 
 Write-Host "Dell battery parameters:"
 $dell = Get-CimInstance -Namespace root\WMI -Class DDVWmiMethodFunction

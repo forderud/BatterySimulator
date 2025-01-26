@@ -1,4 +1,4 @@
-# PowerShell script must run as admin
+# PowerShell script MUST run as Administrator
 $ErrorActionPreference = "Stop"
 
 function PrintPowerSetting ($setting, $acValue, $dcValue) {
