@@ -266,9 +266,9 @@ public:
         wchar_t vid_pid[] = L"VID_0000&PID_0000";
         swprintf_s(vid_pid, L"VID_%04X&PID_%04X", attr.VendorID, attr.ProductID);
 
-        std::wstring result = prod;
+        std::wstring result = L"\"" + prod + L"\"";
         result += L" by ";
-        result += manuf;
+        result += L"\"" + manuf + L"\"";
         result += L" (";
         result += vid_pid;
         result += L")";
