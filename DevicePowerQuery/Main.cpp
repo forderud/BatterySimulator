@@ -100,7 +100,7 @@ int wmain(int argc, wchar_t* argv[]) {
     if (enumerator == EnumType::Devices)
         EnumerateDevices(device_class, visitor);
     else if (enumerator == EnumType::Interfaces)
-        EnumerateInterfaces(interface_class, visitor, true);
+        EnumerateInterfaces(interface_class, visitor);
 
     return 0;
 }

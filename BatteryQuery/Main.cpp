@@ -10,8 +10,6 @@
 
 
 int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
-    wprintf(L"\n");
-    wprintf(L"Opening %s\n", pdoPath.c_str());
     Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(pdoPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
         DWORD err = GetLastError();
@@ -154,6 +152,9 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
 
 
 void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData) {
+    wprintf(L"\n");
+    wprintf(L"Opening %s\n", GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId).c_str());
+
     std::wstring PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
     std::wstring PDOPrefix = L"\\\\?\\GLOBALROOT";
     AccessBattery(PDOPrefix + PDOName);
@@ -164,7 +165,7 @@ void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData)
 int wmain(int argc, wchar_t* argv[]) {
     if (argc < 2) {
         wprintf(L"Querying all batteries:\n");
-        EnumerateInterfaces(GUID_DEVICE_BATTERY, BatteryVisitor, false);
+        EnumerateInterfaces(GUID_DEVICE_BATTERY, BatteryVisitor);
         return 0;
     }
 
@@ -177,6 +178,7 @@ int wmain(int argc, wchar_t* argv[]) {
     try {
         DeviceInstance dev(instanceId);
 
+        wprintf(L"Opening %s\n", instanceId);
         auto ver = dev.GetDriverVersion();
         wprintf(L"  Driver version: %s.\n", ver.c_str());
         auto time = dev.GetDriverDate();

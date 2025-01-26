@@ -23,10 +23,8 @@ public:
 
             // try to open device
             CONFIGRET res = CM_Locate_DevNodeW(&m_devInst, deviceInstancePath, CM_LOCATE_DEVNODE_NORMAL);
-            if (res == CR_SUCCESS) {
-                wprintf(L"DeviceInstancePath: %s\n", deviceInstancePath);
+            if (res == CR_SUCCESS)
                 return; // found a match
-            }
         }
 
         throw std::runtime_error("ERROR: CM_Locate_DevNodeW");
