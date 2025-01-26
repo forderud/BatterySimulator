@@ -1,5 +1,7 @@
 #include "Battery.hpp"
 #include <batclass.h>
+#include <initguid.h> // must be above Devpkey.h include
+#include <Devpkey.h> // for DEVPKEY_xxx
 #include <wrl/wrappers/corewrappers.h> // for FileHandle
 #include <cassert>
 #include "DeviceInstance.hpp"

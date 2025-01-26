@@ -1,6 +1,7 @@
+#include <Windows.h>
+#include <initguid.h> // must be above Devpkey.h include
+#include <Devpkey.h> // for DEVPKEY_xxx
 #include "DeviceEnum.hpp"
-#include <initguid.h>
-#include <Devpkey.h>
 #include "PowerData.hpp"
 #include <Devguid.h>  // for GUID_DEVCLASS_*
 #include <poclass.h>  // for GUID_DEVICE_BATTERY

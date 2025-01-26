@@ -1,7 +1,6 @@
 #pragma once
 #include <Cfgmgr32.h>
 #pragma comment(lib, "Cfgmgr32.lib")
-#include <Devpkey.h> // for DEVPKEY_Device_PDOName
 #include <variant>
 #include <vector>
 
