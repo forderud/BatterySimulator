@@ -276,8 +276,6 @@ public:
     }
 
     void PrintInfo() const {
-        wprintf(L"Device %ls (VendorID=%x, ProductID=%x)\n", devName.c_str(), attr.VendorID, attr.ProductID);
-
         wprintf(L"Device capabilities:\n");
         wprintf(L"  Usage=0x%04X, UsagePage=0x%04X\n", caps.Usage, caps.UsagePage);
         wprintf(L"  InputReportByteLength=%u, OutputReportByteLength=%u, FeatureReportByteLength=%u, NumberLinkCollectionNodes=%u\n", caps.InputReportByteLength, caps.OutputReportByteLength, caps.FeatureReportByteLength, caps.NumberLinkCollectionNodes);
