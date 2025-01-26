@@ -73,7 +73,7 @@ int EnumerateInterfaces(GUID classGuid, DeviceVisitor visitor, bool verbose) {
         visitor(idx, devInfo, devInfoData);
 
         if (verbose)
-            wprintf(L"DeviceInterfacePath: %s\n", GetDeviceInterfacePath(devInfo, interfaceData).c_str()); // can be passsed to CreateFile
+            wprintf(L"DeviceInstancePath: %s\n", GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId).c_str()); // can be passsed to CM_Locate_DevNode
     }
 
     SetupDiDestroyDeviceInfoList(devInfo);

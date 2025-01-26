@@ -54,20 +54,3 @@ static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, c
     result.resize(result.size() - 1); // exclude null-termination
     return result;
 }
-
-static std::wstring GetDeviceInterfacePath(HDEVINFO devInfo, SP_DEVICE_INTERFACE_DATA& interfaceData) {
-    DWORD detailDataSize = 0;
-    BOOL ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, nullptr, 0, &detailDataSize, nullptr);
-    if (!ok) {
-        DWORD err = GetLastError();
-        assert(err == ERROR_INSUFFICIENT_BUFFER); err;
-    }
-
-    std::unique_ptr<SP_DEVICE_INTERFACE_DETAIL_DATA_W, decltype(&free)> detailData{ static_cast<SP_DEVICE_INTERFACE_DETAIL_DATA_W*>(malloc(detailDataSize)), &free };
-    detailData->cbSize = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
-
-    ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, detailData.get(), detailDataSize, &detailDataSize, nullptr);
-    assert(ok);
-
-    return detailData->DevicePath; // can be passsed to CreateFile
-}
