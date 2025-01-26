@@ -181,7 +181,10 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
         wprintf(L"  DefaultAlert1=%u%s\n", DefaultAlert1, unit.c_str());
         wprintf(L"  DefaultAlert2=%u%s\n", DefaultAlert2, unit.c_str());
         wprintf(L"  CriticalBias=%u%s\n", CriticalBias, unit.c_str());
-        wprintf(L"  CycleCount=%u\n", CycleCount);
+        if (CycleCount)
+            wprintf(L"  CycleCount=%u\n", CycleCount);
+        else
+            wprintf(L"  CycleCount=<unknown>\n");
     }
 };
 static_assert(sizeof(BatteryInformationWrap) == sizeof(BATTERY_INFORMATION));
