@@ -153,7 +153,7 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
 
 void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData) {
     wprintf(L"\n");
-    wprintf(L"Opening %s\n", GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId).c_str());
+    wprintf(L"Opening %s:\n", GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId).c_str());
 
     std::wstring PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
     std::wstring PDOPrefix = L"\\\\?\\GLOBALROOT";
@@ -178,7 +178,7 @@ int wmain(int argc, wchar_t* argv[]) {
     try {
         DeviceInstance dev(instanceId);
 
-        wprintf(L"Opening %s\n", instanceId);
+        wprintf(L"Opening %s:\n", instanceId);
         auto ver = dev.GetDriverVersion();
         wprintf(L"  Driver version: %s.\n", ver.c_str());
         auto time = dev.GetDriverDate();
