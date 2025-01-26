@@ -55,7 +55,7 @@ static std::wstring GetDevPropStr(HDEVINFO hDevInfo, SP_DEVINFO_DATA& devInfo, c
     return result;
 }
 
-static std::wstring GetDevicePath(HDEVINFO devInfo, SP_DEVICE_INTERFACE_DATA& interfaceData) {
+static std::wstring GetDeviceInterfacePath(HDEVINFO devInfo, SP_DEVICE_INTERFACE_DATA& interfaceData) {
     DWORD detailDataSize = 0;
     BOOL ok = SetupDiGetDeviceInterfaceDetailW(devInfo, &interfaceData, nullptr, 0, &detailDataSize, nullptr);
     if (!ok) {
