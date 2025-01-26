@@ -1,6 +1,6 @@
-# Script for retrieving Dell battery parameters
+# Script for retrieving Dell battery parameters that are not exposed through the standard APIs
 
-Write-Host "Parameters for Dell batteries:"
+Write-Host "Dell battery parameters:"
 $dell = Get-CimInstance -Namespace root\WMI -Class DDVWmiMethodFunction
 
 $cycleCount = Invoke-CimMethod -InputObject $dell -MethodName BatteryCycleCount -Arguments @{arg2=1}
