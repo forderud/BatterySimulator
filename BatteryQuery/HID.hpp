@@ -252,6 +252,15 @@ public:
         return result;
     }
 
+    /** Get the current value for a given Usage. */
+    template <class CAPS> // CAPS might be HIDP_VALUE_CAPS or HIDP_BUTTON_CAPS
+    ULONG GetUsageValue(HIDP_REPORT_TYPE type, CAPS val_caps, const std::vector<BYTE>& report) {
+        ULONG value = 0;
+        NTSTATUS status = HidP_GetUsageValue(type, val_caps.UsagePage, val_caps.LinkCollection, val_caps.NotRange.Usage, &value, preparsed, (CHAR*)report.data(), (ULONG)report.size());
+        assert(status == HIDP_STATUS_SUCCESS); status;
+        return value;
+    }
+
     std::wstring Name() const {
         std::wstring prod = GetProduct();
         if (prod.empty())
