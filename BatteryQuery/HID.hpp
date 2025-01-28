@@ -150,7 +150,7 @@ public:
         return report;
     }
 
-    /** Get FEATURE or INPUT report as byte array. */
+    /** Get FEATURE or INPUT report as byte array with ReportID prefix. */
     std::vector<BYTE> GetReport(HIDP_REPORT_TYPE type, BYTE reportId) const {
         std::vector<BYTE> report(1, (BYTE)0);
         report[0] = reportId; // report ID prefix
@@ -169,9 +169,6 @@ public:
             assert(ok);
             return {};
         }
-
-        // remove report ID prefix
-        //report.erase(report.begin());
 
         return report;
     }
