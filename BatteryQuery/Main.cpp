@@ -150,7 +150,7 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
     }
     for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Feature))) {
         wprintf(L"  ReportID: %#04x\n", reportId);
-        PrintReport(dev.GetReport(HidP_Input, reportId));
+        PrintReport(dev.GetReport(HidP_Feature, reportId));
     }
 
     wprintf(L"\n");
