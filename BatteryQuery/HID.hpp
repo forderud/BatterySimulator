@@ -162,6 +162,9 @@ public:
         } else if (type == HidP_Feature) {
             report.resize(caps.FeatureReportByteLength, (BYTE)0);
             ok = HidD_GetFeature(dev.Get(), report.data(), (ULONG)report.size());
+        } else {
+            // there's no HidD_GetOutputReport function
+            abort();
         }
         if (!ok) {
             DWORD err = GetLastError();
