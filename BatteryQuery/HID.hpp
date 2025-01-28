@@ -139,6 +139,9 @@ public:
         }  else if (type == HidP_Feature) {
             assert(sizeof(report) == caps.FeatureReportByteLength);
             ok = HidD_GetFeature(dev.Get(), &report, sizeof(report));
+        } else {
+            // there's no HidD_GetOutputReport function
+            abort();
         }
         if (!ok) {
             DWORD err = GetLastError();
@@ -168,7 +171,7 @@ public:
         }
         if (!ok) {
             DWORD err = GetLastError();
-            wprintf(L"ERROR: HidD_GetInputReport failure (err %d).\n", err);
+            wprintf(L"ERROR: HidD_GetFeature or HidD_GetInputReport failure (err %d).\n", err);
             assert(ok);
             return {};
         }
