@@ -115,6 +115,7 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
     std::vector<HIDP_VALUE_CAPS> valueCaps = dev.GetValueCaps(HidP_Input);
     for (auto& elm : valueCaps) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
+        wprintf(L"    UsagePage=%#04x, Usage=%#04x\n", elm.UsagePage, elm.NotRange.Usage);
         PrintReport(dev.GetReport(HidP_Input, elm.ReportID));
     }
     for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Input))) {
