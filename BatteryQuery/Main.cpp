@@ -135,7 +135,7 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
     }
     for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Output))) {
         wprintf(L"  ReportID: %#04x\n", reportId);
-        PrintReport(dev.GetReport(HidP_Input, reportId));
+        // cannot print output reports, since they're sent to the device
     }
 
     wprintf(L"Available FEATURE reports:\n");
