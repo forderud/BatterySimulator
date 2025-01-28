@@ -128,9 +128,9 @@ public:
     }
 
     /** Get typed FEATURE or INPUT report with ReportID prefix. */
-    template <class T>
-    T GetReport(HIDP_REPORT_TYPE type) const {
-        T report{}; // assume report ID prefix on first byte
+    template <class REPORT>
+    REPORT GetReport(HIDP_REPORT_TYPE type) const {
+        REPORT report{}; // assume report ID prefix on first byte
 
         BOOLEAN ok = false;
         if (type == HidP_Input) {
@@ -174,8 +174,8 @@ public:
     }
 
     /** Set FEATURE or OUTPUT report with ReportID prefix. */
-    template <class T>
-    bool SetReport(HIDP_REPORT_TYPE type, const T& report) {
+    template <class REPORT>
+    bool SetReport(HIDP_REPORT_TYPE type, const REPORT& report) {
         BOOLEAN ok = false;
         if (type == HidP_Output) {
             assert(sizeof(report) == caps.OutputReportByteLength);
