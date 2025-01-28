@@ -122,7 +122,7 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
         wprintf(L"    Value=%u\n", value);
     }
     std::vector<HIDP_BUTTON_CAPS> butCaps = dev.GetButtonCaps(HidP_Input);
-    for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(butCaps)) {
+    for (UCHAR reportId : hid::Device::UniqueReportIDs<HIDP_BUTTON_CAPS>(butCaps)) {
         wprintf(L"  ReportID: %#04x\n", reportId);
         PrintReport(dev.GetReport(HidP_Input, reportId));
     }    
@@ -135,7 +135,7 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
         // cannot print output reports, since they're sent to the device
     }
     butCaps = dev.GetButtonCaps(HidP_Output);
-    for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(butCaps)) {
+    for (UCHAR reportId : hid::Device::UniqueReportIDs<HIDP_BUTTON_CAPS>(butCaps)) {
         wprintf(L"  ReportID: %#04x\n", reportId);
         // cannot print output reports, since they're sent to the device
     }
@@ -151,7 +151,7 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
         wprintf(L"    Value=%u\n", value);
     }
     butCaps = dev.GetButtonCaps(HidP_Feature);
-    for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(butCaps)) {
+    for (UCHAR reportId : hid::Device::UniqueReportIDs<HIDP_BUTTON_CAPS>(butCaps)) {
         wprintf(L"  ReportID: %#04x\n", reportId);
         PrintReport(dev.GetReport(HidP_Feature, reportId));
     }

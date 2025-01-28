@@ -244,9 +244,9 @@ public:
         return buttonCaps;
     }
 
-    /** Return a list of unique ReportID values found in the input. */
+    /** Return a sorted list of unique ReportID values found in the input. */
     template <class CAPS> // CAPS might be HIDP_VALUE_CAPS or HIDP_BUTTON_CAPS
-    static std::vector<BYTE> GetReportIDs(const std::vector<CAPS> input) {
+    static std::vector<BYTE> UniqueReportIDs(const std::vector<CAPS> input) {
         std::vector<BYTE> result;
         for (auto& elm : input)
             result.push_back(elm.ReportID);
