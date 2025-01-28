@@ -112,8 +112,8 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
     wprintf(L"\n");
 
     wprintf(L"Available INPUT reports:\n");
-    std::vector<HIDP_VALUE_CAPS> valueCaps = dev.GetValueCaps(HidP_Input);
-    for (auto& elm : valueCaps) {
+    std::vector<HIDP_VALUE_CAPS> valCaps = dev.GetValueCaps(HidP_Input);
+    for (auto& elm : valCaps) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         wprintf(L"    UsagePage=%#04x, Usage=%#04x\n", elm.UsagePage, elm.NotRange.Usage);
         std::vector<BYTE> report = dev.GetReport(HidP_Input, elm.ReportID);
@@ -128,8 +128,8 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
     }    
 
     wprintf(L"Available OUTPUT reports:\n");
-    valueCaps = dev.GetValueCaps(HidP_Output);
-    for (auto& elm : valueCaps) {
+    valCaps = dev.GetValueCaps(HidP_Output);
+    for (auto& elm : valCaps) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         wprintf(L"    UsagePage=%#04x, Usage=%#04x\n", elm.UsagePage, elm.NotRange.Usage);
         // cannot print output reports, since they're sent to the device
@@ -141,8 +141,8 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
     }
 
     wprintf(L"Available FEATURE reports:\n");
-    valueCaps = dev.GetValueCaps(HidP_Feature);
-    for (auto& elm : valueCaps) {
+    valCaps = dev.GetValueCaps(HidP_Feature);
+    for (auto& elm : valCaps) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         wprintf(L"    UsagePage=%#04x, Usage=%#04x\n", elm.UsagePage, elm.NotRange.Usage);
         std::vector<BYTE> report = dev.GetReport(HidP_Feature, elm.ReportID);
