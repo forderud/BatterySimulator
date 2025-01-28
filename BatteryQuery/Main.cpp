@@ -116,7 +116,10 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
     for (auto& elm : valueCaps) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         wprintf(L"    UsagePage=%#04x, Usage=%#04x\n", elm.UsagePage, elm.NotRange.Usage);
-        PrintReport(dev.GetReport(HidP_Input, elm.ReportID));
+        std::vector<BYTE> report = dev.GetReport(HidP_Input, elm.ReportID);
+        //PrintReport(report);
+        ULONG value = dev.GetUsageValue(HidP_Input, elm, report);
+        wprintf(L"    Value=%u\n", value);
     }
     for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Input))) {
         wprintf(L"  ReportID: %#04x\n", reportId);
@@ -140,7 +143,10 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
     for (auto& elm : valueCaps) {
         wprintf(L"  ReportID: %#04x\n", elm.ReportID);
         wprintf(L"    UsagePage=%#04x, Usage=%#04x\n", elm.UsagePage, elm.NotRange.Usage);
-        PrintReport(dev.GetReport(HidP_Feature, elm.ReportID));
+        std::vector<BYTE> report = dev.GetReport(HidP_Feature, elm.ReportID);
+        //PrintReport(report);
+        ULONG value = dev.GetUsageValue(HidP_Feature, elm, report);
+        wprintf(L"    Value=%u\n", value);
     }
     for (UCHAR reportId : hid::Device::GetReportIDs<HIDP_BUTTON_CAPS>(dev.GetButtonCaps(HidP_Feature))) {
         wprintf(L"  ReportID: %#04x\n", reportId);
