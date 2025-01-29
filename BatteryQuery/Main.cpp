@@ -25,7 +25,7 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
         ULONG estimatedTime = BATTERY_UNKNOWN_TIME;
         GetBatteryInfoUlong(battery.Get(), BatteryEstimatedTime, estimatedTime);
         if (estimatedTime != BATTERY_UNKNOWN_TIME)
-            wprintf(L"  BatteryEstimatedTime:   %u\n", estimatedTime);
+            wprintf(L"  BatteryEstimatedTime:   %u s\n", estimatedTime);
         else
             wprintf(L"  BatteryEstimatedTime:   <unknown>\n");
 
