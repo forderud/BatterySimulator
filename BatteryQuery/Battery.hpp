@@ -178,8 +178,8 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
 
         wprintf(L"  DesignedCapacity=%u%s\n", DesignedCapacity, unit.c_str());
         wprintf(L"  FullChargedCapacity=%u%s\n", FullChargedCapacity, unit.c_str());
-        wprintf(L"  DefaultAlert1=%u%s\n", DefaultAlert1, unit.c_str());
-        wprintf(L"  DefaultAlert2=%u%s\n", DefaultAlert2, unit.c_str());
+        wprintf(L"  DefaultAlert1=%u%s (critical battery alarm)\n", DefaultAlert1, unit.c_str());
+        wprintf(L"  DefaultAlert2=%u%s (low battery alarm)\n", DefaultAlert2, unit.c_str());
         wprintf(L"  CriticalBias=%u%s\n", CriticalBias, unit.c_str());
         if (CycleCount)
             wprintf(L"  CycleCount=%u\n", CycleCount);
