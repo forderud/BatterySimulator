@@ -260,7 +260,7 @@ public:
 
     /** Get the current value for a given Usage. */
     template <class CAPS> // CAPS might be HIDP_VALUE_CAPS or HIDP_BUTTON_CAPS
-    ULONG GetUsageValue(HIDP_REPORT_TYPE type, CAPS val_caps, const std::vector<BYTE>& report) {
+    ULONG GetUsageValue(HIDP_REPORT_TYPE type, CAPS val_caps, const std::vector<BYTE>& report) const {
         ULONG value = 0;
         NTSTATUS status = HidP_GetUsageValue(type, val_caps.UsagePage, val_caps.LinkCollection, val_caps.NotRange.Usage, &value, preparsed, (CHAR*)report.data(), (ULONG)report.size());
         assert(status == HIDP_STATUS_SUCCESS); status;
@@ -296,7 +296,7 @@ public:
         wprintf(L"  NumberFeatureButtonCaps=%u, NumberFeatureValueCaps=%u, NumberFeatureDataIndices=%u\n", caps.NumberFeatureButtonCaps, caps.NumberFeatureValueCaps, caps.NumberFeatureDataIndices);
     }
 
-private:
+protected:
     std::wstring devName;
     Microsoft::WRL::Wrappers::FileHandle dev;
 public:
