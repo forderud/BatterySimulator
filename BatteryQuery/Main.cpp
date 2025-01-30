@@ -46,7 +46,8 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
         wprintf(L"  BatterySerialNumber:    %s\n", GetBatteryInfoStr(battery.Get(), BatterySerialNumber).c_str());
         {
             ULONG temp10thKelvin = 0; // in 10ths of a degree Kelvin
-            if (GetBatteryInfoUlong(battery.Get(), BatteryTemperature, temp10thKelvin)) {
+            GetBatteryInfoUlong(battery.Get(), BatteryTemperature, temp10thKelvin);
+            if (temp10thKelvin) {
                 int tempCelsius = ((int)temp10thKelvin - 2731) /10; // convert to Celsius
                 wprintf(L"  BatteryTemperature:     %i Celsius\n", tempCelsius);
             } else {
