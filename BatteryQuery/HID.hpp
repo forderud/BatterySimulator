@@ -296,7 +296,7 @@ public:
         wprintf(L"  NumberFeatureButtonCaps=%u, NumberFeatureValueCaps=%u, NumberFeatureDataIndices=%u\n", caps.NumberFeatureButtonCaps, caps.NumberFeatureValueCaps, caps.NumberFeatureDataIndices);
     }
 
-protected:
+private:
     std::wstring devName;
     Microsoft::WRL::Wrappers::FileHandle dev;
 public:
