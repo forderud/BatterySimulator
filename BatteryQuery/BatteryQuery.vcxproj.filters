@@ -8,6 +8,7 @@
     <ClInclude Include="DeviceInstance.hpp" />
     <ClInclude Include="HID.hpp" />
     <ClInclude Include="HidPowerDevice.hpp" />
+    <ClInclude Include="DellBattery.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="module.rc" />
