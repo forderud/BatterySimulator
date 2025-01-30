@@ -92,9 +92,9 @@ struct BatteryStausWrap : BATTERY_STATUS {
             wprintf(L"  Voltage=<unknown>\n");
 
         if (Rate != BATTERY_UNKNOWN_RATE)
-            wprintf(L"  Rate=%i mW\n", Rate);
+            wprintf(L"  (Dis)Charge Rate=%i mW\n", Rate);
         else
-            wprintf(L"  Rate=<unknown>\n");
+            wprintf(L"  (Dis)Charge Rate=<unknown>\n");
     }
 };
 static_assert(sizeof(BatteryStausWrap) == sizeof(BATTERY_STATUS));
