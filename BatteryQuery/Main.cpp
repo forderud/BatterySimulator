@@ -45,11 +45,13 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
         wprintf(L"  BatteryManufactureName: %s\n", GetBatteryInfoStr(battery.Get(), BatteryManufactureName).c_str());
         wprintf(L"  BatterySerialNumber:    %s\n", GetBatteryInfoStr(battery.Get(), BatterySerialNumber).c_str());
         {
-            ULONG temp = 0;
-            if (GetBatteryInfoUlong(battery.Get(), BatteryTemperature, temp))
-                wprintf(L"  BatteryTemperature:     %u\n", temp);
-            else
+            ULONG temp10thKelvin = 0; // in 10ths of a degree Kelvin
+            if (GetBatteryInfoUlong(battery.Get(), BatteryTemperature, temp10thKelvin)) {
+                int tempCelsius = ((int)temp10thKelvin - 2731) /10; // convert to Celsius
+                wprintf(L"  BatteryTemperature:     %i Celsius\n", tempCelsius);
+            } else {
                 wprintf(L"  BatteryTemperature:     <unknown>\n");
+            }
         }
         wprintf(L"  BatteryUniqueID:        %s\n", GetBatteryInfoStr(battery.Get(), BatteryUniqueID).c_str());
     }
