@@ -34,7 +34,7 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
         BATTERY_REPORTING_SCALE scale[4] = {};
         unsigned int count = GetBatteryInfoGranularity(battery.Get(), scale);
         for (unsigned int idx = 0; idx < count; ++idx)
-            wprintf(L"  BatteryGranularityInformation %u: Granularity=%u mWh, Capacity=%u mWh\n", idx, scale[idx].Granularity, scale[idx].Capacity);
+            wprintf(L"  BatteryGranularityInformation %u: Resolution=%u mWh for Capacity<=%u mWh\n", idx, scale[idx].Granularity, scale[idx].Capacity);
         if (count == 0)
             wprintf(L"  BatteryGranularityInformation: <unknown>\n");
 
