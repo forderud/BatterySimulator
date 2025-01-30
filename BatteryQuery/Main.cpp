@@ -5,7 +5,7 @@
 #include <wrl/wrappers/corewrappers.h> // for FileHandle
 #include <cassert>
 #include "DeviceInstance.hpp"
-#include "HID.hpp"
+#include "HidPowerDevice.hpp"
 #include "../DevicePowerQuery/DeviceEnum.hpp"
 
 
@@ -16,6 +16,8 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
         wprintf(L"ERROR: CreateFileW (err=%u).\n", err);
         return -1;
     }
+
+    hid::HidPowerDevice hidpd(pdoPath.c_str(), true);
 
     {
         wprintf(L"\n");
@@ -47,6 +49,14 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
         {
             ULONG temp10thKelvin = 0; // in 10ths of a degree Kelvin
             GetBatteryInfoUlong(battery.Get(), BatteryTemperature, temp10thKelvin);
+            if (hidpd.IsValid() && !temp10thKelvin) {
+                // fallback for HidBatt driver limitation
+                ULONG hidTemp = hidpd.GetTemperature();
+                if (hidTemp) {
+                    wprintf(L"WARNING: Retrieving Temperature directly from the HID device since it's not parsed by the HidBatt driver.\n");
+                    temp10thKelvin = hidTemp;
+                }
+            }
             if (temp10thKelvin) {
                 int tempCelsius = ((int)temp10thKelvin - 2731) /10; // convert to Celsius
                 wprintf(L"  BatteryTemperature:     %i Celsius\n", tempCelsius);
@@ -60,6 +70,14 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
 
     BatteryInformationWrap info(battery.Get());
     wprintf(L"BATTERY_INFORMATION parameters:\n");
+    if (hidpd.IsValid() && !info.CycleCount) {
+        // fallback for HidBatt driver limitation
+        auto hidCycleCount = hidpd.GetCycleCount();
+        if (hidCycleCount) {
+            wprintf(L"WARNING: Retrieving CycleCount directly from the HID device since it's not parsed by the HidBatt driver.\n");
+            info.CycleCount = hidCycleCount;
+        }
+    }
     info.Print();
     wprintf(L"\n");
 
