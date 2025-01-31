@@ -42,14 +42,12 @@ struct BatteryParameters {
 
         wprintf(L"  BatteryManufactureName: %s\n", ManufactureName.c_str());
         wprintf(L"  BatterySerialNumber:    %s\n", SerialNumber.c_str());
-        {
-            if (Temperature) {
-                int tempCelsius = ((int)Temperature - 2731) / 10; // convert to Celsius
-                wprintf(L"  BatteryTemperature:     %i Celsius\n", tempCelsius);
-            }
-            else {
-                wprintf(L"  BatteryTemperature:     <unknown>\n");
-            }
+
+        if (Temperature) {
+            int tempCelsius = ((int)Temperature - 2731) / 10; // convert to Celsius
+            wprintf(L"  BatteryTemperature:     %i Celsius\n", tempCelsius);
+        } else {
+            wprintf(L"  BatteryTemperature:     <unknown>\n");
         }
         wprintf(L"  BatteryUniqueID:        %s\n", UniqueID.c_str());
     }
@@ -79,6 +77,8 @@ int AccessBattery(const std::wstring& pdoPath, bool verbose, unsigned int newCha
     {
         BatteryParameters params(battery.Get());
 
+        wprintf(L"Battery information fields:\n");
+
         if (hidpd.IsValid() && !params.Temperature) {
             // fallback for HidBatt driver limitation
             ULONG hidTemp = hidpd.GetTemperature();
@@ -89,13 +89,13 @@ int AccessBattery(const std::wstring& pdoPath, bool verbose, unsigned int newCha
             }
         }
 
-        wprintf(L"Battery information fields:\n");
         params.Print();
     }
     wprintf(L"\n");
 
     BatteryInformationWrap info(battery.Get());
     wprintf(L"BATTERY_INFORMATION parameters:\n");
+
     if (hidpd.IsValid() && !info.CycleCount) {
         // fallback for HidBatt driver limitation
         auto hidCycleCount = hidpd.GetCycleCount();
