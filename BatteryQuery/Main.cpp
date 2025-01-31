@@ -22,6 +22,38 @@ struct BatteryParameters {
         UniqueID = GetBatteryInfoStr(dev, BatteryUniqueID);
     }
 
+    void Print() const {
+        wprintf(L"  BatteryDeviceName:      %s\n", DeviceName.c_str());
+
+        if (EstimatedTime != BATTERY_UNKNOWN_TIME)
+            wprintf(L"  BatteryEstimatedTime:   %u s\n", EstimatedTime);
+        else
+            wprintf(L"  BatteryEstimatedTime:   <unknown>\n");
+
+        for (unsigned int idx = 0; idx < GranularityInformation_len; ++idx)
+            wprintf(L"  BatteryGranularityInformation %u: Resolution=%u mWh for Capacity<=%u mWh\n", idx, GranularityInformation[idx].Granularity, GranularityInformation[idx].Capacity);
+        if (GranularityInformation_len == 0)
+            wprintf(L"  BatteryGranularityInformation: <unknown>\n");
+
+        if (ManufactureDate.Year)
+            wprintf(L"  BatteryManufactureDate: %u-%u-%u\n", ManufactureDate.Year, ManufactureDate.Month, ManufactureDate.Day);
+        else
+            wprintf(L"  BatteryManufactureDate: <unknown>\n");
+
+        wprintf(L"  BatteryManufactureName: %s\n", ManufactureName.c_str());
+        wprintf(L"  BatterySerialNumber:    %s\n", SerialNumber.c_str());
+        {
+            if (Temperature) {
+                int tempCelsius = ((int)Temperature - 2731) / 10; // convert to Celsius
+                wprintf(L"  BatteryTemperature:     %i Celsius\n", tempCelsius);
+            }
+            else {
+                wprintf(L"  BatteryTemperature:     <unknown>\n");
+            }
+        }
+        wprintf(L"  BatteryUniqueID:        %s\n", UniqueID.c_str());
+    }
+
     std::wstring DeviceName;
     ULONG EstimatedTime = BATTERY_UNKNOWN_TIME;
     BATTERY_REPORTING_SCALE GranularityInformation[4] = {};
@@ -43,47 +75,22 @@ int AccessBattery(const std::wstring& pdoPath, bool verbose, unsigned int newCha
 
     hid::HidPowerDevice hidpd(pdoPath.c_str(), true);
 
+    wprintf(L"\n");
     {
         BatteryParameters params(battery.Get());
-        wprintf(L"\n");
-        wprintf(L"Battery information fields:\n");
-        wprintf(L"  BatteryDeviceName:      %s\n", params.DeviceName.c_str());
 
-        if (params.EstimatedTime != BATTERY_UNKNOWN_TIME)
-            wprintf(L"  BatteryEstimatedTime:   %u s\n", params.EstimatedTime);
-        else
-            wprintf(L"  BatteryEstimatedTime:   <unknown>\n");
-
-        for (unsigned int idx = 0; idx < params.GranularityInformation_len; ++idx)
-            wprintf(L"  BatteryGranularityInformation %u: Resolution=%u mWh for Capacity<=%u mWh\n", idx, params.GranularityInformation[idx].Granularity, params.GranularityInformation[idx].Capacity);
-        if (params.GranularityInformation_len == 0)
-            wprintf(L"  BatteryGranularityInformation: <unknown>\n");
-
-        if (params.ManufactureDate.Year)
-            wprintf(L"  BatteryManufactureDate: %u-%u-%u\n", params.ManufactureDate.Year, params.ManufactureDate.Month, params.ManufactureDate.Day);
-        else
-            wprintf(L"  BatteryManufactureDate: <unknown>\n");
-
-        wprintf(L"  BatteryManufactureName: %s\n", params.ManufactureName.c_str());
-        wprintf(L"  BatterySerialNumber:    %s\n", params.SerialNumber.c_str());
-        {
-            if (hidpd.IsValid() && !params.Temperature) {
-                // fallback for HidBatt driver limitation
-                ULONG hidTemp = hidpd.GetTemperature();
-                if (hidTemp) {
-                    if (verbose)
-                        wprintf(L"WARNING: Retrieving Temperature directly from the HID device since it's not parsed by the HidBatt driver.\n");
-                    params.Temperature = hidTemp;
-                }
-            }
-            if (params.Temperature) {
-                int tempCelsius = ((int)params.Temperature - 2731) /10; // convert to Celsius
-                wprintf(L"  BatteryTemperature:     %i Celsius\n", tempCelsius);
-            } else {
-                wprintf(L"  BatteryTemperature:     <unknown>\n");
+        if (hidpd.IsValid() && !params.Temperature) {
+            // fallback for HidBatt driver limitation
+            ULONG hidTemp = hidpd.GetTemperature();
+            if (hidTemp) {
+                if (verbose)
+                    wprintf(L"WARNING: Retrieving Temperature directly from the HID device since it's not parsed by the HidBatt driver.\n");
+                params.Temperature = hidTemp;
             }
         }
-        wprintf(L"  BatteryUniqueID:        %s\n", params.UniqueID.c_str());
+
+        wprintf(L"Battery information fields:\n");
+        params.Print();
     }
     wprintf(L"\n");
 
