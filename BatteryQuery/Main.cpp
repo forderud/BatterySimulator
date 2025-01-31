@@ -79,7 +79,7 @@ int AccessBattery(const std::wstring& pdoPath, bool verbose, unsigned int newCha
 
         wprintf(L"Battery information fields:\n");
 
-        if (hidpd.IsValid() && !params.Temperature) {
+        if (!params.Temperature && hidpd.IsValid()) {
             // fallback for HidBatt driver limitation
             ULONG hidTemp = hidpd.GetTemperature();
             if (hidTemp) {
@@ -96,7 +96,7 @@ int AccessBattery(const std::wstring& pdoPath, bool verbose, unsigned int newCha
     BatteryInformationWrap info(battery.Get());
     wprintf(L"BATTERY_INFORMATION parameters:\n");
 
-    if (hidpd.IsValid() && !info.CycleCount) {
+    if (!info.CycleCount && hidpd.IsValid()) {
         // fallback for HidBatt driver limitation
         auto hidCycleCount = hidpd.GetCycleCount();
         if (hidCycleCount) {
