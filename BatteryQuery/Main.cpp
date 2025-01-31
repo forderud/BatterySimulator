@@ -4,8 +4,10 @@
 #include <Devpkey.h> // for DEVPKEY_xxx
 #include <wrl/wrappers/corewrappers.h> // for FileHandle
 #include <cassert>
+#include <ShlObj.h>
 #include "DeviceInstance.hpp"
 #include "HidPowerDevice.hpp"
+#include "DellBattery.hpp"
 #include "../DevicePowerQuery/DeviceEnum.hpp"
 
 
@@ -74,6 +76,7 @@ int AccessBattery(const std::wstring& devInstPath, const std::wstring& pdoPath, 
         return -1;
     }
 
+    DellBattery dellBatt(devInstPath);
     hid::HidPowerDevice hidpd(pdoPath.c_str(), true);
 
     wprintf(L"\n");
@@ -92,6 +95,17 @@ int AccessBattery(const std::wstring& devInstPath, const std::wstring& pdoPath, 
             }
         }
 
+        if (!params.ManufactureDate.Year && dellBatt.IsValid()) {
+            // fallback to Dell WMI interface
+            BATTERY_MANUFACTURE_DATE date = dellBatt.GetManufactureDat();
+            if (date.Year) {
+                if (verbose)
+                    wprintf(L"WARNING: Retrieving ManufactureDate directly from Dell WMI since it's not parsed by the HidBatt driver.\n");
+
+                params.ManufactureDate = date;
+            }
+        }
+
         params.Print();
     }
     wprintf(L"\n");
@@ -106,6 +120,14 @@ int AccessBattery(const std::wstring& devInstPath, const std::wstring& pdoPath, 
             if (verbose)
                 wprintf(L"WARNING: Retrieving CycleCount directly from the HID device since it's not parsed by the HidBatt driver.\n");
             info.CycleCount = hidCycleCount;
+        }
+    }
+    if (!info.CycleCount && dellBatt.IsValid()) {
+        auto cycleCount = dellBatt.GetCycleCount();
+        if (cycleCount) {
+            if (verbose)
+                wprintf(L"WARNING: Retrieving CycleCount directly from Dell WMI since it's not parsed by the HidBatt driver.\n");
+            info.CycleCount = cycleCount;
         }
     }
     info.Print();
