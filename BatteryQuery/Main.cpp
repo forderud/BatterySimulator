@@ -9,7 +9,7 @@
 #include "../DevicePowerQuery/DeviceEnum.hpp"
 
 
-int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
+int AccessBattery(const std::wstring& pdoPath, bool verbose, unsigned int newCharge = -1) {
     Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(pdoPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
         DWORD err = GetLastError();
@@ -53,7 +53,8 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
                 // fallback for HidBatt driver limitation
                 ULONG hidTemp = hidpd.GetTemperature();
                 if (hidTemp) {
-                    wprintf(L"WARNING: Retrieving Temperature directly from the HID device since it's not parsed by the HidBatt driver.\n");
+                    if (verbose)
+                        wprintf(L"WARNING: Retrieving Temperature directly from the HID device since it's not parsed by the HidBatt driver.\n");
                     temp10thKelvin = hidTemp;
                 }
             }
@@ -74,7 +75,8 @@ int AccessBattery(const std::wstring& pdoPath, unsigned int newCharge = -1) {
         // fallback for HidBatt driver limitation
         auto hidCycleCount = hidpd.GetCycleCount();
         if (hidCycleCount) {
-            wprintf(L"WARNING: Retrieving CycleCount directly from the HID device since it's not parsed by the HidBatt driver.\n");
+            if (verbose)
+                wprintf(L"WARNING: Retrieving CycleCount directly from the HID device since it's not parsed by the HidBatt driver.\n");
             info.CycleCount = hidCycleCount;
         }
     }
@@ -188,7 +190,7 @@ void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData)
 
     std::wstring PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
     std::wstring PDOPrefix = L"\\\\?\\GLOBALROOT";
-    AccessBattery(PDOPrefix + PDOName);
+    AccessBattery(PDOPrefix + PDOName, false);
     //AccessHidDevice(PDOPrefix + PDOName); // check if it's also a HID device
 }
 
@@ -222,7 +224,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    int res = AccessBattery(pdoPath, newCharge); // access battery APIs
+    int res = AccessBattery(pdoPath, true, newCharge); // access battery APIs
     AccessHidDevice(pdoPath); // check if it's also a HID device
     return res;
 }
