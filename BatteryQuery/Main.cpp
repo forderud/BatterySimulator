@@ -63,7 +63,10 @@ struct BatteryParameters {
     std::wstring UniqueID;
 };
 
-int AccessBattery(const std::wstring& pdoPath, bool verbose, unsigned int newCharge = -1) {
+int AccessBattery(const std::wstring& devInstPath, const std::wstring& pdoPath, bool verbose, unsigned int newCharge = -1) {
+    wprintf(L"\n");
+    wprintf(L"Opening %s:\n", devInstPath.c_str());
+
     Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(pdoPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
         DWORD err = GetLastError();
@@ -210,12 +213,11 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
 
 
 void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData) {
-    wprintf(L"\n");
-    wprintf(L"Opening %s:\n", GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId).c_str());
+    std::wstring devInstPath = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId);
 
     std::wstring PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
     std::wstring PDOPrefix = L"\\\\?\\GLOBALROOT";
-    AccessBattery(PDOPrefix + PDOName, false);
+    AccessBattery(devInstPath, PDOPrefix + PDOName, false);
     //AccessHidDevice(PDOPrefix + PDOName); // check if it's also a HID device
 }
 
@@ -236,7 +238,6 @@ int wmain(int argc, wchar_t* argv[]) {
     try {
         DeviceInstance dev(instanceId);
 
-        wprintf(L"Opening %s:\n", instanceId);
         auto ver = dev.GetDriverVersion();
         wprintf(L"  Driver version: %s.\n", ver.c_str());
         auto time = dev.GetDriverDate();
@@ -249,7 +250,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    int res = AccessBattery(pdoPath, true, newCharge); // access battery APIs
+    int res = AccessBattery(instanceId, pdoPath, true, newCharge); // access battery APIs
     AccessHidDevice(pdoPath); // check if it's also a HID device
     return res;
 }
