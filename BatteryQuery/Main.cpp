@@ -9,6 +9,30 @@
 #include "../DevicePowerQuery/DeviceEnum.hpp"
 
 
+
+struct BatteryParameters {
+    BatteryParameters(HANDLE dev) {
+        DeviceName = GetBatteryInfoStr(dev, BatteryDeviceName);
+        GetBatteryInfoUlong(dev, BatteryEstimatedTime, EstimatedTime);
+        GranularityInformation_len = GetBatteryInfoGranularity(dev, GranularityInformation);
+        GetBatteryInfoDate(dev, ManufactureDate);
+        ManufactureName = GetBatteryInfoStr(dev, BatteryManufactureName);
+        SerialNumber = GetBatteryInfoStr(dev, BatterySerialNumber);
+        GetBatteryInfoUlong(dev, BatteryTemperature, Temperature);
+        UniqueID = GetBatteryInfoStr(dev, BatteryUniqueID);
+    }
+
+    std::wstring DeviceName;
+    ULONG EstimatedTime = BATTERY_UNKNOWN_TIME;
+    BATTERY_REPORTING_SCALE GranularityInformation[4] = {};
+    UINT                    GranularityInformation_len = 0;
+    BATTERY_MANUFACTURE_DATE ManufactureDate = {};
+    std::wstring ManufactureName;
+    std::wstring SerialNumber;
+    ULONG Temperature = 0; // in 10ths of a degree Kelvin
+    std::wstring UniqueID;
+};
+
 int AccessBattery(const std::wstring& pdoPath, bool verbose, unsigned int newCharge = -1) {
     Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(pdoPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
@@ -20,52 +44,46 @@ int AccessBattery(const std::wstring& pdoPath, bool verbose, unsigned int newCha
     hid::HidPowerDevice hidpd(pdoPath.c_str(), true);
 
     {
+        BatteryParameters params(battery.Get());
         wprintf(L"\n");
         wprintf(L"Battery information fields:\n");
-        wprintf(L"  BatteryDeviceName:      %s\n", GetBatteryInfoStr(battery.Get(), BatteryDeviceName).c_str());
+        wprintf(L"  BatteryDeviceName:      %s\n", params.DeviceName.c_str());
 
-        ULONG estimatedTime = BATTERY_UNKNOWN_TIME;
-        GetBatteryInfoUlong(battery.Get(), BatteryEstimatedTime, estimatedTime);
-        if (estimatedTime != BATTERY_UNKNOWN_TIME)
-            wprintf(L"  BatteryEstimatedTime:   %u s\n", estimatedTime);
+        if (params.EstimatedTime != BATTERY_UNKNOWN_TIME)
+            wprintf(L"  BatteryEstimatedTime:   %u s\n", params.EstimatedTime);
         else
             wprintf(L"  BatteryEstimatedTime:   <unknown>\n");
 
-        BATTERY_REPORTING_SCALE scale[4] = {};
-        unsigned int count = GetBatteryInfoGranularity(battery.Get(), scale);
-        for (unsigned int idx = 0; idx < count; ++idx)
-            wprintf(L"  BatteryGranularityInformation %u: Resolution=%u mWh for Capacity<=%u mWh\n", idx, scale[idx].Granularity, scale[idx].Capacity);
-        if (count == 0)
+        for (unsigned int idx = 0; idx < params.GranularityInformation_len; ++idx)
+            wprintf(L"  BatteryGranularityInformation %u: Resolution=%u mWh for Capacity<=%u mWh\n", idx, params.GranularityInformation[idx].Granularity, params.GranularityInformation[idx].Capacity);
+        if (params.GranularityInformation_len == 0)
             wprintf(L"  BatteryGranularityInformation: <unknown>\n");
 
-        BATTERY_MANUFACTURE_DATE date = {};
-        if (GetBatteryInfoDate(battery.Get(), date))
-            wprintf(L"  BatteryManufactureDate: %u-%u-%u\n", date.Year, date.Month, date.Day);
+        if (params.ManufactureDate.Year)
+            wprintf(L"  BatteryManufactureDate: %u-%u-%u\n", params.ManufactureDate.Year, params.ManufactureDate.Month, params.ManufactureDate.Day);
         else
             wprintf(L"  BatteryManufactureDate: <unknown>\n");
 
-        wprintf(L"  BatteryManufactureName: %s\n", GetBatteryInfoStr(battery.Get(), BatteryManufactureName).c_str());
-        wprintf(L"  BatterySerialNumber:    %s\n", GetBatteryInfoStr(battery.Get(), BatterySerialNumber).c_str());
+        wprintf(L"  BatteryManufactureName: %s\n", params.ManufactureName.c_str());
+        wprintf(L"  BatterySerialNumber:    %s\n", params.SerialNumber.c_str());
         {
-            ULONG temp10thKelvin = 0; // in 10ths of a degree Kelvin
-            GetBatteryInfoUlong(battery.Get(), BatteryTemperature, temp10thKelvin);
-            if (hidpd.IsValid() && !temp10thKelvin) {
+            if (hidpd.IsValid() && !params.Temperature) {
                 // fallback for HidBatt driver limitation
                 ULONG hidTemp = hidpd.GetTemperature();
                 if (hidTemp) {
                     if (verbose)
                         wprintf(L"WARNING: Retrieving Temperature directly from the HID device since it's not parsed by the HidBatt driver.\n");
-                    temp10thKelvin = hidTemp;
+                    params.Temperature = hidTemp;
                 }
             }
-            if (temp10thKelvin) {
-                int tempCelsius = ((int)temp10thKelvin - 2731) /10; // convert to Celsius
+            if (params.Temperature) {
+                int tempCelsius = ((int)params.Temperature - 2731) /10; // convert to Celsius
                 wprintf(L"  BatteryTemperature:     %i Celsius\n", tempCelsius);
             } else {
                 wprintf(L"  BatteryTemperature:     <unknown>\n");
             }
         }
-        wprintf(L"  BatteryUniqueID:        %s\n", GetBatteryInfoStr(battery.Get(), BatteryUniqueID).c_str());
+        wprintf(L"  BatteryUniqueID:        %s\n", params.UniqueID.c_str());
     }
     wprintf(L"\n");
 
