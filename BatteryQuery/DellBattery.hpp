@@ -119,13 +119,13 @@ public:
             m_battery_tag = _wtoi(tagStr.c_str());
         }
 
-        m_wbem = ConnectToNamespace(L"root\\WMI"); // or "root\\CIMV2"
+        m_wbem = ConnectToNamespace(L"root\\WMI");
 
-        // Open "DDVWmiMethodFunction" class in root\WMI namespace
+        const CComBSTR DellWMIClass = L"DDVWmiMethodFunction";
         if (IsUserAnAdmin())
-            m_ddv1 = GetInstanceReference(*m_wbem, L"DDVWmiMethodFunction"); // will fail unless running as Admin
+            m_ddv1 = GetInstanceReference(*m_wbem, DellWMIClass); // will fail unless running as Admin
         if (m_ddv1)
-            CHECK(m_wbem->GetObject(_bstr_t(L"DDVWmiMethodFunction"), 0, NULL, &m_ddv2, NULL));
+            CHECK(m_wbem->GetObject(DellWMIClass, 0, NULL, &m_ddv2, NULL));
     }
 
     ~DellBattery() {
