@@ -125,14 +125,14 @@ public:
         if (IsUserAnAdmin())
             m_ddv_inst = GetInstanceReference(*m_wbem, DellWMIClass); // will fail unless running as Admin
         if (m_ddv_inst)
-            CHECK(m_wbem->GetObject(DellWMIClass, 0, NULL, &m_ddv, NULL));
+            CHECK(m_wbem->GetObject(DellWMIClass, 0, NULL, &m_ddv_class, NULL));
     }
 
     ~DellBattery() {
     }
 
     bool IsValid() const {
-        return m_ddv_inst && m_ddv;
+        return m_ddv_inst && m_ddv_class;
     }
 
     ULONG GetCycleCount() {
@@ -168,7 +168,7 @@ private:
 
         CComPtr<IWbemClassObject> inParams;
         CComPtr<IWbemClassObject> outParams; // TODO: Figure out if parameter is needed
-        CHECK(m_ddv->GetMethod(_bstr_t(methodName), 0, &inParams, &outParams));
+        CHECK(m_ddv_class->GetMethod(_bstr_t(methodName), 0, &inParams, &outParams));
 
         CComPtr<IWbemClassObject> classInstance;
         CHECK(inParams->SpawnInstance(0, &classInstance));
@@ -192,6 +192,6 @@ private:
 
     CComPtr<IWbemServices>    m_wbem;
     ULONG                     m_battery_tag = 0;
-    CComPtr<IWbemClassObject> m_ddv_inst;
-    CComPtr<IWbemClassObject> m_ddv;
+    CComPtr<IWbemClassObject> m_ddv_inst;  // CIM class object instances
+    CComPtr<IWbemClassObject> m_ddv_class; // CIM class definition
 };
