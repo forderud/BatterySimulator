@@ -178,7 +178,7 @@ int AccessBattery(const std::wstring& devInstPath, bool verbose, unsigned int ne
     wprintf(L"\n");
 
     BatteryStausWrap status(battery.Get());
-    wprintf(L"BATTERY_STATUS parameters (before update):\n");
+    wprintf(L"BATTERY_STATUS parameters:\n");
     status.Print();
     wprintf(L"\n");
 
