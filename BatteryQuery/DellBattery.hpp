@@ -121,7 +121,7 @@ public:
     }
 
     void Initialize(const std::wstring& devName) {
-        if (!m_battery_tag)
+        if (m_battery_tag < 0)
             return;
 
         if (devName.find(L"DELL") == std::wstring::npos)
@@ -199,7 +199,7 @@ private:
 
 
     CComPtr<IWbemServices>    m_wbem;
-    ULONG                     m_battery_tag = 0;
+    int                       m_battery_tag = -1;
     CComPtr<IWbemClassObject> m_ddv_inst;  // CIM class object instances
     CComPtr<IWbemClassObject> m_ddv_class; // CIM class definition
 };
