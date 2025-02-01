@@ -127,7 +127,6 @@ public:
         else
             wprintf(L"WARNING: Not running as Administrator. Some Dell battery parameters will not be available.\n");
 
-
         if (m_ddv_inst)
             CHECK(m_wbem->GetObject(DellWMIClass, 0, NULL, &m_ddv_class, NULL));
     }
