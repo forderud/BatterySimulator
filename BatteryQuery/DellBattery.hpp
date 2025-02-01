@@ -109,7 +109,7 @@ CComPtr<IWbemClassObject> GetInstanceReference(IWbemServices& pIWbemServices, co
 class DellBattery {
 public:
     DellBattery(const std::wstring& devInstPath) {
-        // devInstPath example "ACPI\PNP0C0A\1"
+        // devInstPath example: "ACPI\PNP0C0A\1"
         if (devInstPath.find(L"ACPI\\PNP0C0A") == std::wstring::npos)
             return; // not ACPI compliant control method battery (CmBatt driver)
 
