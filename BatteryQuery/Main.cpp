@@ -128,13 +128,22 @@ int AccessBattery(const std::wstring& devInstPath, bool verbose, unsigned int ne
                 params.Temperature = hidTemp;
             }
         }
+        if (!params.Temperature && dellBatt.IsValid()) {
+            // fallback to Dell WMI interface
+            ULONG dellTemp = dellBatt.GetTemperature();
+            if (dellTemp) {
+                if (verbose)
+                    wprintf(L"WARNING: Retrieving Temperature directly from Dell WMI since it's not parsed by the CmBatt driver.\n");
+                params.Temperature = dellTemp;
+            }
+        }
 
         if (!params.ManufactureDate.Year && dellBatt.IsValid()) {
             // fallback to Dell WMI interface
             BATTERY_MANUFACTURE_DATE date = dellBatt.GetManufactureDat();
             if (date.Year) {
                 if (verbose)
-                    wprintf(L"WARNING: Retrieving ManufactureDate directly from Dell WMI since it's not parsed by the HidBatt driver.\n");
+                    wprintf(L"WARNING: Retrieving ManufactureDate directly from Dell WMI since it's not parsed by the CmBatt driver.\n");
 
                 params.ManufactureDate = date;
             }
@@ -160,7 +169,7 @@ int AccessBattery(const std::wstring& devInstPath, bool verbose, unsigned int ne
         auto cycleCount = dellBatt.GetCycleCount();
         if (cycleCount) {
             if (verbose)
-                wprintf(L"WARNING: Retrieving CycleCount directly from Dell WMI since it's not parsed by the HidBatt driver.\n");
+                wprintf(L"WARNING: Retrieving CycleCount directly from Dell WMI since it's not parsed by the CmBatt driver.\n");
             info.CycleCount = cycleCount;
         }
     }

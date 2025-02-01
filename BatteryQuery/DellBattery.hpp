@@ -136,18 +136,13 @@ public:
     }
 
     ULONG GetCycleCount() {
-        // Call "BatteryCycleCount" WMI method
-        // [WmiMethodId(12), Implemented, read, write, Description("Return Battery Cycle Count")]
-        //   void BatteryCycleCount([in] uint32 arg2, [out] uint32 argr);
-
+        // void BatteryCycleCount([in] uint32 arg2, [out] uint32 argr);
         INT cycleCount = CallMethod(L"BatteryCycleCount", m_battery_tag);
         return cycleCount;
     }
 
     BATTERY_MANUFACTURE_DATE GetManufactureDat() {
-        // TODO: Return "BatteryManufactureDate" WMI method
-        // [WmiMethodId(4), Implemented, read, write, Description("Return Battery Manufacture Date.")]
-        //   void BatteryManufactureDate([in] uint32 arg2, [out] uint32 argr);
+        // void BatteryManufactureDate([in] uint32 arg2, [out] uint32 argr);
         USHORT dateEnc = (USHORT)CallMethod(L"BatteryManufactureDate", m_battery_tag);;
 
         // Date parameter encoding : "(year – 1980)*512 + month*32 + day"
@@ -156,6 +151,12 @@ public:
         date.Month = (dateEnc >> 5) % 16;
         date.Year = 1980 + (dateEnc >> 9);
         return date;
+    }
+
+    ULONG GetTemperature() {
+        // void BatteryTemperature([in] uint32 arg2, [out] uint32 argr);
+        auto temp = (USHORT)CallMethod(L"BatteryTemperature", m_battery_tag);;
+        return temp; // 10ths of a degree Kelvin
     }
 
 private:
