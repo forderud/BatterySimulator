@@ -123,8 +123,8 @@ public:
 
         const CComBSTR DellWMIClass = L"DDVWmiMethodFunction";
         if (IsUserAnAdmin())
-            m_ddv_obj = GetInstanceReference(*m_wbem, DellWMIClass); // will fail unless running as Admin
-        if (m_ddv_obj)
+            m_ddv_inst = GetInstanceReference(*m_wbem, DellWMIClass); // will fail unless running as Admin
+        if (m_ddv_inst)
             CHECK(m_wbem->GetObject(DellWMIClass, 0, NULL, &m_ddv, NULL));
     }
 
@@ -132,7 +132,7 @@ public:
     }
 
     bool IsValid() const {
-        return m_ddv_obj;
+        return m_ddv_inst && m_ddv;
     }
 
     ULONG GetCycleCount() {
@@ -160,6 +160,11 @@ public:
 
 private:
     INT CallMethod(const wchar_t methodName[], INT arg2Val) {
+        CComVariant pathVariable;
+        //The IWbemClassObject::Get method retrieves the specified property value, if it exists.
+        CHECK(m_ddv_inst->Get(_bstr_t(L"__PATH"), 0, &pathVariable, NULL, NULL));
+        //wprintf(L"Class Path: %s\n", pathVariable.bstrVal);
+
         CComPtr<IWbemClassObject> inParams;
         CComPtr<IWbemClassObject> outParams; // TODO: Figure out if parameter is needed
         CHECK(m_ddv->GetMethod(_bstr_t(methodName), 0, &inParams, &outParams));
@@ -171,11 +176,6 @@ private:
         CComVariant arg2;
         arg2 = arg2Val; // VT_I4
         CHECK(classInstance->Put(L"arg2", 0/*reserved*/, &arg2, CIM_UINT32));
-
-        CComVariant pathVariable;
-        //The IWbemClassObject::Get method retrieves the specified property value, if it exists.
-        CHECK(m_ddv_obj->Get(_bstr_t(L"__PATH"), 0, &pathVariable, NULL, NULL));
-        //wprintf(L"Class Path: %s\n", pathVariable.bstrVal);
 
         // call method
         CComPtr<IWbemClassObject> callOutParams;
@@ -191,6 +191,6 @@ private:
 
     CComPtr<IWbemServices>    m_wbem;
     ULONG                     m_battery_tag = 0;
-    CComPtr<IWbemClassObject> m_ddv_obj;
+    CComPtr<IWbemClassObject> m_ddv_inst;
     CComPtr<IWbemClassObject> m_ddv;
 };
