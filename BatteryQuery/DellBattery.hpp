@@ -170,8 +170,7 @@ private:
         //wprintf(L"Class Path: %s\n", pathVariable.bstrVal);
 
         CComPtr<IWbemClassObject> inParams;
-        CComPtr<IWbemClassObject> outParams; // TODO: Figure out if parameter is needed
-        CHECK(m_ddv_class->GetMethod(_bstr_t(methodName), 0, &inParams, &outParams));
+        CHECK(m_ddv_class->GetMethod(_bstr_t(methodName), 0, &inParams, nullptr));
 
         CComPtr<IWbemClassObject> classInstance;
         CHECK(inParams->SpawnInstance(0, &classInstance));
