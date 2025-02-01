@@ -122,8 +122,8 @@ class DellBattery {
 public:
     DellBattery(const std::wstring& devInstPath) {
         // devInstPath example "ACPI\PNP0C0A\1"
-        if (devInstPath.find(L"ACPI\\PNP") == std::wstring::npos)
-            return; // not an ACPI battery
+        if (devInstPath.find(L"ACPI\\PNP0C0A") == std::wstring::npos)
+            return; // not ACPI compliant control method battery (CmBatt driver)
 
         size_t tagIdx = devInstPath.find_last_of(L"\\");
         if (tagIdx != std::wstring::npos) {
