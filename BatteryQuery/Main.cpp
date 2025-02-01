@@ -65,11 +65,13 @@ struct BatteryParameters {
     std::wstring UniqueID;
 };
 
-int AccessBattery(const std::wstring& devInstPath, const std::wstring& pdoPath, bool verbose, unsigned int newCharge = -1) {
+int AccessBattery(const std::wstring& devInstPath, bool verbose, unsigned int newCharge = -1) {
     wprintf(L"\n");
     wprintf(L"Opening %s:\n", devInstPath.c_str());
 
-    Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(pdoPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
+    DeviceInstance dev(devInstPath.c_str());
+
+    Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(dev.GetPDOPath().c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
         DWORD err = GetLastError();
         wprintf(L"ERROR: CreateFileW (err=%u).\n", err);
@@ -77,7 +79,7 @@ int AccessBattery(const std::wstring& devInstPath, const std::wstring& pdoPath, 
     }
 
     DellBattery dellBatt(devInstPath);
-    hid::HidPowerDevice hidpd(pdoPath.c_str(), true);
+    hid::HidPowerDevice hidpd(dev.GetPDOPath().c_str(), true);
 
     wprintf(L"\n");
     {
@@ -237,10 +239,13 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
 void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData) {
     std::wstring devInstPath = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId);
 
+    AccessBattery(devInstPath, false);
+
+#if 0
     std::wstring PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
     std::wstring PDOPrefix = L"\\\\?\\GLOBALROOT";
-    AccessBattery(devInstPath, PDOPrefix + PDOName, false);
-    //AccessHidDevice(PDOPrefix + PDOName); // check if it's also a HID device
+    AccessHidDevice(PDOPrefix + PDOName); // check if it's also a HID device
+#endif
 }
 
 
@@ -272,7 +277,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    int res = AccessBattery(instanceId, pdoPath, true, newCharge); // access battery APIs
+    int res = AccessBattery(instanceId, true, newCharge); // access battery APIs
     AccessHidDevice(pdoPath); // check if it's also a HID device
     return res;
 }
