@@ -164,10 +164,10 @@ public:
 
 private:
     INT CallMethod(const wchar_t methodName[], INT arg2Val) {
-        CComVariant pathVariable;
+        CComVariant instancePath;
         //The IWbemClassObject::Get method retrieves the specified property value, if it exists.
-        CHECK(m_ddv_inst->Get(_bstr_t(L"__PATH"), 0, &pathVariable, NULL, NULL));
-        //wprintf(L"Class Path: %s\n", pathVariable.bstrVal);
+        CHECK(m_ddv_inst->Get(_bstr_t(L"__PATH"), 0, &instancePath, NULL, NULL));
+        //wprintf(L"Class instance path: %s\n", instancePath.bstrVal);
 
         CComPtr<IWbemClassObject> inParams;
         CHECK(m_ddv_class->GetMethod(_bstr_t(methodName), 0, &inParams, nullptr));
@@ -180,7 +180,7 @@ private:
         // call method
         CComPtr<IWbemClassObject> callOutParams;
         CComPtr<IWbemCallResult> result;
-        CHECK(m_wbem->ExecMethod(pathVariable.bstrVal, _bstr_t(methodName), 0/*synchronous*/, 0/*ctx*/ , inParams, &callOutParams, &result));
+        CHECK(m_wbem->ExecMethod(instancePath.bstrVal, _bstr_t(methodName), 0/*synchronous*/, 0/*ctx*/ , inParams, &callOutParams, &result));
 
         // retrieve "argr" output argument
         CComVariant argr;
