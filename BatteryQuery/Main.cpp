@@ -116,6 +116,7 @@ int AccessBattery(const std::wstring& devInstPath, bool verbose, unsigned int ne
     wprintf(L"\n");
     {
         BatteryParameters params(battery.Get());
+        dellBatt.Initialize(params.DeviceName);
 
         wprintf(L"Battery information fields:\n");
 

@@ -118,15 +118,24 @@ public:
             std::wstring tagStr = devInstPath.substr(tagIdx + 1);
             m_battery_tag = _wtoi(tagStr.c_str());
         }
+    }
 
+    void Initialize(const std::wstring& devName) {
+        if (!m_battery_tag)
+            return;
+
+        if (devName.find(L"DELL") == std::wstring::npos)
+            return; // not a Dell battery
+
+        if (!IsUserAnAdmin()) {
+            wprintf(L"WARNING: Not running as Administrator. Some Dell battery parameters will not be available.\n");
+            return; // not running as Admin
+        }
+        
         m_wbem = ConnectToNamespace(L"root\\WMI");
 
         const CComBSTR DellWMIClass = L"DDVWmiMethodFunction";
-        if (IsUserAnAdmin())
-            m_ddv_inst = GetInstanceReference(*m_wbem, DellWMIClass); // will fail unless running as Admin
-        else
-            wprintf(L"WARNING: Not running as Administrator. Some Dell battery parameters will not be available.\n");
-
+        m_ddv_inst = GetInstanceReference(*m_wbem, DellWMIClass); // will fail unless running as Admin
         if (m_ddv_inst)
             CHECK(m_wbem->GetObject(DellWMIClass, 0, NULL, &m_ddv_class, NULL));
     }
