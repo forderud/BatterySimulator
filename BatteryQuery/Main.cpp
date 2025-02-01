@@ -11,6 +11,38 @@
 #include "../DevicePowerQuery/DeviceEnum.hpp"
 
 
+/** RAII class for COM initialization. */
+class ComInitialize {
+public:
+    ComInitialize(COINIT apartment /*= COINIT_MULTITHREADED*/) : m_initialized(false) {
+        // REF: https://docs.microsoft.com/en-us/windows/win32/api/combaseapi/nf-combaseapi-coinitializeex
+        HRESULT hr = CoInitializeEx(NULL, apartment);
+        if (SUCCEEDED(hr))
+            m_initialized = true;
+
+        // enable admin calls if running as admin
+        CHECK(CoInitializeSecurity(
+            NULL,
+            -1,                          // COM negotiates service
+            NULL,                        // Authentication services
+            NULL,                        // Reserved
+            RPC_C_AUTHN_LEVEL_DEFAULT,   // Default authentication 
+            RPC_C_IMP_LEVEL_IMPERSONATE, // Default Impersonation
+            NULL,                        // Authentication info
+            EOAC_NONE,                   // Additional capabilities 
+            NULL                         // Reserved
+        ));
+    }
+
+    ~ComInitialize() {
+        if (m_initialized)
+            CoUninitialize();
+    }
+
+private:
+    bool m_initialized; ///< must uninitialize in dtor
+};
+
 
 struct BatteryParameters {
     BatteryParameters(HANDLE dev) {
@@ -250,6 +282,9 @@ void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData)
 
 
 int wmain(int argc, wchar_t* argv[]) {
+    // initialize COM to enable WMI calls
+    ComInitialize com(COINIT_APARTMENTTHREADED);
+
     if (argc < 2) {
         wprintf(L"Querying all batteries:\n");
         EnumerateInterfaces(GUID_DEVICE_BATTERY, BatteryVisitor);

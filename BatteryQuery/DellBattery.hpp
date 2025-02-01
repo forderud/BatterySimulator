@@ -119,21 +119,6 @@ public:
             m_battery_tag = _wtoi(tagStr.c_str());
         }
 
-        // Initialize COM library. Must be done before invoking any other COM function.
-        CoInitialize(NULL);
-
-        CHECK(CoInitializeSecurity(
-            NULL,
-            -1,                          // COM negotiates service
-            NULL,                        // Authentication services
-            NULL,                        // Reserved
-            RPC_C_AUTHN_LEVEL_DEFAULT,   // Default authentication 
-            RPC_C_IMP_LEVEL_IMPERSONATE, // Default Impersonation
-            NULL,                        // Authentication info
-            EOAC_NONE,                   // Additional capabilities 
-            NULL                         // Reserved
-        ));
-
         m_wbem = ConnectToNamespace(L"root\\WMI"); // or "root\\CIMV2"
 
         // Open "DDVWmiMethodFunction" class in root\WMI namespace
