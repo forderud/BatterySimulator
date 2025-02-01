@@ -67,18 +67,6 @@ CComPtr<IWbemServices> ConnectToNamespace(_In_ const wchar_t* chNamespace) {
         NULL,   // context
         &wbemServices));
 
-    // Switch the security level to IMPERSONATE so that provider(s)
-    // will grant access to system-level objects, and so that CALL authorization will be used.
-    CHECK(CoSetProxyBlanket(
-        (IUnknown*)wbemServices, // proxy
-        RPC_C_AUTHN_WINNT,        // authentication service
-        RPC_C_AUTHZ_NONE,         // authorization service
-        NULL,                     // server principle name
-        RPC_C_AUTHN_LEVEL_CALL,   // authentication level
-        RPC_C_IMP_LEVEL_IMPERSONATE,// impersonation level
-        NULL,                     // identity of the client
-        EOAC_NONE));               // capability flags
-
     return wbemServices;
 }
 
