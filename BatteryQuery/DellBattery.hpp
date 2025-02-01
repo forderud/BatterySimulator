@@ -172,18 +172,15 @@ private:
         CComPtr<IWbemClassObject> inParams;
         CHECK(m_ddv_class->GetMethod(_bstr_t(methodName), 0, &inParams, nullptr));
 
-        CComPtr<IWbemClassObject> classInstance;
-        CHECK(inParams->SpawnInstance(0, &classInstance));
-
         // pass "arg2" input argument
         CComVariant arg2;
         arg2 = arg2Val; // VT_I4
-        CHECK(classInstance->Put(L"arg2", 0/*reserved*/, &arg2, CIM_UINT32));
+        CHECK(inParams->Put(L"arg2", 0/*reserved*/, &arg2, CIM_UINT32));
 
         // call method
         CComPtr<IWbemClassObject> callOutParams;
         CComPtr<IWbemCallResult> result;
-        CHECK(m_wbem->ExecMethod(pathVariable.bstrVal, _bstr_t(methodName), 0/*synchronous*/, 0/*ctx*/ , classInstance, &callOutParams, &result));
+        CHECK(m_wbem->ExecMethod(pathVariable.bstrVal, _bstr_t(methodName), 0/*synchronous*/, 0/*ctx*/ , inParams, &callOutParams, &result));
 
         // retrieve "argr" output argument
         CComVariant argr;
