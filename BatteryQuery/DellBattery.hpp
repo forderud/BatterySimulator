@@ -129,6 +129,7 @@ public:
 
         if (!IsUserAnAdmin()) {
             wprintf(L"WARNING: Not running as Administrator. Some Dell battery parameters will not be available.\n");
+            wprintf(L"\n");
             return; // not running as Admin
         }
         
