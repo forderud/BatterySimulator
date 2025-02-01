@@ -70,15 +70,15 @@ CComPtr<IWbemServices> ConnectToNamespace(_In_ const wchar_t* chNamespace) {
     return wbemServices;
 }
 
-// The function returns an interface pointer to the instance given its list-index.
-CComPtr<IWbemClassObject> GetInstanceReference(IWbemServices& pIWbemServices, _In_ const wchar_t* lpClassName) {
+// The function returns the first WMI instance with matching class name
+CComPtr<IWbemClassObject> GetInstanceReference(IWbemServices& pIWbemServices, _In_ const CComBSTR className) {
     // Get Instance Enumerator Interface.
     CComPtr<IEnumWbemClassObject> enumInst;
     HRESULT hr = pIWbemServices.CreateInstanceEnum(
-        CComBSTR(lpClassName),  // Name of the root class.
+        className,              // Name of the root class.
         WBEM_FLAG_FORWARD_ONLY, // Forward-only enumeration.
         NULL,                   // Context.
-        &enumInst);          // pointer to class enumerator
+        &enumInst);             // pointer to class enumerator
 
     if (hr != WBEM_S_NO_ERROR || enumInst == NULL) {
         wprintf(L"Error: CreateInstanceEnum failed. This operation require Admin privileges.\n");
@@ -91,7 +91,7 @@ CComPtr<IWbemClassObject> GetInstanceReference(IWbemServices& pIWbemServices, _I
         ULONG count = 0;
         CComPtr<IWbemClassObject> inst;
         hr = enumInst->Next(
-            2000,      // two seconds timeout
+            1000,      // one second timeout
             1,         // return just one instance.
             &inst,    // pointer to instance.
             &count); // Number of instances returned.
