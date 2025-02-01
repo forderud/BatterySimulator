@@ -118,7 +118,7 @@ int AccessBattery(const std::wstring& devInstPath, bool verbose, unsigned int ne
         BatteryParameters params(battery.Get());
         dellBatt.Initialize(params.DeviceName);
 
-        wprintf(L"Battery information fields:\n");
+        wprintf(L"Misc. IOCTL_BATTERY_QUERY_INFORMATION parameters:\n");
 
         if (!params.Temperature && hidpd.IsValid()) {
             // fallback for HidBatt driver limitation
