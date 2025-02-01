@@ -71,7 +71,7 @@ CComPtr<IWbemServices> ConnectToNamespace(_In_ const wchar_t* chNamespace) {
 }
 
 // The function returns the first WMI instance with matching class name
-CComPtr<IWbemClassObject> GetInstanceReference(IWbemServices& pIWbemServices, _In_ const CComBSTR className) {
+CComPtr<IWbemClassObject> GetInstanceReference(IWbemServices& pIWbemServices, const CComBSTR className) {
     // Get Instance Enumerator Interface.
     CComPtr<IEnumWbemClassObject> enumInst;
     HRESULT hr = pIWbemServices.CreateInstanceEnum(
@@ -81,7 +81,7 @@ CComPtr<IWbemClassObject> GetInstanceReference(IWbemServices& pIWbemServices, _I
         &enumInst);             // pointer to class enumerator
 
     if (hr != WBEM_S_NO_ERROR || enumInst == NULL) {
-        wprintf(L"Error: CreateInstanceEnum failed. This operation require Admin privileges.\n");
+        // will fail on non-Dell computers or if running without Admin privileges
         return nullptr;
     }
 
@@ -124,6 +124,10 @@ public:
         const CComBSTR DellWMIClass = L"DDVWmiMethodFunction";
         if (IsUserAnAdmin())
             m_ddv_inst = GetInstanceReference(*m_wbem, DellWMIClass); // will fail unless running as Admin
+        else
+            wprintf(L"WARNING: Not running as Administrator. Some Dell battery parameters will not be available.\n");
+
+
         if (m_ddv_inst)
             CHECK(m_wbem->GetObject(DellWMIClass, 0, NULL, &m_ddv_class, NULL));
     }
