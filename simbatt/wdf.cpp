@@ -6,9 +6,7 @@
 
 #include "simbatt.h"
 #include "simbattdriverif.h"
-extern "C" {
-#include <batclass.h>
-}
+
 //------------------------------------------------------------------- Prototypes
 
 extern "C" DRIVER_INITIALIZE DriverEntry;
