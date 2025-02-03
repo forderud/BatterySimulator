@@ -9,10 +9,7 @@
 //------------------------------------------------------------------- Prototypes
 
 _IRQL_requires_same_
-VOID
-SimBattUpdateTag (
-    _Inout_ SIMBATT_FDO_DATA* DevExt
-    );
+VOID SimBattUpdateTag (_Inout_ SIMBATT_FDO_DATA* DevExt);
 
 BCLASS_QUERY_TAG_CALLBACK SimBattQueryTag;
 BCLASS_QUERY_INFORMATION_CALLBACK SimBattQueryInformation;

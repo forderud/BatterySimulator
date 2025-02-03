@@ -1,9 +1,7 @@
 #pragma once
 #include <initguid.h>
 
-//
-// Simulated battery ioctl interface
-//
+// Simulated battery IOCTL interface
 
 // {DAD1F940-CDD0-461f-B23F-C2C663D6E9EB}
 DEFINE_GUID(SIMBATT_DEVINTERFACE_GUID,

@@ -42,11 +42,11 @@ extern "C" {
 
 //------------------------------------------------------------------ Definitions
 
-typedef struct {
+struct SIMBATT_GLOBAL_DATA {
     UNICODE_STRING                  RegistryPath;
-} SIMBATT_GLOBAL_DATA;
+};
 
-typedef struct {
+struct SIMBATT_STATE {
     BATTERY_MANUFACTURE_DATE        ManufactureDate;
     BATTERY_INFORMATION             BatteryInfo;
     BATTERY_STATUS                  BatteryStatus;
@@ -59,23 +59,19 @@ typedef struct {
     WCHAR                           ManufacturerName[MAX_BATTERY_STRING_SIZE];
     WCHAR                           SerialNumber[MAX_BATTERY_STRING_SIZE];
     WCHAR                           UniqueId[MAX_BATTERY_STRING_SIZE];
-} SIMBATT_STATE;
+};
 
-typedef struct {
-    //
+struct SIMBATT_FDO_DATA {
     // Battery class registration
-    //
     PVOID                           ClassHandle;
     WDFWAITLOCK                     ClassInitLock;
     WMILIB_CONTEXT                  WmiLibContext;
 
-    //
     // Battery state
-    //
     WDFWAITLOCK                     StateLock;
     ULONG                           BatteryTag;
     SIMBATT_STATE                   State;
-} SIMBATT_FDO_DATA;
+};
 
 //------------------------------------------------------ WDF Context Declaration
 
@@ -85,10 +81,7 @@ WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(SIMBATT_FDO_DATA, GetDeviceExtension);
 //----------------------------------------------------- Prototypes (miniclass.cpp)
 
 _IRQL_requires_same_
-VOID
-SimBattPrepareHardware (
-    _In_ WDFDEVICE Device
-    );
+VOID SimBattPrepareHardware (_In_ WDFDEVICE Device);
 
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL SimBattIoDeviceControl;
 BCLASS_QUERY_TAG_CALLBACK SimBattQueryTag;
@@ -99,9 +92,4 @@ BCLASS_SET_STATUS_NOTIFY_CALLBACK SimBattSetStatusNotify;
 BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK SimBattDisableStatusNotify;
 
 _IRQL_requires_same_
-VOID
-SimBattPrint (
-    _In_ ULONG Level,
-    _In_ PCSTR Format,
-    ...
-    );
+VOID SimBattPrint (_In_ ULONG Level, _In_ PCSTR Format, ...);
