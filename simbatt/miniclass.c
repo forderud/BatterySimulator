@@ -589,7 +589,7 @@ Arguments:
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
     switch (IoControlCode) {
     case IOCTL_SIMBATT_SET_STATUS:
-        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(BATTERY_STATUS), &BatteryStatus, &Length);
+        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(BATTERY_STATUS), (void**)&BatteryStatus, &Length);
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_STATUS))) {
             Status = SimBattSetBatteryStatus(Device, BatteryStatus);
@@ -598,7 +598,7 @@ Arguments:
         break;
 
     case IOCTL_SIMBATT_SET_INFORMATION:
-        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(BATTERY_INFORMATION), &BatteryInformation, &Length);
+        TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(BATTERY_INFORMATION), (void**)&BatteryInformation, &Length);
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_INFORMATION))) {
             Status = SimBattSetBatteryInformation(Device, BatteryInformation);
