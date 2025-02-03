@@ -74,7 +74,7 @@ public:
 
         if (!HidD_GetAttributes(dev.Get(), &attr)) {
             DWORD err = GetLastError(); err;
-            assert(err == ERROR_NOT_FOUND);
+            assert((err == ERROR_NOT_FOUND) || (err == ERROR_INVALID_PARAMETER));
             dev.Close(); // invalidate object
             return;
         }
