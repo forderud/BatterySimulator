@@ -123,7 +123,7 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)
     </Inf>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="miniclass.c" />
+    <ClCompile Include="miniclass.cpp" />
     <ClCompile Include="wdf.c" />
     <ResourceCompile Include="simbatt.rc" />
   </ItemGroup>
