@@ -25,12 +25,7 @@ WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 //-------------------------------------------------------------------- Functions
 
 _Use_decl_annotations_
-NTSTATUS
-DriverEntry (
-    PDRIVER_OBJECT DriverObject,
-    PUNICODE_STRING RegistryPath
-    )
-
+NTSTATUS DriverEntry (PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)
 /*++
 Routine Description:
     DriverEntry initializes the driver and is the first routine called by the
@@ -43,7 +38,6 @@ Parameters Description:
     RegistryPath - Supplies a pointer to a unicode string representing the path
         to the driver-specific key in the registry.
 --*/
-
 {
     DebugEnter();
 
@@ -94,12 +88,7 @@ DriverEntryEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattDriverDeviceAdd (
-    WDFDRIVER Driver,
-    PWDFDEVICE_INIT DeviceInit
-    )
-
+NTSTATUS SimBattDriverDeviceAdd (WDFDRIVER Driver, PWDFDEVICE_INIT DeviceInit)
 /*++
 Routine Description:
     EvtDriverDeviceAdd is called by the framework in response to AddDevice
@@ -129,7 +118,6 @@ Arguments:
     // Register WDM preprocess callbacks for IRP_MJ_DEVICE_CONTROL and
     // IRP_MJ_SYSTEM_CONTROL. The battery class driver needs to handle these IO
     // requests directly.
-
     NTSTATUS Status = WdfDeviceInitAssignWdmIrpPreprocessCallback(
                  DeviceInit,
                  SimBattWdmIrpPreprocessDeviceControl,
@@ -198,7 +186,6 @@ Arguments:
 
     // Create a device interface for this device to advertise the simulated
     // battery IO interface.
-
     Status = WdfDeviceCreateDeviceInterface(DeviceHandle,
                                             &SIMBATT_DEVINTERFACE_GUID,
                                             NULL);
@@ -208,7 +195,6 @@ Arguments:
     }
 
     // Finish initializing the device context area.
-
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(DeviceHandle);
     DevExt->BatteryTag = BATTERY_TAG_INVALID;
     DevExt->ClassHandle = NULL;
@@ -245,10 +231,7 @@ DriverDeviceAddEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattSelfManagedIoInit (
-    WDFDEVICE Device
-    )
+NTSTATUS SimBattSelfManagedIoInit (WDFDEVICE Device)
 /*++
 Routine Description:
     The framework calls this function once per device after EvtDeviceD0Entry
@@ -289,7 +272,6 @@ Arguments:
     // Register the device as a WMI data provider. This is done using WDM
     // methods because the battery class driver uses WDM methods to complete
     // WMI requests.
-
     DevExt->WmiLibContext.GuidCount = 0;
     DevExt->WmiLibContext.GuidList = NULL;
     DevExt->WmiLibContext.QueryWmiRegInfo = SimBattQueryWmiRegInfo;
@@ -302,7 +284,6 @@ Arguments:
     Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_REGISTER);
 
     // Failure to register with WMI is nonfatal.
-
     if (!NT_SUCCESS(Status)) {
         DebugPrint(SIMBATT_WARN,
                    "IoWMIRegistrationControl() Failed. Status 0x%x\n",
@@ -317,10 +298,7 @@ DevicePrepareHardwareEnd:
 }
 
 _Use_decl_annotations_
-VOID
-SimBattSelfManagedIoCleanup (
-    WDFDEVICE Device
-    )
+VOID SimBattSelfManagedIoCleanup (WDFDEVICE Device)
 /*++
 Routine Description:
     This function is called after EvtDeviceSelfManagedIoSuspend callback. This
@@ -358,10 +336,7 @@ Return Value:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattQueryStop (
-    _In_ WDFDEVICE Device
-    )
+NTSTATUS SimBattQueryStop (_In_ WDFDEVICE Device)
 /*++
 Routine Description:
     EvtDeviceQueryStop event callback function determines whether a specified 
@@ -391,12 +366,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattDevicePrepareHardware (
-    WDFDEVICE Device,
-    WDFCMRESLIST ResourcesRaw,
-    WDFCMRESLIST ResourcesTranslated
-    )
+NTSTATUS SimBattDevicePrepareHardware (WDFDEVICE Device, WDFCMRESLIST ResourcesRaw, WDFCMRESLIST ResourcesTranslated)
 /*++
 Routine Description:
     EvtDevicePrepareHardware event callback performs operations that are
@@ -431,11 +401,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattWdmIrpPreprocessDeviceControl (
-    WDFDEVICE Device,
-    PIRP Irp
-    )
+NTSTATUS SimBattWdmIrpPreprocessDeviceControl (WDFDEVICE Device, PIRP Irp)
 /*++
 Routine Description:
     This event is called when the framework receives IRP_MJ_DEVICE_CONTROL
@@ -488,11 +454,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattWdmIrpPreprocessSystemControl (
-    WDFDEVICE Device,
-    PIRP Irp
-    )
+NTSTATUS SimBattWdmIrpPreprocessSystemControl (WDFDEVICE Device, PIRP Irp)
 /*++
 Routine Description:
     This event is called when the framework receives IRP_MJ_SYSTEM_CONTROL
@@ -555,15 +517,13 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattQueryWmiRegInfo (
-    PDEVICE_OBJECT DeviceObject,
-    PULONG RegFlags,
+NTSTATUS SimBattQueryWmiRegInfo (
+    PDEVICE_OBJECT  DeviceObject,
+    PULONG          RegFlags,
     PUNICODE_STRING InstanceName,
-    PUNICODE_STRING *RegistryPath,
+    PUNICODE_STRING*RegistryPath,
     PUNICODE_STRING MofResourceName,
-    PDEVICE_OBJECT *Pdo
-    )
+    PDEVICE_OBJECT* Pdo)
 /*++
 Routine Description:
     This routine is a callback into the driver to retrieve the list of
@@ -615,8 +575,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattQueryWmiDataBlock (
+NTSTATUS SimBattQueryWmiDataBlock (
     PDEVICE_OBJECT DeviceObject,
     PIRP Irp,
     ULONG GuidIndex,
@@ -624,8 +583,7 @@ SimBattQueryWmiDataBlock (
     ULONG InstanceCount,
     PULONG InstanceLengthArray,
     ULONG BufferAvail,
-    PUCHAR Buffer
-    )
+    PUCHAR Buffer)
 /*++
 Routine Description:
     This routine is a callback into the driver to query for the contents of
@@ -678,7 +636,6 @@ Arguments:
     // completed before it finishes unregistering. As a result, the class
     // initialization lock does not need to be acquired in this callback, since
     // it is called during class driver processing of a WMI IRP.
-
     Status = BatteryClassQueryWmiDataBlock(DevExt->ClassHandle,
                                            DeviceObject,
                                            Irp,
