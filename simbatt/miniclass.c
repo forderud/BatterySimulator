@@ -6,13 +6,6 @@
 #include "simbatt.h"
 #include "simbattdriverif.h"
 
-//--------------------------------------------------------------------- Literals
-
-#define DEFAULT_NAME                L"SimulatedBattery"
-#define DEFAULT_MANUFACTURER        L"OpenSource"
-#define DEFAULT_SERIALNO            L"1234"
-#define DEFAULT_UNIQUEID            L"SimulatedBattery007"
-
 //------------------------------------------------------------------- Prototypes
 
 _IRQL_requires_same_
@@ -113,13 +106,13 @@ Arguments:
 
         DevExt->State.MaxCurrentDraw = UNKNOWN_CURRENT;
 
-        SimBattSetBatteryString(DEFAULT_NAME, DevExt->State.DeviceName);
+        SimBattSetBatteryString(L"SimulatedBattery", DevExt->State.DeviceName);
 
-        SimBattSetBatteryString(DEFAULT_MANUFACTURER, DevExt->State.ManufacturerName);
+        SimBattSetBatteryString(L"OpenSource", DevExt->State.ManufacturerName);
 
-        SimBattSetBatteryString(DEFAULT_SERIALNO, DevExt->State.SerialNumber);
+        SimBattSetBatteryString(L"1234", DevExt->State.SerialNumber);
 
-        SimBattSetBatteryString(DEFAULT_UNIQUEID, DevExt->State.UniqueId);
+        SimBattSetBatteryString(L"SimulatedBattery007", DevExt->State.UniqueId);
 
         WdfWaitLockRelease(DevExt->StateLock);
     }
