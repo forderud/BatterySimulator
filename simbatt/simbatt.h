@@ -1,7 +1,9 @@
 #pragma once
 #include <wdm.h>
 #include <wdf.h>
+extern "C" {
 #include <batclass.h>
+}
 #include <wmistr.h>
 #include <wmilib.h>
 #include <ntstrsafe.h>
@@ -80,7 +82,7 @@ typedef struct {
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(SIMBATT_GLOBAL_DATA, GetGlobalData);
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(SIMBATT_FDO_DATA, GetDeviceExtension);
 
-//----------------------------------------------------- Prototypes (miniclass.c)
+//----------------------------------------------------- Prototypes (miniclass.cpp)
 
 _IRQL_requires_same_
 VOID
