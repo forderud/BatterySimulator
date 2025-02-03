@@ -9,9 +9,9 @@
 //--------------------------------------------------------------------- Literals
 
 #define DEFAULT_NAME                L"SimulatedBattery"
-#define DEFAULT_MANUFACTURER        L"Microsoft Corp"
-#define DEFAULT_SERIALNO            L"0000"
-#define DEFAULT_UNIQUEID            L"SimulatedBattery0000"
+#define DEFAULT_MANUFACTURER        L"OpenSource"
+#define DEFAULT_SERIALNO            L"1234"
+#define DEFAULT_UNIQUEID            L"SimulatedBattery007"
 
 //------------------------------------------------------------------- Prototypes
 
