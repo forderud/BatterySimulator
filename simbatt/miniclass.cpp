@@ -20,34 +20,19 @@ BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK SimBattDisableStatusNotify;
 
 _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
-NTSTATUS
-SimBattSetBatteryStatus (
-    _In_ WDFDEVICE Device,
-    _In_ PBATTERY_STATUS BatteryStatus
-    );
+NTSTATUS SimBattSetBatteryStatus (_In_ WDFDEVICE Device, _In_ PBATTERY_STATUS BatteryStatus);
 
 _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
-NTSTATUS
-SimBattSetBatteryInformation (
-    _In_ WDFDEVICE Device,
-    _In_ PBATTERY_INFORMATION BatteryInformation
-    );
+NTSTATUS SimBattSetBatteryInformation (_In_ WDFDEVICE Device, _In_ PBATTERY_INFORMATION BatteryInformation);
 
 _Success_(return==STATUS_SUCCESS)
-NTSTATUS
-SimBattSetBatteryString (
-    _In_ PCWSTR String,
-    _Out_writes_(MAX_BATTERY_STRING_SIZE) PWCHAR Destination
-    );
+NTSTATUS SimBattSetBatteryString (_In_ PCWSTR String, _Out_writes_(MAX_BATTERY_STRING_SIZE) PWCHAR Destination);
 
 //------------------------------------------------------------ Battery Interface
 
 _Use_decl_annotations_
-VOID
-SimBattPrepareHardware (
-    WDFDEVICE Device
-    )
+VOID SimBattPrepareHardware (WDFDEVICE Device)
 /*++
 Routine Description:
     This routine is called to initialize battery data to sane values.
@@ -118,10 +103,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-VOID
-SimBattUpdateTag (
-    SIMBATT_FDO_DATA* DevExt
-    )
+VOID SimBattUpdateTag (SIMBATT_FDO_DATA* DevExt)
 /*++
 Routine Description:
     This routine is called when static battery properties have changed to
@@ -141,11 +123,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattQueryTag (
-    PVOID Context,
-    PULONG BatteryTag
-    )
+NTSTATUS SimBattQueryTag (PVOID Context, PULONG BatteryTag)
 /*++
 Routine Description:
     This routine is called to get the value of the current battery tag.
@@ -175,16 +153,14 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattQueryInformation (
+NTSTATUS SimBattQueryInformation (
     PVOID Context,
     ULONG BatteryTag,
     BATTERY_QUERY_INFORMATION_LEVEL Level,
     LONG AtRate,
     PVOID Buffer,
     ULONG BufferLength,
-    PULONG ReturnedLength
-    )
+    PULONG ReturnedLength)
 /*++
 Routine Description:
     Called by the class driver to retrieve battery information
@@ -232,7 +208,6 @@ Return Value:
     // In a real battery, this would require hardware/firmware accesses. The
     // simulated battery fakes this by storing the data to be returned in
     // memory.
-
     PVOID ReturnBuffer = NULL;
     size_t ReturnBufferLength = 0;
     DebugPrint(SIMBATT_INFO, "Query for information level 0x%x\n", Level);
@@ -358,12 +333,10 @@ QueryInformationEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattQueryStatus (
+NTSTATUS SimBattQueryStatus (
     PVOID Context,
     ULONG BatteryTag,
-    PBATTERY_STATUS BatteryStatus
-    )
+    PBATTERY_STATUS BatteryStatus)
 /*++
 Routine Description:
     Called by the class driver to retrieve the batteries current status
@@ -407,12 +380,10 @@ QueryStatusEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattSetStatusNotify (
+NTSTATUS SimBattSetStatusNotify (
     PVOID Context,
     ULONG BatteryTag,
-    PBATTERY_NOTIFY BatteryNotify
-    )
+    PBATTERY_NOTIFY BatteryNotify)
 /*++
 Routine Description:
     Called by the class driver to set the capacity and power state levels
@@ -455,10 +426,7 @@ SetStatusNotifyEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattDisableStatusNotify (
-    PVOID Context
-    )
+NTSTATUS SimBattDisableStatusNotify (PVOID Context)
 /*++
 Routine Description:
     Called by the class driver to disable notification.
@@ -483,13 +451,11 @@ Return Value:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattSetInformation (
+NTSTATUS SimBattSetInformation (
     PVOID Context,
     ULONG BatteryTag,
     BATTERY_SET_INFORMATION_LEVEL Level,
-    PVOID Buffer
-    )
+    PVOID Buffer)
 /*
  Routine Description:
     Called by the class driver to set the battery's charge/discharge state,
@@ -543,14 +509,12 @@ SetInformationEnd:
 // implement the control side of the simulated battery. A real battery would
 // not implement this interface, and instead read battery data from hardware/
 // firmware interfaces.
-VOID
-SimBattIoDeviceControl (
+VOID SimBattIoDeviceControl (
     WDFQUEUE Queue,
     WDFREQUEST Request,
     size_t OutputBufferLength,
     size_t InputBufferLength,
-    ULONG IoControlCode
-    )
+    ULONG IoControlCode)
 /*++
 Routine Description:
     Handle changes to the simulated battery state.
@@ -612,11 +576,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattSetBatteryStatus (
-    WDFDEVICE Device,
-    PBATTERY_STATUS BatteryStatus
-    )
+NTSTATUS SimBattSetBatteryStatus (WDFDEVICE Device, PBATTERY_STATUS BatteryStatus)
 /*++
 Routine Description:
     Set the simulated battery status structure values.
@@ -651,11 +611,7 @@ SetBatteryStatusEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattSetBatteryInformation (
-    WDFDEVICE Device,
-    PBATTERY_INFORMATION BatteryInformation
-    )
+NTSTATUS SimBattSetBatteryInformation (WDFDEVICE Device, PBATTERY_INFORMATION BatteryInformation)
 /*++
 Routine Description:
     Set the simulated battery information structure values.
@@ -698,11 +654,7 @@ SetBatteryInformationEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS
-SimBattSetBatteryString (
-    PCWSTR String,
-    PWCHAR Destination
-    )
+NTSTATUS SimBattSetBatteryString (PCWSTR String, PWCHAR Destination)
 /*++
 Routine Description:
     Set one of the simulated battery strings.
@@ -717,13 +669,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-VOID
-SimBattPrint (
-    ULONG Level,
-    PCSTR Format,
-    ...
-    )
-
+VOID SimBattPrint (ULONG Level, PCSTR Format, ...)
 /*++
 Routine Description:
     This routine emits the debugger message.
