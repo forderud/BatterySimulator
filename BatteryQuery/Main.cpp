@@ -281,13 +281,18 @@ bool AccessHidDevice(const std::wstring& pdoPath) {
 void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData) {
     std::wstring devInstPath = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId);
 
-    AccessBattery(devInstPath, false);
+    try {
+        AccessBattery(devInstPath, false);
 
 #if 0
-    std::wstring PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
-    std::wstring PDOPrefix = L"\\\\?\\GLOBALROOT";
-    AccessHidDevice(PDOPrefix + PDOName); // check if it's also a HID device
+        std::wstring PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
+        std::wstring PDOPrefix = L"\\\\?\\GLOBALROOT";
+        AccessHidDevice(PDOPrefix + PDOName); // check if it's also a HID device
 #endif
+    } catch (const std::exception& err) {
+        printf("ERROR: Unable to access battery parameters (%s)\n", err.what());
+        printf("Continuing battery scan...\n");
+    }
 }
 
 
