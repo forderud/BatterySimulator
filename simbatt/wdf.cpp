@@ -6,11 +6,12 @@
 
 #include "simbatt.h"
 #include "simbattdriverif.h"
+extern "C" {
 #include <batclass.h>
-
+}
 //------------------------------------------------------------------- Prototypes
 
-DRIVER_INITIALIZE DriverEntry;
+extern "C" DRIVER_INITIALIZE DriverEntry;
 EVT_WDF_DRIVER_DEVICE_ADD SimBattDriverDeviceAdd;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_INIT  SimBattSelfManagedIoInit;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_CLEANUP  SimBattSelfManagedIoCleanup;

@@ -1,7 +1,9 @@
 #pragma once
 #include <wdm.h>
 #include <wdf.h>
+extern "C" {
 #include <batclass.h>
+}
 #include <wmistr.h>
 #include <wmilib.h>
 #include <ntstrsafe.h>
