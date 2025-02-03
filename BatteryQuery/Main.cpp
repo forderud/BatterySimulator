@@ -328,6 +328,8 @@ int wmain(int argc, wchar_t* argv[]) {
     }
 
     int res = AccessBattery(instanceId, true, newCharge); // access battery APIs
+#if 0
     AccessHidDevice(pdoPath); // check if it's also a HID device
+#endif
     return res;
 }
