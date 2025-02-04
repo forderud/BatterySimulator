@@ -9,7 +9,7 @@
 //------------------------------------------------------------------- Prototypes
 
 _IRQL_requires_same_
-void SimBattUpdateTag (_Inout_ SIMBATT_FDO_DATA* DevExt);
+void UpdateTag (_Inout_ SIMBATT_FDO_DATA* DevExt);
 
 BCLASS_QUERY_TAG_CALLBACK SimBattQueryTag;
 BCLASS_QUERY_INFORMATION_CALLBACK SimBattQueryInformation;
@@ -51,7 +51,7 @@ Arguments:
     // Get this battery's state - use defaults.
     {
         WdfWaitLockAcquire(DevExt->StateLock, NULL);
-        SimBattUpdateTag(DevExt);
+        UpdateTag(DevExt);
 
         // manufactured on 8th September 2024
         DevExt->State.ManufactureDate.Day = 8;
@@ -99,7 +99,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-void SimBattUpdateTag (SIMBATT_FDO_DATA* DevExt)
+void UpdateTag (SIMBATT_FDO_DATA* DevExt)
 /*++
 Routine Description:
     This routine is called when static battery properties have changed to
@@ -618,7 +618,7 @@ Arguments:
     // and notify the class driver that the battery status has updated. The
     // status query will fail due to a different battery tag, causing the class
     // driver to query for the new tag and new information.
-    SimBattUpdateTag(DevExt);
+    UpdateTag(DevExt);
     WdfWaitLockRelease(DevExt->StateLock);
     BatteryClassStatusNotify(DevExt->ClassHandle);
     Status = STATUS_SUCCESS;
