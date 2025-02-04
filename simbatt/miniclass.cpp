@@ -11,7 +11,7 @@
 _IRQL_requires_same_
 void UpdateTag (_Inout_ SIMBATT_FDO_DATA* DevExt);
 
-BCLASS_QUERY_TAG_CALLBACK SimBattQueryTag;
+BCLASS_QUERY_TAG_CALLBACK QueryTag;
 BCLASS_QUERY_INFORMATION_CALLBACK SimBattQueryInformation;
 BCLASS_SET_INFORMATION_CALLBACK SimBattSetInformation;
 BCLASS_QUERY_STATUS_CALLBACK SimBattQueryStatus;
@@ -113,7 +113,7 @@ Routine Description:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattQueryTag (void* Context, ULONG* BatteryTag)
+NTSTATUS QueryTag (void* Context, ULONG* BatteryTag)
 /*++
 Routine Description:
     This routine is called to get the value of the current battery tag.
