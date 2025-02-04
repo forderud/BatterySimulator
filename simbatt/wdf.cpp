@@ -15,7 +15,7 @@ EVT_WDF_DRIVER_DEVICE_ADD BattDriverDeviceAdd;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_INIT  BattSelfManagedIoInit;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_CLEANUP  BattSelfManagedIoCleanup;
 EVT_WDF_DEVICE_QUERY_STOP BattQueryStop;
-EVT_WDF_DEVICE_PREPARE_HARDWARE SimBattDevicePrepareHardware;
+EVT_WDF_DEVICE_PREPARE_HARDWARE BattDevicePrepareHardware;
 EVT_WDFDEVICE_WDM_IRP_PREPROCESS SimBattWdmIrpPreprocessDeviceControl;
 EVT_WDFDEVICE_WDM_IRP_PREPROCESS SimBattWdmIrpPreprocessSystemControl;
 
@@ -106,7 +106,7 @@ Arguments:
     // and Power are specified here.
     WDF_PNPPOWER_EVENT_CALLBACKS PnpPowerCallbacks;
     WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&PnpPowerCallbacks);
-    PnpPowerCallbacks.EvtDevicePrepareHardware = SimBattDevicePrepareHardware;
+    PnpPowerCallbacks.EvtDevicePrepareHardware = BattDevicePrepareHardware;
     PnpPowerCallbacks.EvtDeviceSelfManagedIoInit = BattSelfManagedIoInit;
     PnpPowerCallbacks.EvtDeviceSelfManagedIoCleanup = BattSelfManagedIoCleanup;
     PnpPowerCallbacks.EvtDeviceQueryStop = BattQueryStop;
@@ -335,7 +335,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattDevicePrepareHardware (WDFDEVICE Device, WDFCMRESLIST ResourcesRaw, WDFCMRESLIST ResourcesTranslated)
+NTSTATUS BattDevicePrepareHardware (WDFDEVICE Device, WDFCMRESLIST ResourcesRaw, WDFCMRESLIST ResourcesTranslated)
 /*++
 Routine Description:
     EvtDevicePrepareHardware event callback performs operations that are
