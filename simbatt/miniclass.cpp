@@ -32,7 +32,7 @@ NTSTATUS SimBattSetBatteryString (_In_ PCWSTR String, _Out_writes_(MAX_BATTERY_S
 //------------------------------------------------------------ Battery Interface
 
 _Use_decl_annotations_
-void SimBattPrepareHardware (WDFDEVICE Device)
+void InitializeBatteryState (WDFDEVICE Device)
 /*++
 Routine Description:
     This routine is called to initialize battery data to sane values.

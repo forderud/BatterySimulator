@@ -363,7 +363,7 @@ Arguments:
 
     DebugEnter();
 
-    SimBattPrepareHardware(Device);
+    InitializeBatteryState(Device);
     NTSTATUS Status = STATUS_SUCCESS;
     DebugExitStatus(Status);
     return Status;
