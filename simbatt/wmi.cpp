@@ -2,7 +2,7 @@
 #include "simbattdriverif.h"
 
 
-void InitializeWMI(WDFDEVICE Device)
+void RegisterWMI(WDFDEVICE Device)
 {
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 

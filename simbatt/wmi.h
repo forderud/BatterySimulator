@@ -1,7 +1,7 @@
 #pragma once
 #include "simbatt.h"
 
-void InitializeWMI(WDFDEVICE Device);
+void RegisterWMI(WDFDEVICE Device);
 
 
 WMI_QUERY_REGINFO_CALLBACK SimBattQueryWmiRegInfo;

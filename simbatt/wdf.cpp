@@ -266,7 +266,7 @@ Arguments:
         goto DevicePrepareHardwareEnd;
     }
 
-    InitializeWMI(Device);
+    RegisterWMI(Device);
 
 DevicePrepareHardwareEnd:
     DebugExitStatus(Status);
