@@ -278,7 +278,7 @@ Arguments:
     DevExt->WmiLibContext.SetWmiDataItem = NULL;
     DevExt->WmiLibContext.ExecuteWmiMethod = NULL;
     DevExt->WmiLibContext.WmiFunctionControl = NULL;
-    PDEVICE_OBJECT DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
+    DEVICE_OBJECT* DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
     Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_REGISTER);
 
     // Failure to register with WMI is nonfatal.
@@ -311,7 +311,7 @@ Return Value:
 {
     DebugEnter();
 
-    PDEVICE_OBJECT DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
+    DEVICE_OBJECT* DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
     NTSTATUS Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_DEREGISTER);
     if (!NT_SUCCESS(Status)) {
         DebugPrint(SIMBATT_WARN,
@@ -484,7 +484,7 @@ Arguments:
     #pragma warning(suppress: 28118)
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
     if (DevExt->ClassHandle != NULL) {
-        PDEVICE_OBJECT DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
+        DEVICE_OBJECT* DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
         Status = BatteryClassSystemControl(DevExt->ClassHandle,
                                            &DevExt->WmiLibContext,
                                            DeviceObject,
@@ -515,12 +515,12 @@ Arguments:
 
 _Use_decl_annotations_
 NTSTATUS SimBattQueryWmiRegInfo (
-    PDEVICE_OBJECT  DeviceObject,
+    DEVICE_OBJECT*  DeviceObject,
     ULONG*          RegFlags,
     UNICODE_STRING* InstanceName,
     UNICODE_STRING**RegistryPath,
     UNICODE_STRING* MofResourceName,
-    PDEVICE_OBJECT* Pdo)
+    DEVICE_OBJECT** Pdo)
 /*++
 Routine Description:
     This routine is a callback into the driver to retrieve the list of
@@ -573,7 +573,7 @@ Arguments:
 
 _Use_decl_annotations_
 NTSTATUS SimBattQueryWmiDataBlock (
-    PDEVICE_OBJECT DeviceObject,
+    DEVICE_OBJECT* DeviceObject,
     IRP* Irp,
     ULONG GuidIndex,
     ULONG InstanceIndex,
