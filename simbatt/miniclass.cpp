@@ -476,7 +476,7 @@ Arguments:
         Status = STATUS_INVALID_PARAMETER_4;
 
     } else if (Level == BatteryChargingSource) {
-        PBATTERY_CHARGING_SOURCE ChargingSource = (PBATTERY_CHARGING_SOURCE)Buffer;
+        BATTERY_CHARGING_SOURCE* ChargingSource = (BATTERY_CHARGING_SOURCE*)Buffer;
         DevExt->State.MaxCurrentDraw = ChargingSource->MaxCurrent;
         DebugPrint(SIMBATT_INFO,
                    "SimBatt : Set MaxCurrentDraw = %u mA\n",
