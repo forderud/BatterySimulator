@@ -13,7 +13,7 @@
 extern "C" DRIVER_INITIALIZE DriverEntry;
 EVT_WDF_DRIVER_DEVICE_ADD BattDriverDeviceAdd;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_INIT  BattSelfManagedIoInit;
-EVT_WDF_DEVICE_SELF_MANAGED_IO_CLEANUP  SimBattSelfManagedIoCleanup;
+EVT_WDF_DEVICE_SELF_MANAGED_IO_CLEANUP  BattSelfManagedIoCleanup;
 EVT_WDF_DEVICE_QUERY_STOP SimBattQueryStop;
 EVT_WDF_DEVICE_PREPARE_HARDWARE SimBattDevicePrepareHardware;
 EVT_WDFDEVICE_WDM_IRP_PREPROCESS SimBattWdmIrpPreprocessDeviceControl;
@@ -108,7 +108,7 @@ Arguments:
     WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&PnpPowerCallbacks);
     PnpPowerCallbacks.EvtDevicePrepareHardware = SimBattDevicePrepareHardware;
     PnpPowerCallbacks.EvtDeviceSelfManagedIoInit = BattSelfManagedIoInit;
-    PnpPowerCallbacks.EvtDeviceSelfManagedIoCleanup = SimBattSelfManagedIoCleanup;
+    PnpPowerCallbacks.EvtDeviceSelfManagedIoCleanup = BattSelfManagedIoCleanup;
     PnpPowerCallbacks.EvtDeviceQueryStop = SimBattQueryStop;
     WdfDeviceInitSetPnpPowerEventCallbacks(DeviceInit, &PnpPowerCallbacks);
 
@@ -274,7 +274,7 @@ DevicePrepareHardwareEnd:
 }
 
 _Use_decl_annotations_
-void SimBattSelfManagedIoCleanup (WDFDEVICE Device)
+void BattSelfManagedIoCleanup (WDFDEVICE Device)
 /*++
 Routine Description:
     This function is called after EvtDeviceSelfManagedIoSuspend callback. This
