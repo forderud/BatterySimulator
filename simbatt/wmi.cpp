@@ -11,7 +11,7 @@ void RegisterWMI(WDFDEVICE Device)
     // WMI requests.
     DevExt->WmiLibContext.GuidCount = 0;
     DevExt->WmiLibContext.GuidList = NULL;
-    DevExt->WmiLibContext.QueryWmiRegInfo = SimBattQueryWmiRegInfo;
+    DevExt->WmiLibContext.QueryWmiRegInfo = QueryWmiRegInfo;
     DevExt->WmiLibContext.QueryWmiDataBlock = SimBattQueryWmiDataBlock;
     DevExt->WmiLibContext.SetWmiDataBlock = NULL;
     DevExt->WmiLibContext.SetWmiDataItem = NULL;
@@ -45,7 +45,7 @@ void UnregisterWMI(WDFDEVICE Device)
 
 
 _Use_decl_annotations_
-NTSTATUS SimBattQueryWmiRegInfo(
+NTSTATUS QueryWmiRegInfo(
     DEVICE_OBJECT* DeviceObject,
     ULONG* RegFlags,
     UNICODE_STRING* InstanceName,
