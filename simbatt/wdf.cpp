@@ -289,18 +289,12 @@ Return Value:
 {
     DebugEnter();
 
-    DEVICE_OBJECT* DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
-    NTSTATUS Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_DEREGISTER);
-    if (!NT_SUCCESS(Status)) {
-        DebugPrint(SIMBATT_WARN,
-                   "IoWMIRegistrationControl() Failed. Status 0x%x\n",
-                   Status);
-
-        Status = STATUS_SUCCESS;
-    }
+    UnregisterWMI(Device);
 
     SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
+
+    NTSTATUS Status = STATUS_SUCCESS;
     if (DevExt->ClassHandle != NULL) {
         Status = BatteryClassUnload(DevExt->ClassHandle);
         DevExt->ClassHandle = NULL;

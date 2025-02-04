@@ -29,6 +29,20 @@ void RegisterWMI(WDFDEVICE Device)
     }
 }
 
+void UnregisterWMI(WDFDEVICE Device)
+{
+    DEVICE_OBJECT* DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
+
+    NTSTATUS Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_DEREGISTER);
+
+    // Failure to unregister with WMI is nonfatal.
+    if (!NT_SUCCESS(Status)) {
+        DebugPrint(SIMBATT_WARN,
+            "IoWMIRegistrationControl() Failed. Status 0x%x\n",
+            Status);
+    }
+}
+
 
 _Use_decl_annotations_
 NTSTATUS SimBattQueryWmiRegInfo(
