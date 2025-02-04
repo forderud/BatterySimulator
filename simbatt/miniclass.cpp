@@ -24,7 +24,7 @@ NTSTATUS SetBatteryStatus (_In_ WDFDEVICE Device, _In_ BATTERY_STATUS* BatterySt
 
 _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
-NTSTATUS SimBattSetBatteryInformation (_In_ WDFDEVICE Device, _In_ BATTERY_INFORMATION* BatteryInformation);
+NTSTATUS SetBatteryInformation (_In_ WDFDEVICE Device, _In_ BATTERY_INFORMATION* BatteryInformation);
 
 _Success_(return==STATUS_SUCCESS)
 NTSTATUS SimBattSetBatteryString (_In_ PCWSTR String, _Out_writes_(MAX_BATTERY_STRING_SIZE) WCHAR* Destination);
@@ -537,7 +537,7 @@ Arguments:
         TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(BATTERY_INFORMATION), (void**)&BatteryInformation, &Length);
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_INFORMATION))) {
-            Status = SimBattSetBatteryInformation(Device, BatteryInformation);
+            Status = SetBatteryInformation(Device, BatteryInformation);
         }
 
         break;
@@ -585,7 +585,7 @@ SetBatteryStatusEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattSetBatteryInformation (WDFDEVICE Device, BATTERY_INFORMATION* BatteryInformation)
+NTSTATUS SetBatteryInformation (WDFDEVICE Device, BATTERY_INFORMATION* BatteryInformation)
 /*++
 Routine Description:
     Set the simulated battery information structure values.
