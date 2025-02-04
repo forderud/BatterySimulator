@@ -46,7 +46,7 @@ struct BATT_GLOBAL_DATA {
     UNICODE_STRING                  RegistryPath;
 };
 
-struct SIMBATT_STATE {
+struct BATT_STATE {
     BATTERY_MANUFACTURE_DATE        ManufactureDate;
     BATTERY_INFORMATION             BatteryInfo;
     BATTERY_STATUS                  BatteryStatus;
@@ -69,7 +69,7 @@ struct SIMBATT_FDO_DATA {
     // Battery state
     WDFWAITLOCK                     StateLock;
     ULONG                           BatteryTag;
-    SIMBATT_STATE                   State;
+    BATT_STATE                   State;
 };
 
 //------------------------------------------------------ WDF Context Declaration
