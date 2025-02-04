@@ -104,10 +104,6 @@ void SimBattUpdateTag (SIMBATT_FDO_DATA* DevExt)
 Routine Description:
     This routine is called when static battery properties have changed to
     update the battery tag.
-
-Arguments:
-    DevExt - Supplies a pointer to the device extension  of the battery to
-        update.
 --*/
 {
     DevExt->BatteryTag += 1;
@@ -124,7 +120,6 @@ Routine Description:
 
 Arguments:
     Context - Supplies the miniport context value for battery
-
     BatteryTag - Supplies a pointer to a ULONG to receive the battery tag.
 --*/
 {
