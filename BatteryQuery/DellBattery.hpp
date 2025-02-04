@@ -113,15 +113,15 @@ public:
         if (devInstPath.find(L"ACPI\\PNP0C0A") == std::wstring::npos)
             return; // not ACPI compliant control method battery (CmBatt driver)
 
-        size_t tagIdx = devInstPath.find_last_of(L"\\");
-        if (tagIdx != std::wstring::npos) {
-            std::wstring tagStr = devInstPath.substr(tagIdx + 1);
-            m_battery_tag = _wtoi(tagStr.c_str());
+        size_t instanceIdx = devInstPath.find_last_of(L"\\");
+        if (instanceIdx != std::wstring::npos) {
+            std::wstring instStr = devInstPath.substr(instanceIdx + 1);
+            m_battery_instance = _wtoi(instStr.c_str());
         }
     }
 
     void Initialize(const std::wstring& devName) {
-        if (m_battery_tag < 0)
+        if (m_battery_instance < 0)
             return;
 
         if (devName.find(L"DELL") == std::wstring::npos)
@@ -150,13 +150,13 @@ public:
 
     ULONG GetCycleCount() {
         // void BatteryCycleCount([in] uint32 arg2, [out] uint32 argr);
-        INT cycleCount = CallMethod(L"BatteryCycleCount", m_battery_tag);
+        INT cycleCount = CallMethod(L"BatteryCycleCount", m_battery_instance);
         return cycleCount;
     }
 
     BATTERY_MANUFACTURE_DATE GetManufactureDat() {
         // void BatteryManufactureDate([in] uint32 arg2, [out] uint32 argr);
-        USHORT dateEnc = (USHORT)CallMethod(L"BatteryManufactureDate", m_battery_tag);;
+        USHORT dateEnc = (USHORT)CallMethod(L"BatteryManufactureDate", m_battery_instance);;
 
         // Date parameter encoding : "(year – 1980)*512 + month*32 + day"
         BATTERY_MANUFACTURE_DATE date{};
@@ -168,7 +168,7 @@ public:
 
     ULONG GetTemperature() {
         // void BatteryTemperature([in] uint32 arg2, [out] uint32 argr);
-        auto temp = (USHORT)CallMethod(L"BatteryTemperature", m_battery_tag);;
+        auto temp = (USHORT)CallMethod(L"BatteryTemperature", m_battery_instance);;
         return temp; // 10ths of a degree Kelvin
     }
 
@@ -200,7 +200,7 @@ private:
 
 
     CComPtr<IWbemServices>    m_wbem;
-    int                       m_battery_tag = -1;
+    int                       m_battery_instance = -1;
     CComPtr<IWbemClassObject> m_ddv_inst;  // CIM class object instances
     CComPtr<IWbemClassObject> m_ddv_class; // CIM class definition
 };
