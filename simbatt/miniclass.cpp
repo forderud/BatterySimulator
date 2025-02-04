@@ -86,8 +86,6 @@ Arguments:
 
         DevExt->State.Temperature = 2981; // 25 degree Celsius [10ths of a degree Kelvin]
 
-        DevExt->State.MaxCurrentDraw = UNKNOWN_CURRENT;
-
         SimBattSetBatteryString(L"SimulatedBattery", DevExt->State.DeviceName);
 
         SimBattSetBatteryString(L"OpenSource", DevExt->State.ManufacturerName);
@@ -462,6 +460,7 @@ Arguments:
 --*/
 {
     NTSTATUS Status;
+    UNREFERENCED_PARAMETER(Level);
 
     DebugEnter();
 
@@ -474,15 +473,6 @@ Arguments:
 
     if (Buffer == NULL) {
         Status = STATUS_INVALID_PARAMETER_4;
-
-    } else if (Level == BatteryChargingSource) {
-        BATTERY_CHARGING_SOURCE* ChargingSource = (BATTERY_CHARGING_SOURCE*)Buffer;
-        DevExt->State.MaxCurrentDraw = ChargingSource->MaxCurrent;
-        DebugPrint(SIMBATT_INFO,
-                   "SimBatt : Set MaxCurrentDraw = %u mA\n",
-                   DevExt->State.MaxCurrentDraw);
-
-        Status = STATUS_SUCCESS;
     } else {
         Status = STATUS_NOT_SUPPORTED;
     }
