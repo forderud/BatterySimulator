@@ -9,7 +9,7 @@
 //------------------------------------------------------------------- Prototypes
 
 _IRQL_requires_same_
-VOID SimBattUpdateTag (_Inout_ SIMBATT_FDO_DATA* DevExt);
+void SimBattUpdateTag (_Inout_ SIMBATT_FDO_DATA* DevExt);
 
 BCLASS_QUERY_TAG_CALLBACK SimBattQueryTag;
 BCLASS_QUERY_INFORMATION_CALLBACK SimBattQueryInformation;
@@ -32,7 +32,7 @@ NTSTATUS SimBattSetBatteryString (_In_ PCWSTR String, _Out_writes_(MAX_BATTERY_S
 //------------------------------------------------------------ Battery Interface
 
 _Use_decl_annotations_
-VOID SimBattPrepareHardware (WDFDEVICE Device)
+void SimBattPrepareHardware (WDFDEVICE Device)
 /*++
 Routine Description:
     This routine is called to initialize battery data to sane values.
@@ -103,7 +103,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-VOID SimBattUpdateTag (SIMBATT_FDO_DATA* DevExt)
+void SimBattUpdateTag (SIMBATT_FDO_DATA* DevExt)
 /*++
 Routine Description:
     This routine is called when static battery properties have changed to
@@ -509,7 +509,7 @@ SetInformationEnd:
 // implement the control side of the simulated battery. A real battery would
 // not implement this interface, and instead read battery data from hardware/
 // firmware interfaces.
-VOID SimBattIoDeviceControl (
+void SimBattIoDeviceControl (
     WDFQUEUE Queue,
     WDFREQUEST Request,
     size_t OutputBufferLength,
@@ -669,7 +669,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-VOID SimBattPrint (ULONG Level, PCSTR Format, ...)
+void SimBattPrint (ULONG Level, PCSTR Format, ...)
 /*++
 Routine Description:
     This routine emits the debugger message.

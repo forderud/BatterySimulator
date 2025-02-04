@@ -81,7 +81,7 @@ WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(SIMBATT_FDO_DATA, GetDeviceExtension);
 //----------------------------------------------------- Prototypes (miniclass.cpp)
 
 _IRQL_requires_same_
-VOID SimBattPrepareHardware (_In_ WDFDEVICE Device);
+void SimBattPrepareHardware (_In_ WDFDEVICE Device);
 
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL SimBattIoDeviceControl;
 BCLASS_QUERY_TAG_CALLBACK SimBattQueryTag;
@@ -92,4 +92,4 @@ BCLASS_SET_STATUS_NOTIFY_CALLBACK SimBattSetStatusNotify;
 BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK SimBattDisableStatusNotify;
 
 _IRQL_requires_same_
-VOID SimBattPrint (_In_ ULONG Level, _In_ PCSTR Format, ...);
+void SimBattPrint (_In_ ULONG Level, _In_ PCSTR Format, ...);

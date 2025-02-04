@@ -296,7 +296,7 @@ DevicePrepareHardwareEnd:
 }
 
 _Use_decl_annotations_
-VOID SimBattSelfManagedIoCleanup (WDFDEVICE Device)
+void SimBattSelfManagedIoCleanup (WDFDEVICE Device)
 /*++
 Routine Description:
     This function is called after EvtDeviceSelfManagedIoSuspend callback. This
