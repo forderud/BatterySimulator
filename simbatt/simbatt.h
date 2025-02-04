@@ -63,7 +63,7 @@ struct SIMBATT_STATE {
 
 struct SIMBATT_FDO_DATA {
     // Battery class registration
-    PVOID                           ClassHandle;
+    void*                           ClassHandle;
     WDFWAITLOCK                     ClassInitLock;
     WMILIB_CONTEXT                  WmiLibContext;
 

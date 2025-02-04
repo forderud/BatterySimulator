@@ -119,7 +119,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattQueryTag (PVOID Context, PULONG BatteryTag)
+NTSTATUS SimBattQueryTag (void* Context, PULONG BatteryTag)
 /*++
 Routine Description:
     This routine is called to get the value of the current battery tag.
@@ -150,11 +150,11 @@ Arguments:
 
 _Use_decl_annotations_
 NTSTATUS SimBattQueryInformation (
-    PVOID Context,
+    void* Context,
     ULONG BatteryTag,
     BATTERY_QUERY_INFORMATION_LEVEL Level,
     LONG AtRate,
-    PVOID Buffer,
+    void* Buffer,
     ULONG BufferLength,
     PULONG ReturnedLength)
 /*++
@@ -204,7 +204,7 @@ Return Value:
     // In a real battery, this would require hardware/firmware accesses. The
     // simulated battery fakes this by storing the data to be returned in
     // memory.
-    PVOID ReturnBuffer = NULL;
+    void* ReturnBuffer = NULL;
     size_t ReturnBufferLength = 0;
     DebugPrint(SIMBATT_INFO, "Query for information level 0x%x\n", Level);
     Status = STATUS_INVALID_DEVICE_REQUEST;
@@ -330,7 +330,7 @@ QueryInformationEnd:
 
 _Use_decl_annotations_
 NTSTATUS SimBattQueryStatus (
-    PVOID Context,
+    void* Context,
     ULONG BatteryTag,
     PBATTERY_STATUS BatteryStatus)
 /*++
@@ -377,7 +377,7 @@ QueryStatusEnd:
 
 _Use_decl_annotations_
 NTSTATUS SimBattSetStatusNotify (
-    PVOID Context,
+    void* Context,
     ULONG BatteryTag,
     PBATTERY_NOTIFY BatteryNotify)
 /*++
@@ -422,7 +422,7 @@ SetStatusNotifyEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattDisableStatusNotify (PVOID Context)
+NTSTATUS SimBattDisableStatusNotify (void* Context)
 /*++
 Routine Description:
     Called by the class driver to disable notification.
@@ -448,10 +448,10 @@ Return Value:
 
 _Use_decl_annotations_
 NTSTATUS SimBattSetInformation (
-    PVOID Context,
+    void* Context,
     ULONG BatteryTag,
     BATTERY_SET_INFORMATION_LEVEL Level,
-    PVOID Buffer)
+    void* Buffer)
 /*
  Routine Description:
     Called by the class driver to set the battery's charge/discharge state,
