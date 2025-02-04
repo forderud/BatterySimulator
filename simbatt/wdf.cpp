@@ -249,7 +249,7 @@ Arguments:
     BattInit.MinorVersion = BATTERY_CLASS_MINOR_VERSION_1;
     BattInit.Context = DevExt;
     BattInit.QueryTag = QueryTag;
-    BattInit.QueryInformation = SimBattQueryInformation;
+    BattInit.QueryInformation = QueryInformation;
     BattInit.SetInformation = SimBattSetInformation;
     BattInit.QueryStatus = SimBattQueryStatus;
     BattInit.SetStatusNotify = SimBattSetStatusNotify;

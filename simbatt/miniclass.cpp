@@ -12,7 +12,7 @@ _IRQL_requires_same_
 void UpdateTag (_Inout_ SIMBATT_FDO_DATA* DevExt);
 
 BCLASS_QUERY_TAG_CALLBACK QueryTag;
-BCLASS_QUERY_INFORMATION_CALLBACK SimBattQueryInformation;
+BCLASS_QUERY_INFORMATION_CALLBACK QueryInformation;
 BCLASS_SET_INFORMATION_CALLBACK SimBattSetInformation;
 BCLASS_QUERY_STATUS_CALLBACK SimBattQueryStatus;
 BCLASS_SET_STATUS_NOTIFY_CALLBACK SimBattSetStatusNotify;
@@ -142,7 +142,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattQueryInformation (
+NTSTATUS QueryInformation (
     void* Context,
     ULONG BatteryTag,
     BATTERY_QUERY_INFORMATION_LEVEL Level,
