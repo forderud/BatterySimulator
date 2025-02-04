@@ -27,7 +27,7 @@ _Success_(return==STATUS_SUCCESS)
 NTSTATUS SimBattSetBatteryInformation (_In_ WDFDEVICE Device, _In_ BATTERY_INFORMATION* BatteryInformation);
 
 _Success_(return==STATUS_SUCCESS)
-NTSTATUS SimBattSetBatteryString (_In_ PCWSTR String, _Out_writes_(MAX_BATTERY_STRING_SIZE) PWCHAR Destination);
+NTSTATUS SimBattSetBatteryString (_In_ PCWSTR String, _Out_writes_(MAX_BATTERY_STRING_SIZE) WCHAR* Destination);
 
 //------------------------------------------------------------ Battery Interface
 
@@ -649,7 +649,7 @@ SetBatteryInformationEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattSetBatteryString (PCWSTR String, PWCHAR Destination)
+NTSTATUS SimBattSetBatteryString (PCWSTR String, WCHAR* Destination)
 /*++
 Routine Description:
     Set one of the simulated battery strings.
