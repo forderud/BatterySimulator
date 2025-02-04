@@ -250,7 +250,7 @@ Arguments:
     BattInit.Context = DevExt;
     BattInit.QueryTag = QueryTag;
     BattInit.QueryInformation = QueryInformation;
-    BattInit.SetInformation = SimBattSetInformation;
+    BattInit.SetInformation = SetInformation;
     BattInit.QueryStatus = QueryStatus;
     BattInit.SetStatusNotify = SetStatusNotify;
     BattInit.DisableStatusNotify = DisableStatusNotify;

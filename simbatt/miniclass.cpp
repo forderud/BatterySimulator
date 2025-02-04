@@ -13,7 +13,7 @@ void UpdateTag (_Inout_ SIMBATT_FDO_DATA* DevExt);
 
 BCLASS_QUERY_TAG_CALLBACK QueryTag;
 BCLASS_QUERY_INFORMATION_CALLBACK QueryInformation;
-BCLASS_SET_INFORMATION_CALLBACK SimBattSetInformation;
+BCLASS_SET_INFORMATION_CALLBACK SetInformation;
 BCLASS_QUERY_STATUS_CALLBACK QueryStatus;
 BCLASS_SET_STATUS_NOTIFY_CALLBACK SetStatusNotify;
 BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK DisableStatusNotify;
@@ -434,7 +434,7 @@ Return Value:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattSetInformation (
+NTSTATUS SetInformation (
     void* Context,
     ULONG BatteryTag,
     BATTERY_SET_INFORMATION_LEVEL Level,
