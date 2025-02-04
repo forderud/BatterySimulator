@@ -580,7 +580,7 @@ NTSTATUS SimBattQueryWmiDataBlock (
     ULONG InstanceCount,
     ULONG* InstanceLengthArray,
     ULONG BufferAvail,
-    PUCHAR Buffer)
+    UCHAR* Buffer)
 /*++
 Routine Description:
     This routine is a callback into the driver to query for the contents of
