@@ -329,10 +329,7 @@ QueryInformationEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattQueryStatus (
-    void* Context,
-    ULONG BatteryTag,
-    BATTERY_STATUS* BatteryStatus)
+NTSTATUS SimBattQueryStatus (void* Context, ULONG BatteryTag, BATTERY_STATUS* BatteryStatus)
 /*++
 Routine Description:
     Called by the class driver to retrieve the batteries current status
