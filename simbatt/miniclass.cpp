@@ -24,7 +24,7 @@ NTSTATUS SimBattSetBatteryStatus (_In_ WDFDEVICE Device, _In_ BATTERY_STATUS* Ba
 
 _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
-NTSTATUS SimBattSetBatteryInformation (_In_ WDFDEVICE Device, _In_ PBATTERY_INFORMATION BatteryInformation);
+NTSTATUS SimBattSetBatteryInformation (_In_ WDFDEVICE Device, _In_ BATTERY_INFORMATION* BatteryInformation);
 
 _Success_(return==STATUS_SUCCESS)
 NTSTATUS SimBattSetBatteryString (_In_ PCWSTR String, _Out_writes_(MAX_BATTERY_STRING_SIZE) PWCHAR Destination);
@@ -532,7 +532,7 @@ Arguments:
         code (IOCTL) that is associated with the request.
 --*/
 {
-    PBATTERY_INFORMATION BatteryInformation;
+    BATTERY_INFORMATION* BatteryInformation;
     BATTERY_STATUS* BatteryStatus;
     size_t Length;
     NTSTATUS TempStatus;
@@ -606,7 +606,7 @@ SetBatteryStatusEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattSetBatteryInformation (WDFDEVICE Device, PBATTERY_INFORMATION BatteryInformation)
+NTSTATUS SimBattSetBatteryInformation (WDFDEVICE Device, BATTERY_INFORMATION* BatteryInformation)
 /*++
 Routine Description:
     Set the simulated battery information structure values.
