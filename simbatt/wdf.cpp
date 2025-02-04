@@ -14,7 +14,7 @@ extern "C" DRIVER_INITIALIZE DriverEntry;
 EVT_WDF_DRIVER_DEVICE_ADD BattDriverDeviceAdd;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_INIT  BattSelfManagedIoInit;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_CLEANUP  BattSelfManagedIoCleanup;
-EVT_WDF_DEVICE_QUERY_STOP SimBattQueryStop;
+EVT_WDF_DEVICE_QUERY_STOP BattQueryStop;
 EVT_WDF_DEVICE_PREPARE_HARDWARE SimBattDevicePrepareHardware;
 EVT_WDFDEVICE_WDM_IRP_PREPROCESS SimBattWdmIrpPreprocessDeviceControl;
 EVT_WDFDEVICE_WDM_IRP_PREPROCESS SimBattWdmIrpPreprocessSystemControl;
@@ -109,7 +109,7 @@ Arguments:
     PnpPowerCallbacks.EvtDevicePrepareHardware = SimBattDevicePrepareHardware;
     PnpPowerCallbacks.EvtDeviceSelfManagedIoInit = BattSelfManagedIoInit;
     PnpPowerCallbacks.EvtDeviceSelfManagedIoCleanup = BattSelfManagedIoCleanup;
-    PnpPowerCallbacks.EvtDeviceQueryStop = SimBattQueryStop;
+    PnpPowerCallbacks.EvtDeviceQueryStop = BattQueryStop;
     WdfDeviceInitSetPnpPowerEventCallbacks(DeviceInit, &PnpPowerCallbacks);
 
     // Register WDM preprocess callbacks for IRP_MJ_DEVICE_CONTROL and
@@ -305,7 +305,7 @@ Return Value:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattQueryStop (_In_ WDFDEVICE Device)
+NTSTATUS BattQueryStop (_In_ WDFDEVICE Device)
 /*++
 Routine Description:
     EvtDeviceQueryStop event callback function determines whether a specified 
