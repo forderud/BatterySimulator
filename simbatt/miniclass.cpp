@@ -16,7 +16,7 @@ BCLASS_QUERY_INFORMATION_CALLBACK QueryInformation;
 BCLASS_SET_INFORMATION_CALLBACK SimBattSetInformation;
 BCLASS_QUERY_STATUS_CALLBACK QueryStatus;
 BCLASS_SET_STATUS_NOTIFY_CALLBACK SetStatusNotify;
-BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK SimBattDisableStatusNotify;
+BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK DisableStatusNotify;
 
 _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
@@ -409,7 +409,7 @@ SetStatusNotifyEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattDisableStatusNotify (void* Context)
+NTSTATUS DisableStatusNotify (void* Context)
 /*++
 Routine Description:
     Called by the class driver to disable notification.

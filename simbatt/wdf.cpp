@@ -253,7 +253,7 @@ Arguments:
     BattInit.SetInformation = SimBattSetInformation;
     BattInit.QueryStatus = QueryStatus;
     BattInit.SetStatusNotify = SetStatusNotify;
-    BattInit.DisableStatusNotify = SimBattDisableStatusNotify;
+    BattInit.DisableStatusNotify = DisableStatusNotify;
     BattInit.Pdo = WdfDeviceWdmGetPhysicalDevice(Device);
     BattInit.DeviceName = NULL;
     BattInit.Fdo = WdfDeviceWdmGetDeviceObject(Device);
