@@ -15,7 +15,7 @@ BCLASS_QUERY_TAG_CALLBACK QueryTag;
 BCLASS_QUERY_INFORMATION_CALLBACK QueryInformation;
 BCLASS_SET_INFORMATION_CALLBACK SimBattSetInformation;
 BCLASS_QUERY_STATUS_CALLBACK QueryStatus;
-BCLASS_SET_STATUS_NOTIFY_CALLBACK SimBattSetStatusNotify;
+BCLASS_SET_STATUS_NOTIFY_CALLBACK SetStatusNotify;
 BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK SimBattDisableStatusNotify;
 
 _Must_inspect_result_
@@ -366,7 +366,7 @@ QueryStatusEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattSetStatusNotify (void* Context, ULONG BatteryTag, BATTERY_NOTIFY* BatteryNotify)
+NTSTATUS SetStatusNotify (void* Context, ULONG BatteryTag, BATTERY_NOTIFY* BatteryNotify)
 /*++
 Routine Description:
     Called by the class driver to set the capacity and power state levels
