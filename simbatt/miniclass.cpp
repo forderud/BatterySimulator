@@ -98,8 +98,6 @@ Arguments:
 
         WdfWaitLockRelease(DevExt->StateLock);
     }
-
-    return;
 }
 
 _Use_decl_annotations_
@@ -118,8 +116,6 @@ Arguments:
     if (DevExt->BatteryTag == BATTERY_TAG_INVALID) {
         DevExt->BatteryTag += 1;
     }
-
-    return;
 }
 
 _Use_decl_annotations_
@@ -572,7 +568,6 @@ Arguments:
     }
 
     WdfRequestCompleteWithInformation(Request, Status, BytesReturned);
-    return;
 }
 
 _Use_decl_annotations_

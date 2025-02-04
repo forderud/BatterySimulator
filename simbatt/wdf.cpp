@@ -330,7 +330,6 @@ Return Value:
 
     WdfWaitLockRelease(DevExt->ClassInitLock);
     DebugExitStatus(Status);
-    return;
 }
 
 _Use_decl_annotations_
