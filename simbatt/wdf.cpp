@@ -516,7 +516,7 @@ Arguments:
 _Use_decl_annotations_
 NTSTATUS SimBattQueryWmiRegInfo (
     PDEVICE_OBJECT  DeviceObject,
-    PULONG          RegFlags,
+    ULONG*          RegFlags,
     PUNICODE_STRING InstanceName,
     PUNICODE_STRING*RegistryPath,
     PUNICODE_STRING MofResourceName,
@@ -578,7 +578,7 @@ NTSTATUS SimBattQueryWmiDataBlock (
     ULONG GuidIndex,
     ULONG InstanceIndex,
     ULONG InstanceCount,
-    PULONG InstanceLengthArray,
+    ULONG* InstanceLengthArray,
     ULONG BufferAvail,
     PUCHAR Buffer)
 /*++

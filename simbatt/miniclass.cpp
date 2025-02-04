@@ -119,7 +119,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattQueryTag (void* Context, PULONG BatteryTag)
+NTSTATUS SimBattQueryTag (void* Context, ULONG* BatteryTag)
 /*++
 Routine Description:
     This routine is called to get the value of the current battery tag.
@@ -156,7 +156,7 @@ NTSTATUS SimBattQueryInformation (
     LONG AtRate,
     void* Buffer,
     ULONG BufferLength,
-    PULONG ReturnedLength)
+    ULONG* ReturnedLength)
 /*++
 Routine Description:
     Called by the class driver to retrieve battery information
