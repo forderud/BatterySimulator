@@ -64,7 +64,7 @@ Arguments:
         DevExt->State.BatteryInfo.Chemistry[1] = 'a';
         DevExt->State.BatteryInfo.Chemistry[2] = 'k';
         DevExt->State.BatteryInfo.Chemistry[3] = 'e';
-        DevExt->State.BatteryInfo.DesignedCapacity = 100;
+        DevExt->State.BatteryInfo.DesignedCapacity = 110;
         DevExt->State.BatteryInfo.FullChargedCapacity = 100;
         DevExt->State.BatteryInfo.DefaultAlert1 = 0;
         DevExt->State.BatteryInfo.DefaultAlert2 = 0;
@@ -72,7 +72,7 @@ Arguments:
         DevExt->State.BatteryInfo.CycleCount = 100;
 
         DevExt->State.BatteryStatus.PowerState = BATTERY_POWER_ON_LINE;
-        DevExt->State.BatteryStatus.Capacity = 100;
+        DevExt->State.BatteryStatus.Capacity = 90;
         DevExt->State.BatteryStatus.Voltage = BATTERY_UNKNOWN_VOLTAGE;
         DevExt->State.BatteryStatus.Rate = 0;
 
