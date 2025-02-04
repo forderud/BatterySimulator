@@ -398,7 +398,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattWdmIrpPreprocessDeviceControl (WDFDEVICE Device, PIRP Irp)
+NTSTATUS SimBattWdmIrpPreprocessDeviceControl (WDFDEVICE Device, IRP* Irp)
 /*++
 Routine Description:
     This event is called when the framework receives IRP_MJ_DEVICE_CONTROL
@@ -451,7 +451,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattWdmIrpPreprocessSystemControl (WDFDEVICE Device, PIRP Irp)
+NTSTATUS SimBattWdmIrpPreprocessSystemControl (WDFDEVICE Device, IRP* Irp)
 /*++
 Routine Description:
     This event is called when the framework receives IRP_MJ_SYSTEM_CONTROL
@@ -574,7 +574,7 @@ Arguments:
 _Use_decl_annotations_
 NTSTATUS SimBattQueryWmiDataBlock (
     PDEVICE_OBJECT DeviceObject,
-    PIRP Irp,
+    IRP* Irp,
     ULONG GuidIndex,
     ULONG InstanceIndex,
     ULONG InstanceCount,
