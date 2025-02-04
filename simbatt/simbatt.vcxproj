@@ -48,6 +48,7 @@
   <ItemGroup Label="WrappedTaskItems">
     <ClInclude Include="simbatt.h" />
     <ClInclude Include="simbattdriverif.h" />
+    <ClInclude Include="wmi.h" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>simbatt</TargetName>
@@ -125,6 +126,7 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)
   <ItemGroup>
     <ClCompile Include="miniclass.cpp" />
     <ClCompile Include="wdf.cpp" />
+    <ClCompile Include="wmi.cpp" />
     <ResourceCompile Include="simbatt.rc" />
   </ItemGroup>
   <ItemGroup>

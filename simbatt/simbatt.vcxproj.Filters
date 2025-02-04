@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClCompile Include="miniclass.cpp" />
     <ClCompile Include="wdf.cpp" />
+    <ClCompile Include="wmi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="simbatt.rc" />
@@ -10,6 +11,7 @@
   <ItemGroup>
     <ClInclude Include="simbatt.h" />
     <ClInclude Include="simbattdriverif.h" />
+    <ClInclude Include="wmi.h" />
   </ItemGroup>
   <ItemGroup>
     <Inf Include="simbatt.inx" />
