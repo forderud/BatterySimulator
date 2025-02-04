@@ -20,7 +20,7 @@ BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK DisableStatusNotify;
 
 _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
-NTSTATUS SimBattSetBatteryStatus (_In_ WDFDEVICE Device, _In_ BATTERY_STATUS* BatteryStatus);
+NTSTATUS SetBatteryStatus (_In_ WDFDEVICE Device, _In_ BATTERY_STATUS* BatteryStatus);
 
 _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
@@ -528,7 +528,7 @@ Arguments:
         TempStatus = WdfRequestRetrieveInputBuffer(Request, sizeof(BATTERY_STATUS), (void**)&BatteryStatus, &Length);
 
         if (NT_SUCCESS(TempStatus) && (Length == sizeof(BATTERY_STATUS))) {
-            Status = SimBattSetBatteryStatus(Device, BatteryStatus);
+            Status = SetBatteryStatus(Device, BatteryStatus);
         }
 
         break;
@@ -550,7 +550,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattSetBatteryStatus (WDFDEVICE Device, BATTERY_STATUS* BatteryStatus)
+NTSTATUS SetBatteryStatus (WDFDEVICE Device, BATTERY_STATUS* BatteryStatus)
 /*++
 Routine Description:
     Set the simulated battery status structure values.
