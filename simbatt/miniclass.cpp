@@ -625,7 +625,7 @@ SetBatteryInformationEnd:
 }
 
 _Use_decl_annotations_
-void SimBattPrint (ULONG Level, PCSTR Format, ...)
+void BattPrint (ULONG Level, PCSTR Format, ...)
 /*++
 Routine Description:
     This routine emits the debugger message.

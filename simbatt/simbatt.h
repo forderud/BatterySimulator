@@ -16,7 +16,7 @@ extern "C" {
 
 #if defined(DEBUGPRINT)
     #define DebugPrint(_Level, _Msg, ...) \
-        SimBattPrint(_Level, _Msg, __VA_ARGS__)
+        BattPrint(_Level, _Msg, __VA_ARGS__)
 
     #define DebugEnter() \
         DebugPrint(SIMBATT_TRACE, "Entering " __FUNCTION__ "\n")
@@ -91,4 +91,4 @@ BCLASS_SET_STATUS_NOTIFY_CALLBACK SetStatusNotify;
 BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK DisableStatusNotify;
 
 _IRQL_requires_same_
-void SimBattPrint (_In_ ULONG Level, _In_ PCSTR Format, ...);
+void BattPrint (_In_ ULONG Level, _In_ PCSTR Format, ...);
