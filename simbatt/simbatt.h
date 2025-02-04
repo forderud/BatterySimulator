@@ -54,7 +54,6 @@ struct SIMBATT_STATE {
     BATTERY_REPORTING_SCALE         GranularityScale[4];
     ULONG                           EstimatedTime;
     ULONG                           Temperature;
-    ULONG                           MaxCurrentDraw;
     WCHAR                           DeviceName[MAX_BATTERY_STRING_SIZE];
     WCHAR                           ManufacturerName[MAX_BATTERY_STRING_SIZE];
     WCHAR                           SerialNumber[MAX_BATTERY_STRING_SIZE];
