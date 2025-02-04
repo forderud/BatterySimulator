@@ -60,7 +60,7 @@ struct BATT_STATE {
     WCHAR                           UniqueId[MAX_BATTERY_STRING_SIZE];
 };
 
-struct SIMBATT_FDO_DATA {
+struct BATT_FDO_DATA {
     // Battery class registration
     void*                           ClassHandle;
     WDFWAITLOCK                     ClassInitLock;
@@ -75,7 +75,7 @@ struct SIMBATT_FDO_DATA {
 //------------------------------------------------------ WDF Context Declaration
 
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(BATT_GLOBAL_DATA, GetGlobalData);
-WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(SIMBATT_FDO_DATA, GetDeviceExtension);
+WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(BATT_FDO_DATA, GetDeviceExtension);
 
 //----------------------------------------------------- Prototypes (miniclass.cpp)
 

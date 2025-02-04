@@ -150,7 +150,7 @@ Arguments:
     // Initialize attributes and a context area for the device object.
     WDF_OBJECT_ATTRIBUTES DeviceAttributes;
     WDF_OBJECT_ATTRIBUTES_INIT(&DeviceAttributes);
-    WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DeviceAttributes, SIMBATT_FDO_DATA);
+    WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DeviceAttributes, BATT_FDO_DATA);
 
     // Create a framework device object.  This call will in turn create
     // a WDM device object, attach to the lower stack, and set the
@@ -192,7 +192,7 @@ Arguments:
     }
 
     // Finish initializing the device context area.
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(DeviceHandle);
+    BATT_FDO_DATA* DevExt = GetDeviceExtension(DeviceHandle);
     DevExt->BatteryTag = BATTERY_TAG_INVALID;
     DevExt->ClassHandle = NULL;
     WDF_OBJECT_ATTRIBUTES LockAttributes;
@@ -240,7 +240,7 @@ Arguments:
 --*/
 {
     DebugEnter();
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
     // Attach to the battery class driver.
 
@@ -291,7 +291,7 @@ Return Value:
 
     UnregisterWMI(Device);
 
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
 
     NTSTATUS Status = STATUS_SUCCESS;
@@ -393,7 +393,7 @@ Arguments:
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",
               (KeGetCurrentIrql() == PASSIVE_LEVEL));
 
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     NTSTATUS Status = STATUS_NOT_SUPPORTED;
 
     // Suppress 28118:Irq Exceeds Caller, see Routine Description for
@@ -445,7 +445,7 @@ Arguments:
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",(KeGetCurrentIrql() == PASSIVE_LEVEL));
 
     NTSTATUS Status = STATUS_NOT_IMPLEMENTED;
-    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
     SYSCTL_IRP_DISPOSITION Disposition = IrpForward;
 
     // Acquire the class initialization lock and attempt to queue the IRP with
