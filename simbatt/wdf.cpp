@@ -169,7 +169,7 @@ Arguments:
     WDF_IO_QUEUE_CONFIG_INIT_DEFAULT_QUEUE(&QueueConfig,
                                            WdfIoQueueDispatchSequential);
 
-    QueueConfig.EvtIoDeviceControl = SimBattIoDeviceControl;
+    QueueConfig.EvtIoDeviceControl = BattIoDeviceControl;
     WDFQUEUE Queue;
     Status = WdfIoQueueCreate(DeviceHandle,
                               &QueueConfig,

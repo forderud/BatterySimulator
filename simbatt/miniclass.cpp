@@ -481,7 +481,7 @@ SetInformationEnd:
 // implement the control side of the simulated battery. A real battery would
 // not implement this interface, and instead read battery data from hardware/
 // firmware interfaces.
-void SimBattIoDeviceControl (
+void BattIoDeviceControl (
     WDFQUEUE Queue,
     WDFREQUEST Request,
     size_t OutputBufferLength,
@@ -518,7 +518,7 @@ Arguments:
 
     ULONG BytesReturned = 0;
     WDFDEVICE Device = WdfIoQueueGetDevice(Queue);
-    DebugPrint(SIMBATT_INFO, "SimBattIoDeviceControl: 0x%p\n", Device);
+    DebugPrint(SIMBATT_INFO, "BattIoDeviceControl: 0x%p\n", Device);
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
     switch (IoControlCode) {
     case IOCTL_SIMBATT_SET_STATUS:
