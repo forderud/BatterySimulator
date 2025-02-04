@@ -26,9 +26,6 @@ _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
 NTSTATUS SetBatteryInformation (_In_ WDFDEVICE Device, _In_ BATTERY_INFORMATION* BatteryInformation);
 
-_Success_(return==STATUS_SUCCESS)
-NTSTATUS SimBattSetBatteryString (_In_ PCWSTR String, _Out_writes_(MAX_BATTERY_STRING_SIZE) WCHAR* Destination);
-
 //------------------------------------------------------------ Battery Interface
 
 _Use_decl_annotations_
@@ -86,13 +83,13 @@ Arguments:
 
         DevExt->State.Temperature = 2981; // 25 degree Celsius [10ths of a degree Kelvin]
 
-        SimBattSetBatteryString(L"SimulatedBattery", DevExt->State.DeviceName);
+        RtlStringCchCopyW(DevExt->State.DeviceName, MAX_BATTERY_STRING_SIZE, L"SimulatedBattery");
 
-        SimBattSetBatteryString(L"OpenSource", DevExt->State.ManufacturerName);
+        RtlStringCchCopyW(DevExt->State.ManufacturerName, MAX_BATTERY_STRING_SIZE, L"OpenSource");
 
-        SimBattSetBatteryString(L"1234", DevExt->State.SerialNumber);
+        RtlStringCchCopyW(DevExt->State.SerialNumber, MAX_BATTERY_STRING_SIZE, L"1234");
 
-        SimBattSetBatteryString(L"SimulatedBattery007", DevExt->State.UniqueId);
+        RtlStringCchCopyW(DevExt->State.UniqueId, MAX_BATTERY_STRING_SIZE, L"SimulatedBattery007");
 
         WdfWaitLockRelease(DevExt->StateLock);
     }
@@ -625,21 +622,6 @@ Arguments:
 
 SetBatteryInformationEnd:
     return Status;
-}
-
-_Use_decl_annotations_
-NTSTATUS SimBattSetBatteryString (PCWSTR String, WCHAR* Destination)
-/*++
-Routine Description:
-    Set one of the simulated battery strings.
-
-Arguments:
-    String - Supplies the new string value to set.
-
-    Destination - Supplies a pointer to the buffer to store the new string.
---*/
-{
-    return RtlStringCchCopyW(Destination, MAX_BATTERY_STRING_SIZE, String);
 }
 
 _Use_decl_annotations_
