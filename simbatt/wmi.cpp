@@ -2,6 +2,34 @@
 #include "simbattdriverif.h"
 
 
+void InitializeWMI(WDFDEVICE Device)
+{
+    SIMBATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+
+    // Register the device as a WMI data provider. This is done using WDM
+    // methods because the battery class driver uses WDM methods to complete
+    // WMI requests.
+    DevExt->WmiLibContext.GuidCount = 0;
+    DevExt->WmiLibContext.GuidList = NULL;
+    DevExt->WmiLibContext.QueryWmiRegInfo = SimBattQueryWmiRegInfo;
+    DevExt->WmiLibContext.QueryWmiDataBlock = SimBattQueryWmiDataBlock;
+    DevExt->WmiLibContext.SetWmiDataBlock = NULL;
+    DevExt->WmiLibContext.SetWmiDataItem = NULL;
+    DevExt->WmiLibContext.ExecuteWmiMethod = NULL;
+    DevExt->WmiLibContext.WmiFunctionControl = NULL;
+
+    DEVICE_OBJECT* DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
+    NTSTATUS Status = IoWMIRegistrationControl(DeviceObject, WMIREG_ACTION_REGISTER);
+
+    // Failure to register with WMI is nonfatal.
+    if (!NT_SUCCESS(Status)) {
+        DebugPrint(SIMBATT_WARN,
+            "IoWMIRegistrationControl() Failed. Status 0x%x\n",
+            Status);
+    }
+}
+
+
 _Use_decl_annotations_
 NTSTATUS SimBattQueryWmiRegInfo(
     DEVICE_OBJECT* DeviceObject,
