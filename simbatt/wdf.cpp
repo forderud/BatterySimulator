@@ -23,7 +23,7 @@ WMI_QUERY_DATABLOCK_CALLBACK SimBattQueryWmiDataBlock;
 //-------------------------------------------------------------------- Functions
 
 _Use_decl_annotations_
-NTSTATUS DriverEntry (PDRIVER_OBJECT DriverObject, PUNICODE_STRING RegistryPath)
+NTSTATUS DriverEntry (DRIVER_OBJECT* DriverObject, PUNICODE_STRING RegistryPath)
 /*++
 Routine Description:
     DriverEntry initializes the driver and is the first routine called by the
