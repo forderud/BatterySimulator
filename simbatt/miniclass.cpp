@@ -20,7 +20,7 @@ BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK SimBattDisableStatusNotify;
 
 _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
-NTSTATUS SimBattSetBatteryStatus (_In_ WDFDEVICE Device, _In_ PBATTERY_STATUS BatteryStatus);
+NTSTATUS SimBattSetBatteryStatus (_In_ WDFDEVICE Device, _In_ BATTERY_STATUS* BatteryStatus);
 
 _Must_inspect_result_
 _Success_(return==STATUS_SUCCESS)
@@ -332,7 +332,7 @@ _Use_decl_annotations_
 NTSTATUS SimBattQueryStatus (
     void* Context,
     ULONG BatteryTag,
-    PBATTERY_STATUS BatteryStatus)
+    BATTERY_STATUS* BatteryStatus)
 /*++
 Routine Description:
     Called by the class driver to retrieve the batteries current status
@@ -533,7 +533,7 @@ Arguments:
 --*/
 {
     PBATTERY_INFORMATION BatteryInformation;
-    PBATTERY_STATUS BatteryStatus;
+    BATTERY_STATUS* BatteryStatus;
     size_t Length;
     NTSTATUS TempStatus;
 
@@ -571,7 +571,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattSetBatteryStatus (WDFDEVICE Device, PBATTERY_STATUS BatteryStatus)
+NTSTATUS SimBattSetBatteryStatus (WDFDEVICE Device, BATTERY_STATUS* BatteryStatus)
 /*++
 Routine Description:
     Set the simulated battery status structure values.
