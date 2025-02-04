@@ -86,7 +86,7 @@ DriverEntryEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattDriverDeviceAdd (WDFDRIVER Driver, PWDFDEVICE_INIT DeviceInit)
+NTSTATUS SimBattDriverDeviceAdd (WDFDRIVER Driver, WDFDEVICE_INIT* DeviceInit)
 /*++
 Routine Description:
     EvtDriverDeviceAdd is called by the framework in response to AddDevice
