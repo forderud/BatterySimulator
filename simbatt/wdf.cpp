@@ -53,7 +53,7 @@ Parameters Description:
     WDF_OBJECT_ATTRIBUTES DriverAttributes;
     WDF_OBJECT_ATTRIBUTES_INIT(&DriverAttributes);
     WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DriverAttributes,
-                                           SIMBATT_GLOBAL_DATA);
+                                           BATT_GLOBAL_DATA);
 
     DriverAttributes.ExecutionLevel = WdfExecutionLevelPassive;
 
@@ -72,7 +72,7 @@ Parameters Description:
         goto DriverEntryEnd;
     }
 
-    SIMBATT_GLOBAL_DATA* GlobalData = GetGlobalData(WdfGetDriver());
+    BATT_GLOBAL_DATA* GlobalData = GetGlobalData(WdfGetDriver());
     GlobalData->RegistryPath.MaximumLength = RegistryPath->Length +
                                              sizeof(UNICODE_NULL);
 

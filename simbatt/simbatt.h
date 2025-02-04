@@ -42,7 +42,7 @@ extern "C" {
 
 //------------------------------------------------------------------ Definitions
 
-struct SIMBATT_GLOBAL_DATA {
+struct BATT_GLOBAL_DATA {
     UNICODE_STRING                  RegistryPath;
 };
 
@@ -74,7 +74,7 @@ struct SIMBATT_FDO_DATA {
 
 //------------------------------------------------------ WDF Context Declaration
 
-WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(SIMBATT_GLOBAL_DATA, GetGlobalData);
+WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(BATT_GLOBAL_DATA, GetGlobalData);
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(SIMBATT_FDO_DATA, GetDeviceExtension);
 
 //----------------------------------------------------- Prototypes (miniclass.cpp)
