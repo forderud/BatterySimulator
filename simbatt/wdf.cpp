@@ -12,7 +12,7 @@
 
 extern "C" DRIVER_INITIALIZE DriverEntry;
 EVT_WDF_DRIVER_DEVICE_ADD BattDriverDeviceAdd;
-EVT_WDF_DEVICE_SELF_MANAGED_IO_INIT  SimBattSelfManagedIoInit;
+EVT_WDF_DEVICE_SELF_MANAGED_IO_INIT  BattSelfManagedIoInit;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_CLEANUP  SimBattSelfManagedIoCleanup;
 EVT_WDF_DEVICE_QUERY_STOP SimBattQueryStop;
 EVT_WDF_DEVICE_PREPARE_HARDWARE SimBattDevicePrepareHardware;
@@ -107,7 +107,7 @@ Arguments:
     WDF_PNPPOWER_EVENT_CALLBACKS PnpPowerCallbacks;
     WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&PnpPowerCallbacks);
     PnpPowerCallbacks.EvtDevicePrepareHardware = SimBattDevicePrepareHardware;
-    PnpPowerCallbacks.EvtDeviceSelfManagedIoInit = SimBattSelfManagedIoInit;
+    PnpPowerCallbacks.EvtDeviceSelfManagedIoInit = BattSelfManagedIoInit;
     PnpPowerCallbacks.EvtDeviceSelfManagedIoCleanup = SimBattSelfManagedIoCleanup;
     PnpPowerCallbacks.EvtDeviceQueryStop = SimBattQueryStop;
     WdfDeviceInitSetPnpPowerEventCallbacks(DeviceInit, &PnpPowerCallbacks);
@@ -228,7 +228,7 @@ DriverDeviceAddEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattSelfManagedIoInit (WDFDEVICE Device)
+NTSTATUS BattSelfManagedIoInit (WDFDEVICE Device)
 /*++
 Routine Description:
     The framework calls this function once per device after EvtDeviceD0Entry
