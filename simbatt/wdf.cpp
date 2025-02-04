@@ -17,7 +17,7 @@ EVT_WDF_DEVICE_SELF_MANAGED_IO_CLEANUP  BattSelfManagedIoCleanup;
 EVT_WDF_DEVICE_QUERY_STOP BattQueryStop;
 EVT_WDF_DEVICE_PREPARE_HARDWARE BattDevicePrepareHardware;
 EVT_WDFDEVICE_WDM_IRP_PREPROCESS BattWdmIrpPreprocessDeviceControl;
-EVT_WDFDEVICE_WDM_IRP_PREPROCESS SimBattWdmIrpPreprocessSystemControl;
+EVT_WDFDEVICE_WDM_IRP_PREPROCESS BattWdmIrpPreprocessSystemControl;
 
 //-------------------------------------------------------------------- Functions
 
@@ -133,7 +133,7 @@ Arguments:
 
     Status = WdfDeviceInitAssignWdmIrpPreprocessCallback(
                  DeviceInit,
-                 SimBattWdmIrpPreprocessSystemControl,
+                 BattWdmIrpPreprocessSystemControl,
                  IRP_MJ_SYSTEM_CONTROL,
                  NULL,
                  0);
@@ -423,7 +423,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattWdmIrpPreprocessSystemControl (WDFDEVICE Device, IRP* Irp)
+NTSTATUS BattWdmIrpPreprocessSystemControl (WDFDEVICE Device, IRP* Irp)
 /*++
 Routine Description:
     This event is called when the framework receives IRP_MJ_SYSTEM_CONTROL
