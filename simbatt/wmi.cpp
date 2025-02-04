@@ -12,7 +12,7 @@ void RegisterWMI(WDFDEVICE Device)
     DevExt->WmiLibContext.GuidCount = 0;
     DevExt->WmiLibContext.GuidList = NULL;
     DevExt->WmiLibContext.QueryWmiRegInfo = QueryWmiRegInfo;
-    DevExt->WmiLibContext.QueryWmiDataBlock = SimBattQueryWmiDataBlock;
+    DevExt->WmiLibContext.QueryWmiDataBlock = QueryWmiDataBlock;
     DevExt->WmiLibContext.SetWmiDataBlock = NULL;
     DevExt->WmiLibContext.SetWmiDataItem = NULL;
     DevExt->WmiLibContext.ExecuteWmiMethod = NULL;
@@ -104,7 +104,7 @@ NTSTATUS QueryWmiRegInfo(
 
 
 _Use_decl_annotations_
-NTSTATUS SimBattQueryWmiDataBlock(
+NTSTATUS QueryWmiDataBlock(
     DEVICE_OBJECT* DeviceObject,
     IRP* Irp,
     ULONG GuidIndex,
@@ -155,7 +155,7 @@ NTSTATUS SimBattQueryWmiDataBlock(
 
     if (InstanceLengthArray == NULL) {
         Status = STATUS_BUFFER_TOO_SMALL;
-        goto SimBattQueryWmiDataBlockEnd;
+        goto QueryWmiDataBlockEnd;
     }
 
     WDFDEVICE Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
@@ -181,7 +181,7 @@ NTSTATUS SimBattQueryWmiDataBlock(
             IO_NO_INCREMENT);
     }
 
-SimBattQueryWmiDataBlockEnd:
+QueryWmiDataBlockEnd:
     DebugExitStatus(Status);
     return Status;
 }
