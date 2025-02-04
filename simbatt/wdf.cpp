@@ -11,7 +11,7 @@
 //------------------------------------------------------------------- Prototypes
 
 extern "C" DRIVER_INITIALIZE DriverEntry;
-EVT_WDF_DRIVER_DEVICE_ADD SimBattDriverDeviceAdd;
+EVT_WDF_DRIVER_DEVICE_ADD BattDriverDeviceAdd;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_INIT  SimBattSelfManagedIoInit;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_CLEANUP  SimBattSelfManagedIoCleanup;
 EVT_WDF_DEVICE_QUERY_STOP SimBattQueryStop;
@@ -39,7 +39,7 @@ Parameters Description:
     DebugEnter();
 
     WDF_DRIVER_CONFIG DriverConfig;
-    WDF_DRIVER_CONFIG_INIT(&DriverConfig, SimBattDriverDeviceAdd);
+    WDF_DRIVER_CONFIG_INIT(&DriverConfig, BattDriverDeviceAdd);
 
     // Initialize attributes and a context area for the driver object.
     //
@@ -85,7 +85,7 @@ DriverEntryEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattDriverDeviceAdd (WDFDRIVER Driver, WDFDEVICE_INIT* DeviceInit)
+NTSTATUS BattDriverDeviceAdd (WDFDRIVER Driver, WDFDEVICE_INIT* DeviceInit)
 /*++
 Routine Description:
     EvtDriverDeviceAdd is called by the framework in response to AddDevice
