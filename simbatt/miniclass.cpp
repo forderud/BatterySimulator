@@ -373,7 +373,7 @@ QueryStatusEnd:
 }
 
 _Use_decl_annotations_
-NTSTATUS SimBattSetStatusNotify (void* Context, ULONG BatteryTag, PBATTERY_NOTIFY BatteryNotify)
+NTSTATUS SimBattSetStatusNotify (void* Context, ULONG BatteryTag, BATTERY_NOTIFY* BatteryNotify)
 /*++
 Routine Description:
     Called by the class driver to set the capacity and power state levels
