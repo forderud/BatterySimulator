@@ -78,8 +78,8 @@ struct BatteryParameters {
         wprintf(L"  BatterySerialNumber:    %s\n", SerialNumber.c_str());
 
         if (Temperature) {
-            int tempCelsius = ((int)Temperature - 2731) / 10; // convert to Celsius
-            wprintf(L"  BatteryTemperature:     %i Celsius\n", tempCelsius);
+            float tempCelsius = ((int)Temperature - 2731)*0.1f; // convert to Celsius
+            wprintf(L"  BatteryTemperature:     %.1f Celsius\n", tempCelsius);
         } else {
             wprintf(L"  BatteryTemperature:     <unknown>\n");
         }
