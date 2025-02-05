@@ -169,7 +169,7 @@ public:
 
     ULONG GetTemperature() {
         // void BatteryTemperature([in] uint32 arg2, [out] uint32 argr);
-        auto temp = (USHORT)CallMethod(L"BatteryTemperature", m_battery_instance);;
+        auto temp = (USHORT)CallMethod(L"BatteryTemperature", m_battery_instance);
         return temp; // 10ths of a degree Kelvin
     }
 
