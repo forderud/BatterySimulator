@@ -13,10 +13,10 @@ $cycleCount = $cycleCount.argr
 Write-Host BatteryCycleCount: $cycleCount
 
 $date = Invoke-CimMethod -InputObject $dell -MethodName BatteryManufactureDate  -Arguments @{arg2=$inst}
-# Date encoding: (year – 1980)*512 + month*32 + day
-$day = $date.argr % 32
-$month = ($date.argr -shr 5) % 16
-$year = 1980 + ($date.argr -shr 9)
+$date = $date.argr # encoding: (year – 1980)*512 + month*32 + day
+$day = $date % 32
+$month = ($date -shr 5) % 16
+$year = 1980 + ($date -shr 9)
 Write-Host BatteryManufactureDate: Day=$day, Month=$month, Year=$year
 
 $temp = Invoke-CimMethod -InputObject $dell -MethodName BatteryTemperature -Arguments @{arg2=$inst}
