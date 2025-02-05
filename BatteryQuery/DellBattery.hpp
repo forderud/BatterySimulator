@@ -201,8 +201,8 @@ private:
         return argr.intVal;
     }
 
-    CComPtr<IWbemServices>    m_wbem;
     int                       m_battery_instance = -1;
+    CComPtr<IWbemServices>    m_wbem;
     CComPtr<IWbemClassObject> m_ddv_inst;  // CIM class object instance
     CComPtr<IWbemClassObject> m_ddv_class; // CIM class definition
 };
