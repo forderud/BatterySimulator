@@ -149,13 +149,13 @@ public:
         return m_ddv_inst && m_ddv_class;
     }
 
-    ULONG GetCycleCount() {
+    ULONG GetCycleCount() const {
         // void BatteryCycleCount([in] uint32 arg2, [out] uint32 argr);
         INT cycleCount = CallMethod(L"BatteryCycleCount", m_battery_instance);
         return cycleCount;
     }
 
-    BATTERY_MANUFACTURE_DATE GetManufactureDat() {
+    BATTERY_MANUFACTURE_DATE GetManufactureDat() const {
         // void BatteryManufactureDate([in] uint32 arg2, [out] uint32 argr);
         USHORT dateEnc = (USHORT)CallMethod(L"BatteryManufactureDate", m_battery_instance);;
 
@@ -167,14 +167,14 @@ public:
         return date;
     }
 
-    ULONG GetTemperature() {
+    ULONG GetTemperature() const {
         // void BatteryTemperature([in] uint32 arg2, [out] uint32 argr);
         auto temp = (USHORT)CallMethod(L"BatteryTemperature", m_battery_instance);
         return temp; // 10ths of a degree Kelvin
     }
 
 private:
-    INT CallMethod(const wchar_t methodName[], INT arg2Val) {
+    INT CallMethod(const wchar_t methodName[], INT arg2Val) const {
         CComVariant instancePath;
         // Retrieve instance identifier 
         CHECK(m_ddv_inst->Get(_bstr_t(L"__PATH"), 0, &instancePath, NULL, NULL));
@@ -200,7 +200,6 @@ private:
         assert(type == CIM_UINT32);
         return argr.intVal;
     }
-
 
     CComPtr<IWbemServices>    m_wbem;
     int                       m_battery_instance = -1;
