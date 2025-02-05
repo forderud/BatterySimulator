@@ -38,7 +38,6 @@ extern "C" {
 //--------------------------------------------------------------------- Literals
 
 #define SIMBATT_TAG                 'StaB'
-#define SIMBATT_STATE_REG_NAME      L"SimbattState"
 
 //------------------------------------------------------------------ Definitions
 
