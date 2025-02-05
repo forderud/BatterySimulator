@@ -71,7 +71,7 @@ CComPtr<IWbemServices> ConnectToNamespace(_In_ const wchar_t* chNamespace) {
 }
 
 // The function returns the first WMI instance with matching class name
-CComPtr<IWbemClassObject> GetInstanceReference(IWbemServices& pIWbemServices, const CComBSTR className) {
+CComPtr<IWbemClassObject> GetFirstInstance(IWbemServices& pIWbemServices, const CComBSTR className) {
     // Get Instance Enumerator Interface.
     CComPtr<IEnumWbemClassObject> enumInst;
     HRESULT hr = pIWbemServices.CreateInstanceEnum(
@@ -137,7 +137,7 @@ public:
         m_wbem = ConnectToNamespace(L"root\\WMI");
 
         const CComBSTR DellWMIClass = L"DDVWmiMethodFunction";
-        m_ddv_inst = GetInstanceReference(*m_wbem, DellWMIClass); // will fail unless running as Admin
+        m_ddv_inst = GetFirstInstance(*m_wbem, DellWMIClass); // will fail unless running as Admin
         if (m_ddv_inst)
             CHECK(m_wbem->GetObject(DellWMIClass, 0, NULL, &m_ddv_class, NULL));
     }
