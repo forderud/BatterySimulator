@@ -193,9 +193,11 @@ private:
         CComPtr<IWbemCallResult> result;
         CHECK(m_wbem->ExecMethod(instancePath.bstrVal, _bstr_t(methodName), 0/*synchronous*/, 0/*ctx*/ , inParams, &callOutParams, &result));
 
-        // retrieve "argr" output argument (assume int type)
+        // retrieve "argr" output argument
         CComVariant argr;
-        CHECK(callOutParams->Get(L"argr", 0, &argr, NULL, 0));
+        CIMTYPE type = 0;
+        CHECK(callOutParams->Get(L"argr", 0, &argr, &type, 0));
+        assert(type == CIM_UINT32);
         return argr.intVal;
     }
 
