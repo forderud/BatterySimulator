@@ -159,7 +159,7 @@ public:
         // void BatteryManufactureDate([in] uint32 arg2, [out] uint32 argr);
         USHORT dateEnc = (USHORT)CallMethod(L"BatteryManufactureDate", m_battery_instance);;
 
-        // Date parameter encoding : "(year – 1980)*512 + month*32 + day"
+        // date encoding: (year – 1980)*512 + month*32 + day
         BATTERY_MANUFACTURE_DATE date{};
         date.Day = dateEnc % 32;
         date.Month = (dateEnc >> 5) % 16;
