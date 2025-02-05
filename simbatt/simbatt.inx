@@ -1,12 +1,6 @@
 ;/*++
-;
+; Simulated Battery driver.
 ; Built from https://github.com/forderud/BatterySimulator
-;
-;Module Name:
-;    simbatt.inf
-;
-;Abstract:
-;    INF file for installing Simulated Battery WDF driver.;
 ;--*/
 
 [Version]
