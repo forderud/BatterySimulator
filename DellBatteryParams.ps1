@@ -22,4 +22,4 @@ Write-Host BatteryManufactureDate: Day=$day, Month=$month, Year=$year
 $temp = Invoke-CimMethod -InputObject $dell -MethodName BatteryTemperature -Arguments @{arg2=$inst}
 $temp = $temp.argr # in 10ths of a degree Kelvin
 $temp = ($temp - 2731)/10; # convert to Celsius
-Write-Host Temperature: $temp Celsius
+Write-Host BatteryTemperature: $temp Celsius
