@@ -176,7 +176,7 @@ public:
 private:
     INT CallMethod(const wchar_t methodName[], INT arg2Val) {
         CComVariant instancePath;
-        //The IWbemClassObject::Get method retrieves the specified property value, if it exists.
+        // Retrieve instance identifier 
         CHECK(m_ddv_inst->Get(_bstr_t(L"__PATH"), 0, &instancePath, NULL, NULL));
         //wprintf(L"Class instance path: %s\n", instancePath.bstrVal);
 
@@ -193,7 +193,7 @@ private:
         CComPtr<IWbemCallResult> result;
         CHECK(m_wbem->ExecMethod(instancePath.bstrVal, _bstr_t(methodName), 0/*synchronous*/, 0/*ctx*/ , inParams, &callOutParams, &result));
 
-        // retrieve "argr" output argument
+        // retrieve "argr" output argument (assume int type)
         CComVariant argr;
         CHECK(callOutParams->Get(L"argr", 0, &argr, NULL, 0));
         return argr.intVal;
@@ -202,6 +202,6 @@ private:
 
     CComPtr<IWbemServices>    m_wbem;
     int                       m_battery_instance = -1;
-    CComPtr<IWbemClassObject> m_ddv_inst;  // CIM class object instances
+    CComPtr<IWbemClassObject> m_ddv_inst;  // CIM class object instance
     CComPtr<IWbemClassObject> m_ddv_class; // CIM class definition
 };
