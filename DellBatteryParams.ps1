@@ -1,4 +1,7 @@
 # Script for retrieving Dell battery parameters that are not exposed through the standard APIs
+# Unofficial doc: https://docs.kernel.org/wmi/devices/dell-wmi-ddv.html
+# A C++ implementation can be found in BatteryQuery\DellBattery.hpp 
+
 # NOTICE: Script MUST run as Administrator.
 
 Write-Host "Dell battery parameters:"
