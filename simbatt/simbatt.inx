@@ -29,7 +29,7 @@ simbatt.sys  = 1,,
 %StdMfg%=Standard,NT$ARCH$
 
 [Standard.NT$ARCH$]
-%SimBatt.DeviceDesc% = SimBatt_Device,{6B34C467-CE1F-4c0d-A3E4-F98A5718A9D6}\SimBatt
+%SimBatt.DeviceDesc% = SimBatt_Device,HID_DEVICE_UP:0084_U:0004
 
 [SimBatt_Device.NT]
 CopyFiles=SimBatt_Device_Drivers
