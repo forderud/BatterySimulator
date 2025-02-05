@@ -104,6 +104,7 @@ CComPtr<IWbemClassObject> GetInstanceReference(IWbemServices& pIWbemServices, co
 }
 
 /** Dell Data Vault (DDV) parser for the "DDVWmiMethodFunction" WMI interface.
+    Unofficial doc: https://docs.kernel.org/wmi/devices/dell-wmi-ddv.html
     Parses standard parameters that are not already parsed by the Windows ACPI driver.
     Please delete this class if Dell improves their battery integration. */
 class DellBattery {
