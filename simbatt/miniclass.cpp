@@ -3,9 +3,14 @@
     simulated battery driver.
 --*/
 
+#include <ntdef.h>
+#include <wdm.h>
+#include <hidpddi.h> // for PHIDP_PREPARSED_DATA
+#include <hidclass.h> // for HID_COLLECTION_INFORMATION
+
 #include "simbatt.h"
 #include "simbattdriverif.h"
-
+#include "CppAllocator.hpp"
 //------------------------------------------------------------------- Prototypes
 
 _IRQL_requires_same_
@@ -27,6 +32,28 @@ _Success_(return==STATUS_SUCCESS)
 NTSTATUS SetBatteryInformation (_In_ WDFDEVICE Device, _In_ BATTERY_INFORMATION* BatteryInformation);
 
 //------------------------------------------------------------ Battery Interface
+
+/** RAII wrapper of PHIDP_PREPARSED_DATA. */
+class PHIDP_PREPARSED_DATA_Wrap {
+public:
+    PHIDP_PREPARSED_DATA_Wrap(size_t size) {
+        m_ptr = new BYTE[size];
+    }
+    ~PHIDP_PREPARSED_DATA_Wrap() {
+        if (m_ptr) {
+            delete[] m_ptr;
+            m_ptr = nullptr;
+        }
+    }
+
+    operator PHIDP_PREPARSED_DATA () const {
+        return (PHIDP_PREPARSED_DATA)m_ptr;
+    }
+
+private:
+    BYTE* m_ptr = nullptr;
+};
+
 
 _Use_decl_annotations_
 void InitializeBatteryState (WDFDEVICE Device)
@@ -92,6 +119,63 @@ Arguments:
         RtlStringCchCopyW(DevExt->State.UniqueId, MAX_BATTERY_STRING_SIZE, L"SimulatedBattery007");
 
         WdfWaitLockRelease(DevExt->StateLock);
+    }
+
+    DebugPrint(DPFLTR_TRACE_LEVEL, "Batt: EvtSetBlackTimer begin\n");
+
+    WDFIOTARGET hidTarget = WdfDeviceGetIoTarget(Device);
+
+    HID_COLLECTION_INFORMATION collectionInfo = {};
+    {
+        // populate "collectionInformation"
+        WDF_MEMORY_DESCRIPTOR outputDesc = {};
+        WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&outputDesc, &collectionInfo, sizeof(HID_COLLECTION_INFORMATION));
+
+        NTSTATUS status = WdfIoTargetSendIoctlSynchronously(hidTarget, NULL,
+            IOCTL_HID_GET_COLLECTION_INFORMATION,
+            NULL, // input
+            &outputDesc, // output
+            NULL, NULL);
+        if (!NT_SUCCESS(status)) {
+            // WdfIoTargetSendIoctlSynchronously failed 0xc000000d (STATUS_INVALID_PARAMETER) if attempting to access the PDO
+            DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: IOCTL_HID_GET_COLLECTION_INFORMATION failed 0x%x"), status);
+            return;
+        }
+
+        DebugPrint(DPFLTR_INFO_LEVEL, "Batt: ProductID=%x, VendorID=%x, VersionNumber=%u, DescriptorSize=%u\n", collectionInfo.ProductID, collectionInfo.VendorID, collectionInfo.VersionNumber, collectionInfo.DescriptorSize);
+    }
+
+    PHIDP_PREPARSED_DATA_Wrap preparsedData(collectionInfo.DescriptorSize);
+    if (!preparsedData) {
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: PHIDP_PREPARSED_DATA_Wrap failed"));
+        return; // STATUS_INSUFFICIENT_RESOURCES;
+    }
+
+    {
+        // populate "preparsedData"
+        WDF_MEMORY_DESCRIPTOR outputDesc = {};
+        WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&outputDesc, static_cast<PHIDP_PREPARSED_DATA>(preparsedData), collectionInfo.DescriptorSize);
+
+        NTSTATUS status = WdfIoTargetSendIoctlSynchronously(hidTarget, NULL,
+            IOCTL_HID_GET_COLLECTION_DESCRIPTOR, // same as HidD_GetPreparsedData in user-mode
+            NULL, // input
+            &outputDesc, // output
+            NULL, NULL);
+        if (!NT_SUCCESS(status)) {
+            DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: IOCTL_HID_GET_COLLECTION_DESCRIPTOR failed 0x%x"), status);
+            return;
+        }
+    }
+
+    {
+        // get capabilities
+        HIDP_CAPS caps = {};
+        NTSTATUS status = HidP_GetCaps(preparsedData, &caps);
+        if (!NT_SUCCESS(status)) {
+            return;
+        }
+
+        DebugPrint(DPFLTR_INFO_LEVEL, "Batt: Usage=%x, UsagePage=%x\n", caps.Usage, caps.UsagePage);
     }
 }
 
