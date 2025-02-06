@@ -9,7 +9,6 @@ extern "C" {
 #include <ntstrsafe.h>
 
 //------------------------------------------------------------- Debug Facilities
-#define SIMBATT_ERROR               DPFLTR_ERROR_LEVEL      // ed Kd_IHVDRIVER_Mask 0x1
 #define SIMBATT_WARN                DPFLTR_WARNING_LEVEL    // ed Kd_IHVDRIVER_Mask 0x2
 #define SIMBATT_TRACE               DPFLTR_TRACE_LEVEL      // ed Kd_IHVDRIVER_Mask 0x4
 #define SIMBATT_INFO                DPFLTR_INFO_LEVEL       // ed Kd_IHVDRIVER_Mask 0x8
