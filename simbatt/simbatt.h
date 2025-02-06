@@ -13,7 +13,10 @@ extern "C" {
 
 /** Print debugger message. 
 Arguments:
-  Level - Supplies the criticality of message being printed.
+  Level - DPFLTR_ERROR_LEVEL   maps to Kd_IHVDRIVER_Mask 0x1
+          DPFLTR_WARNING_LEVEL maps to Kd_IHVDRIVER_Mask 0x2
+          DPFLTR_TRACE_LEVEL   maps to Kd_IHVDRIVER_Mask 0x4
+          DPFLTR_INFO_LEVEL    maps to Kd_IHVDRIVER_Mask 0x8
   Format - Message in varible argument format.
 */
 _IRQL_requires_same_
