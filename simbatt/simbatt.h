@@ -9,7 +9,6 @@ extern "C" {
 #include <ntstrsafe.h>
 
 //------------------------------------------------------------- Debug Facilities
-#define SIMBATT_TRACE               DPFLTR_TRACE_LEVEL      // ed Kd_IHVDRIVER_Mask 0x4
 #define SIMBATT_INFO                DPFLTR_INFO_LEVEL       // ed Kd_IHVDRIVER_Mask 0x8
 
 #if defined(DEBUGPRINT)
@@ -17,13 +16,13 @@ extern "C" {
         BattPrint(_Level, _Msg, __VA_ARGS__)
 
     #define DebugEnter() \
-        DebugPrint(SIMBATT_TRACE, "Entering " __FUNCTION__ "\n")
+        DebugPrint(DPFLTR_TRACE_LEVEL, "Entering " __FUNCTION__ "\n")
 
     #define DebugExit() \
-        DebugPrint(SIMBATT_TRACE, "Leaving " __FUNCTION__ "\n")
+        DebugPrint(DPFLTR_TRACE_LEVEL, "Leaving " __FUNCTION__ "\n")
 
     #define DebugExitStatus(_status_) \
-        DebugPrint(SIMBATT_TRACE, \
+        DebugPrint(DPFLTR_TRACE_LEVEL, \
                    "Leaving " __FUNCTION__ ": Status=0x%x\n", \
                    _status_)
 #else
