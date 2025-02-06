@@ -196,7 +196,7 @@ Return Value:
     // memory.
     void* ReturnBuffer = NULL;
     size_t ReturnBufferLength = 0;
-    DebugPrint(SIMBATT_INFO, "Query for information level 0x%x\n", Level);
+    DebugPrint(DPFLTR_INFO_LEVEL, "Query for information level 0x%x\n", Level);
     Status = STATUS_INVALID_DEVICE_REQUEST;
     switch (Level) {
     case BatteryInformation:
@@ -518,7 +518,7 @@ Arguments:
 
     ULONG BytesReturned = 0;
     WDFDEVICE Device = WdfIoQueueGetDevice(Queue);
-    DebugPrint(SIMBATT_INFO, "BattIoDeviceControl: 0x%p\n", Device);
+    DebugPrint(DPFLTR_INFO_LEVEL, "BattIoDeviceControl: 0x%p\n", Device);
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
     switch (IoControlCode) {
     case IOCTL_SIMBATT_SET_STATUS:
