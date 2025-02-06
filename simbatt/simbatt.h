@@ -10,6 +10,19 @@ extern "C" {
 
 //------------------------------------------------------------- Debug Facilities
 
+
+/** Print debugger message. 
+Arguments:
+  Level - Supplies the criticality of message being printed.
+  Format - Message in varible argument format.
+*/
+_IRQL_requires_same_
+inline void BattPrint(ULONG Level, PCSTR Format, ...) {
+    va_list Arglist;
+    va_start(Arglist, Format);
+    vDbgPrintEx(DPFLTR_IHVDRIVER_ID, Level, Format, Arglist);
+}
+
 #if defined(DEBUGPRINT)
     #define DebugPrint(_Level, _Msg, ...) \
         BattPrint(_Level, _Msg, __VA_ARGS__)
@@ -84,6 +97,3 @@ BCLASS_SET_INFORMATION_CALLBACK SetInformation;
 BCLASS_QUERY_STATUS_CALLBACK QueryStatus;
 BCLASS_SET_STATUS_NOTIFY_CALLBACK SetStatusNotify;
 BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK DisableStatusNotify;
-
-_IRQL_requires_same_
-void BattPrint (_In_ ULONG Level, _In_ PCSTR Format, ...);

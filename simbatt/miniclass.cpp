@@ -623,21 +623,3 @@ Arguments:
 SetBatteryInformationEnd:
     return Status;
 }
-
-_Use_decl_annotations_
-void BattPrint (ULONG Level, PCSTR Format, ...)
-/*++
-Routine Description:
-    This routine emits the debugger message.
-
-Arguments:
-    Level - Supplies the criticality of message being printed.
-
-    Format - Message to be emitted in varible argument format.
-
---*/
-{
-	va_list Arglist;
-	va_start(Arglist, Format);
-	vDbgPrintEx(DPFLTR_IHVDRIVER_ID, Level, Format, Arglist);
-}
