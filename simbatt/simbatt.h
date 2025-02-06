@@ -11,7 +11,8 @@ extern "C" {
 //------------------------------------------------------------- Debug Facilities
 
 
-/** Print debugger message. 
+#if defined(DEBUGPRINT)
+/** Print debugger message.
 Arguments:
   Level - DPFLTR_ERROR_LEVEL   maps to Kd_IHVDRIVER_Mask 0x1
           DPFLTR_WARNING_LEVEL maps to Kd_IHVDRIVER_Mask 0x2
@@ -20,26 +21,22 @@ Arguments:
   Format - Message in varible argument format.
 */
 _IRQL_requires_same_
-inline void BattPrint(ULONG Level, PCSTR Format, ...) {
+inline void DebugPrint(ULONG Level, PCSTR Format, ...) {
     va_list Arglist;
     va_start(Arglist, Format);
     vDbgPrintEx(DPFLTR_IHVDRIVER_ID, Level, Format, Arglist);
 }
 
-#if defined(DEBUGPRINT)
-    #define DebugPrint(_Level, _Msg, ...) \
-        BattPrint(_Level, _Msg, __VA_ARGS__)
+#define DebugEnter() \
+    DebugPrint(DPFLTR_TRACE_LEVEL, "Entering " __FUNCTION__ "\n")
 
-    #define DebugEnter() \
-        DebugPrint(DPFLTR_TRACE_LEVEL, "Entering " __FUNCTION__ "\n")
+#define DebugExit() \
+    DebugPrint(DPFLTR_TRACE_LEVEL, "Leaving " __FUNCTION__ "\n")
 
-    #define DebugExit() \
-        DebugPrint(DPFLTR_TRACE_LEVEL, "Leaving " __FUNCTION__ "\n")
-
-    #define DebugExitStatus(_status_) \
-        DebugPrint(DPFLTR_TRACE_LEVEL, \
-                   "Leaving " __FUNCTION__ ": Status=0x%x\n", \
-                   _status_)
+#define DebugExitStatus(_status_) \
+    DebugPrint(DPFLTR_TRACE_LEVEL, \
+                "Leaving " __FUNCTION__ ": Status=0x%x\n", \
+                _status_)
 #else
     #define DebugPrint(l, m, ...)
     #define DebugEnter()
