@@ -177,6 +177,29 @@ Arguments:
 
         DebugPrint(DPFLTR_INFO_LEVEL, "Batt: Usage=%x, UsagePage=%x\n", caps.Usage, caps.UsagePage);
     }
+
+    {
+        // Get FEATURE report from device
+        BYTE report[3] = {};
+        report[0] = 0x0A; // temperature
+
+        // WARNING: Fails with 0xc0000061 (STATUS_PRIVILEGE_NOT_HELD)
+        WDF_MEMORY_DESCRIPTOR outputDesc = {};
+        WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&outputDesc, &report, sizeof(report));
+
+        NTSTATUS status = WdfIoTargetSendIoctlSynchronously(hidTarget, NULL,
+            IOCTL_HID_GET_FEATURE,
+            NULL, // input
+            &outputDesc, // output
+            NULL, NULL);
+        if (!NT_SUCCESS(status)) {
+            DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: IOCTL_HID_GET_FEATURE failed 0x%x"), status);
+            return;
+        }
+
+        DevExt->State.Temperature = report[1] | (report[2] << 8);
+        DebugPrint(DPFLTR_INFO_LEVEL, "Batt: Temperature=%u\n", DevExt->State.Temperature);
+    }
 }
 
 _Use_decl_annotations_
