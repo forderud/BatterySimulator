@@ -23,7 +23,7 @@ void RegisterWMI(WDFDEVICE Device)
 
     // Failure to register with WMI is nonfatal.
     if (!NT_SUCCESS(Status)) {
-        DebugPrint(SIMBATT_WARN,
+        DebugPrint(DPFLTR_WARNING_LEVEL,
             "IoWMIRegistrationControl() Failed. Status 0x%x\n",
             Status);
     }
@@ -37,7 +37,7 @@ void UnregisterWMI(WDFDEVICE Device)
 
     // Failure to unregister with WMI is nonfatal.
     if (!NT_SUCCESS(Status)) {
-        DebugPrint(SIMBATT_WARN,
+        DebugPrint(DPFLTR_WARNING_LEVEL,
             "IoWMIRegistrationControl() Failed. Status 0x%x\n",
             Status);
     }
