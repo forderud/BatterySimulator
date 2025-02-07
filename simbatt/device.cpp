@@ -226,6 +226,28 @@ Arguments:
 
     RegisterWMI(Device);
 
+    {
+        // timer for deferred battery param query
+        WDF_TIMER_CONFIG timerCfg = {};
+        WDF_TIMER_CONFIG_INIT(&timerCfg, EvtQueryBatteryParams);
+
+        WDF_OBJECT_ATTRIBUTES attribs = {};
+        WDF_OBJECT_ATTRIBUTES_INIT(&attribs);
+        attribs.ParentObject = Device;
+        attribs.ExecutionLevel = WdfExecutionLevelPassive; // required to access HID functions
+
+        WDFTIMER timer = nullptr;
+        NTSTATUS status = WdfTimerCreate(&timerCfg, &attribs, &timer);
+        if (!NT_SUCCESS(status)) {
+            DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: WdfTimerCreate failed 0x%x"), status);
+            return status;
+        }
+
+        BOOLEAN inQueue = WdfTimerStart(timer, 0); // no wait
+        NT_ASSERTMSG("Batt: timer already in queue", !inQueue);
+        UNREFERENCED_PARAMETER(inQueue);
+    }
+
 DevicePrepareHardwareEnd:
     DebugExitStatus(Status);
     return Status;

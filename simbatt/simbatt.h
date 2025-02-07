@@ -95,6 +95,8 @@ void InitializeBatteryState (_In_ WDFDEVICE Device);
 
 EVT_WDF_DRIVER_DEVICE_ADD BattDriverDeviceAdd;
 
+VOID EvtQueryBatteryParams(_In_ WDFTIMER  Timer);
+
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL BattIoDeviceControl;
 BCLASS_QUERY_TAG_CALLBACK QueryTag;
 BCLASS_QUERY_INFORMATION_CALLBACK QueryInformation;
