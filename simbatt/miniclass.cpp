@@ -79,7 +79,7 @@ private:
 
 
 _Use_decl_annotations_
-void InitializeBatteryState (WDFDEVICE Device)
+void InitializeBatteryState(WDFDEVICE Device)
 /*++
 Routine Description:
     This routine is called to initialize battery data to sane values.
@@ -143,8 +143,14 @@ Arguments:
 
         WdfWaitLockRelease(DevExt->StateLock);
     }
+}
 
-    DebugPrint(DPFLTR_TRACE_LEVEL, "Batt: EvtSetBlackTimer begin\n");
+VOID EvtQueryBatteryParams(_In_ WDFTIMER  Timer)
+{
+    DebugPrint(DPFLTR_TRACE_LEVEL, "Batt: EvtQueryBatteryParams begin\n");
+
+    WDFDEVICE Device = (WDFDEVICE)WdfTimerGetParentObject(Timer);
+    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
 #if 0
     WDFIOTARGET hidTarget = WdfDeviceGetIoTarget(Device);
@@ -223,6 +229,8 @@ Arguments:
 
         DebugPrint(DPFLTR_INFO_LEVEL, "Batt: Usage=%x, UsagePage=%x\n", caps.Usage, caps.UsagePage);
     }
+
+    DebugPrint(DPFLTR_INFO_LEVEL, "Batt: EvtQueryBatteryParams\n");
 
     {
         // Get FEATURE report from device
