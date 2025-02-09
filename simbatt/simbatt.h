@@ -11,7 +11,7 @@ extern "C" {
 //------------------------------------------------------------- Debug Facilities
 
 
-#if defined(DEBUGPRINT)
+#if DBG
 /** Print debugger message.
 Arguments:
   Level - DPFLTR_ERROR_LEVEL   maps to Kd_IHVDRIVER_Mask 0x1
