@@ -54,6 +54,29 @@ private:
     BYTE* m_ptr = nullptr;
 };
 
+/** RAII wrapper of WDFIOTARGET. */
+class WDFIOTARGET_Wrap {
+public:
+    WDFIOTARGET_Wrap() {
+    }
+    ~WDFIOTARGET_Wrap() {
+        if (m_obj != NULL) {
+            WdfObjectDelete(m_obj);
+            m_obj = NULL;
+        }
+    }
+
+    operator WDFIOTARGET () const {
+        return m_obj;
+    }
+    WDFIOTARGET* operator & () {
+        return &m_obj;
+    }
+
+private:
+    WDFIOTARGET m_obj = NULL;
+};
+
 
 _Use_decl_annotations_
 void InitializeBatteryState (WDFDEVICE Device)
@@ -123,7 +146,30 @@ Arguments:
 
     DebugPrint(DPFLTR_TRACE_LEVEL, "Batt: EvtSetBlackTimer begin\n");
 
+#if 0
     WDFIOTARGET hidTarget = WdfDeviceGetIoTarget(Device);
+#else
+    WDFIOTARGET_Wrap hidTarget;
+    {
+        // Use PDO for HID commands.
+        NTSTATUS status = WdfIoTargetCreate(Device, WDF_NO_OBJECT_ATTRIBUTES, &hidTarget);
+        if (!NT_SUCCESS(status)) {
+            DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: WdfIoTargetCreate failed 0x%x"), status);
+            return;
+        }
+
+        // open in shared read-write mode
+        WDF_IO_TARGET_OPEN_PARAMS openParams = {};
+        WDF_IO_TARGET_OPEN_PARAMS_INIT_OPEN_BY_NAME(&openParams, &DevExt->PdoName, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
+        openParams.ShareAccess = FILE_SHARE_WRITE | FILE_SHARE_READ;
+
+        status = WdfIoTargetOpen(hidTarget, &openParams);
+        if (!NT_SUCCESS(status)) {
+            DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: WdfIoTargetOpen failed 0x%x"), status);
+            return;
+        }
+    }
+#endif
 
     HID_COLLECTION_INFORMATION collectionInfo = {};
     {
@@ -137,7 +183,7 @@ Arguments:
             &outputDesc, // output
             NULL, NULL);
         if (!NT_SUCCESS(status)) {
-            // WdfIoTargetSendIoctlSynchronously failed 0xc000000d (STATUS_INVALID_PARAMETER) if attempting to access the PDO
+            // WARNING: Fails with 0xc000000d (STATUS_INVALID_PARAMETER) if using PDO
             DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: IOCTL_HID_GET_COLLECTION_INFORMATION failed 0x%x"), status);
             return;
         }
@@ -183,7 +229,7 @@ Arguments:
         BYTE report[3] = {};
         report[0] = 0x0A; // temperature
 
-        // WARNING: Fails with 0xc0000061 (STATUS_PRIVILEGE_NOT_HELD)
+        // WARNING: Fails with 0xc0000061 (STATUS_PRIVILEGE_NOT_HELD) if using WdfDeviceGetIoTarget(Device)
         WDF_MEMORY_DESCRIPTOR outputDesc = {};
         WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&outputDesc, &report, sizeof(report));
 

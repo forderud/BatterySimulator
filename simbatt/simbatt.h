@@ -75,6 +75,7 @@ struct BATT_FDO_DATA {
     void*                           ClassHandle;
     WDFWAITLOCK                     ClassInitLock;
     WMILIB_CONTEXT                  WmiLibContext;
+    UNICODE_STRING                  PdoName;
 
     // Battery state
     WDFWAITLOCK                     StateLock;

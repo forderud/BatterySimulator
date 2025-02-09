@@ -19,6 +19,31 @@ EVT_WDFDEVICE_WDM_IRP_PREPROCESS BattWdmIrpPreprocessSystemControl;
 
 //-------------------------------------------------------------------- Functions
 
+
+UNICODE_STRING GetTargetPropertyString(WDFIOTARGET target, DEVICE_REGISTRY_PROPERTY DeviceProperty) {
+    WDF_OBJECT_ATTRIBUTES attributes = {};
+    WDF_OBJECT_ATTRIBUTES_INIT(&attributes);
+    attributes.ParentObject = target; // auto-delete with I/O target
+
+    WDFMEMORY memory = 0;
+    NTSTATUS status = WdfIoTargetAllocAndQueryTargetProperty(target, DeviceProperty, NonPagedPoolNx, &attributes, &memory);
+    if (!NT_SUCCESS(status)) {
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: WdfIoTargetAllocAndQueryTargetProperty with property=0x%x failed 0x%x"), DeviceProperty, status);
+        return {};
+    }
+
+    // initialize string based on memory
+    size_t bufferLength = 0;
+    UNICODE_STRING result = {};
+    result.Buffer = (WCHAR*)WdfMemoryGetBuffer(memory, &bufferLength);
+    if (result.Buffer == NULL)
+        return {};
+
+    result.MaximumLength = (USHORT)bufferLength;
+    result.Length = (USHORT)bufferLength - sizeof(UNICODE_NULL);
+    return result;
+}
+
 _Use_decl_annotations_
 NTSTATUS BattDriverDeviceAdd (WDFDRIVER Driver, WDFDEVICE_INIT* DeviceInit)
 /*++
@@ -144,6 +169,17 @@ Arguments:
     if (!NT_SUCCESS(Status)) {
         DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfWaitLockCreate(StateLock) Failed. Status 0x%x"), Status);
         goto DriverDeviceAddEnd;
+    }
+
+    {
+        // initialize DEVICE_CONTEXT struct with PdoName
+        DevExt->PdoName = GetTargetPropertyString(WdfDeviceGetIoTarget(DeviceHandle), DevicePropertyPhysicalDeviceObjectName);
+        if (!DevExt->PdoName.Buffer) {
+            DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: PdoName query failed"));
+            return STATUS_UNSUCCESSFUL;
+        }
+
+        DebugPrint(DPFLTR_INFO_LEVEL, "Batt: PdoName: %wZ\n", DevExt->PdoName); // outputs "\Device\00000083"
     }
 
 DriverDeviceAddEnd:
