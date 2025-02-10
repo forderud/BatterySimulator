@@ -124,6 +124,7 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)
     </Inf>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="driver.cpp" />
     <ClCompile Include="miniclass.cpp" />
     <ClCompile Include="wdf.cpp" />
     <ClCompile Include="wmi.cpp" />

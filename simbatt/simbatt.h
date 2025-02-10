@@ -90,6 +90,8 @@ WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(BATT_FDO_DATA, GetDeviceExtension);
 _IRQL_requires_same_
 void InitializeBatteryState (_In_ WDFDEVICE Device);
 
+EVT_WDF_DRIVER_DEVICE_ADD BattDriverDeviceAdd;
+
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL BattIoDeviceControl;
 BCLASS_QUERY_TAG_CALLBACK QueryTag;
 BCLASS_QUERY_INFORMATION_CALLBACK QueryInformation;
