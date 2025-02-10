@@ -40,6 +40,7 @@ Parameters Description:
 
     WDF_DRIVER_CONFIG DriverConfig;
     WDF_DRIVER_CONFIG_INIT(&DriverConfig, BattDriverDeviceAdd);
+    DriverConfig.DriverPoolTag = POOL_TAG;
 
     // Initialize attributes and a context area for the driver object.
     //
