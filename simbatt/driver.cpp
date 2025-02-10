@@ -34,30 +34,19 @@ Parameters Description:
     //      how the callbacks are required to be synchronized in your driver.
     WDF_OBJECT_ATTRIBUTES DriverAttributes;
     WDF_OBJECT_ATTRIBUTES_INIT(&DriverAttributes);
-    WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DriverAttributes,
-        BATT_GLOBAL_DATA);
+    WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DriverAttributes, BATT_GLOBAL_DATA);
 
     DriverAttributes.ExecutionLevel = WdfExecutionLevelPassive;
 
     // Create the driver object
-    NTSTATUS Status = WdfDriverCreate(DriverObject,
-        RegistryPath,
-        &DriverAttributes,
-        &DriverConfig,
-        WDF_NO_HANDLE);
-
+    NTSTATUS Status = WdfDriverCreate(DriverObject, RegistryPath, &DriverAttributes, &DriverConfig, WDF_NO_HANDLE);
     if (!NT_SUCCESS(Status)) {
-        DebugPrint(DPFLTR_ERROR_LEVEL,
-            "WdfDriverCreate() Failed. Status 0x%x\n",
-            Status);
-
+        DebugPrint(DPFLTR_ERROR_LEVEL, "WdfDriverCreate() Failed. Status 0x%x\n", Status);
         goto DriverEntryEnd;
     }
 
     BATT_GLOBAL_DATA* GlobalData = GetGlobalData(WdfGetDriver());
-    GlobalData->RegistryPath.MaximumLength = RegistryPath->Length +
-        sizeof(UNICODE_NULL);
-
+    GlobalData->RegistryPath.MaximumLength = RegistryPath->Length + sizeof(UNICODE_NULL);
     GlobalData->RegistryPath.Length = RegistryPath->Length;
     GlobalData->RegistryPath.Buffer = WdfDriverGetRegistryPath(WdfGetDriver());
 
