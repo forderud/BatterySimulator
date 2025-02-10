@@ -177,9 +177,8 @@ Arguments:
     DebugEnter();
     BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
-    // Attach to the battery class driver.
-
-    BATTERY_MINIPORT_INFO_V1_1 BattInit = {0};
+    // Attach to the battery class driver
+    BATTERY_MINIPORT_INFO_V1_1 BattInit = {};
     BattInit.MajorVersion = BATTERY_CLASS_MAJOR_VERSION;
     BattInit.MinorVersion = BATTERY_CLASS_MINOR_VERSION_1;
     BattInit.Context = DevExt;
@@ -193,8 +192,7 @@ Arguments:
     BattInit.DeviceName = NULL;
     BattInit.Fdo = WdfDeviceWdmGetDeviceObject(Device);
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
-    NTSTATUS Status = BatteryClassInitializeDevice((PBATTERY_MINIPORT_INFO)&BattInit,
-                                          &DevExt->ClassHandle);
+    NTSTATUS Status = BatteryClassInitializeDevice((BATTERY_MINIPORT_INFO*)&BattInit, &DevExt->ClassHandle);
 
     WdfWaitLockRelease(DevExt->ClassInitLock);
     if (!NT_SUCCESS(Status)) {
