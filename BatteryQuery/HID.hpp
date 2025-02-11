@@ -129,8 +129,10 @@ public:
 
     /** Get typed FEATURE or INPUT report with ReportID prefix. */
     template <class REPORT>
-    REPORT GetReport(HIDP_REPORT_TYPE type) const {
-        REPORT report{}; // assume report ID prefix on first byte
+    REPORT GetReport(HIDP_REPORT_TYPE type, BYTE reportId = 0) const {
+        REPORT report{};
+        if (reportId)
+            (reinterpret_cast<BYTE*>(&report))[0] = reportId; // set report ID prefix
 
         BOOLEAN ok = false;
         if (type == HidP_Input) {
