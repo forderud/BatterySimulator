@@ -97,6 +97,8 @@ Arguments:
         goto DriverDeviceAddEnd;
     }
 
+    DebugPrint(DPFLTR_INFO_LEVEL, "Device PDO=0x%p, FDO=0x%p\n", WdfDeviceWdmGetPhysicalDevice(DeviceHandle), WdfDeviceWdmGetDeviceObject(DeviceHandle));
+
     // Configure a default queue for IO requests that are not handled by the
     // class driver. For the simulated battery, this queue processes requests
     // to set the simulated status.
