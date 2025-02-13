@@ -6,3 +6,6 @@ Get-CimInstance -Namespace root\CIMV2 -Class Win32_Battery
 
 Write-Host "Extra parameters for connected batteries:"
 Get-WmiObject -Namespace root\wmi  -Class MSBatteryClass
+
+$cc = Get-WmiObject -Namespace root\wmi  -Class BatteryCycleCount
+Write-Host Battery cycle count: $cc.CycleCount
