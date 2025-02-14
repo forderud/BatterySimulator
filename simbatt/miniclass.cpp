@@ -152,13 +152,12 @@ VOID EvtQueryBatteryParams(_In_ WDFTIMER  Timer)
     WDFDEVICE Device = (WDFDEVICE)WdfTimerGetParentObject(Timer);
     BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
-#if 0
-    WDFIOTARGET hidTarget = WdfDeviceGetIoTarget(Device);
-#else
-    WDFIOTARGET_Wrap hidTarget;
+    WDFIOTARGET defaultTarget = WdfDeviceGetIoTarget(Device);
+
+    WDFIOTARGET_Wrap pdoTarget;
     {
         // Use PDO for HID commands.
-        NTSTATUS status = WdfIoTargetCreate(Device, WDF_NO_OBJECT_ATTRIBUTES, &hidTarget);
+        NTSTATUS status = WdfIoTargetCreate(Device, WDF_NO_OBJECT_ATTRIBUTES, &pdoTarget);
         if (!NT_SUCCESS(status)) {
             DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: WdfIoTargetCreate failed 0x%x"), status);
             return;
@@ -169,13 +168,12 @@ VOID EvtQueryBatteryParams(_In_ WDFTIMER  Timer)
         WDF_IO_TARGET_OPEN_PARAMS_INIT_OPEN_BY_NAME(&openParams, &DevExt->PdoName, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
         openParams.ShareAccess = FILE_SHARE_WRITE | FILE_SHARE_READ;
 
-        status = WdfIoTargetOpen(hidTarget, &openParams);
+        status = WdfIoTargetOpen(pdoTarget, &openParams);
         if (!NT_SUCCESS(status)) {
             DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: WdfIoTargetOpen failed 0x%x"), status);
             return;
         }
     }
-#endif
 
     HID_COLLECTION_INFORMATION collectionInfo = {};
     {
@@ -183,7 +181,7 @@ VOID EvtQueryBatteryParams(_In_ WDFTIMER  Timer)
         WDF_MEMORY_DESCRIPTOR outputDesc = {};
         WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&outputDesc, &collectionInfo, sizeof(HID_COLLECTION_INFORMATION));
 
-        NTSTATUS status = WdfIoTargetSendIoctlSynchronously(hidTarget, NULL,
+        NTSTATUS status = WdfIoTargetSendIoctlSynchronously(defaultTarget, NULL,
             IOCTL_HID_GET_COLLECTION_INFORMATION,
             NULL, // input
             &outputDesc, // output
@@ -208,7 +206,7 @@ VOID EvtQueryBatteryParams(_In_ WDFTIMER  Timer)
         WDF_MEMORY_DESCRIPTOR outputDesc = {};
         WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&outputDesc, static_cast<PHIDP_PREPARSED_DATA>(preparsedData), collectionInfo.DescriptorSize);
 
-        NTSTATUS status = WdfIoTargetSendIoctlSynchronously(hidTarget, NULL,
+        NTSTATUS status = WdfIoTargetSendIoctlSynchronously(defaultTarget, NULL,
             IOCTL_HID_GET_COLLECTION_DESCRIPTOR, // same as HidD_GetPreparsedData in user-mode
             NULL, // input
             &outputDesc, // output
@@ -237,16 +235,17 @@ VOID EvtQueryBatteryParams(_In_ WDFTIMER  Timer)
         BYTE report[3] = {};
         report[0] = 0x0A; // temperature
 
-        // WARNING: Fails with 0xc0000061 (STATUS_PRIVILEGE_NOT_HELD) if using WdfDeviceGetIoTarget(Device)
         WDF_MEMORY_DESCRIPTOR outputDesc = {};
         WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&outputDesc, &report, sizeof(report));
 
-        NTSTATUS status = WdfIoTargetSendIoctlSynchronously(hidTarget, NULL,
+        NTSTATUS status = WdfIoTargetSendIoctlSynchronously(defaultTarget, NULL,
             IOCTL_HID_GET_FEATURE,
             NULL, // input
             &outputDesc, // output
             NULL, NULL);
         if (!NT_SUCCESS(status)) {
+            // // WARNING: Fails with 0xc000000d (STATUS_INVALID_PARAMETER) if using PDO
+            // WARNING: Fails with 0xc0000061 (STATUS_PRIVILEGE_NOT_HELD) if using defaultTarget
             DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("Batt: IOCTL_HID_GET_FEATURE failed 0x%x"), status);
             return;
         }
