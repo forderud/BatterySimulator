@@ -679,7 +679,7 @@ Arguments:
 
     ULONG BytesReturned = 0;
     WDFDEVICE Device = WdfIoQueueGetDevice(Queue);
-    DebugPrint(DPFLTR_INFO_LEVEL, "BattIoDeviceControl: 0x%p\n", Device);
+    //DebugPrint(DPFLTR_INFO_LEVEL, "BattIoDeviceControl: 0x%p\n", Device);
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
     switch (IoControlCode) {
     case IOCTL_SIMBATT_SET_STATUS:
