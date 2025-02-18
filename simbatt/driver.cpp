@@ -41,7 +41,7 @@ Parameters Description:
     // Create the driver object
     NTSTATUS Status = WdfDriverCreate(DriverObject, RegistryPath, &DriverAttributes, &DriverConfig, WDF_NO_HANDLE);
     if (!NT_SUCCESS(Status)) {
-        DebugPrint(DPFLTR_ERROR_LEVEL, "WdfDriverCreate() Failed. Status 0x%x\n", Status);
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDriverCreate() Failed. Status 0x%x"), Status);
         goto DriverEntryEnd;
     }
 

@@ -58,11 +58,7 @@ Arguments:
                  0);
 
     if (!NT_SUCCESS(Status)) {
-         DebugPrint(DPFLTR_ERROR_LEVEL,
-                    "WdfDeviceInitAssignWdmIrpPreprocessCallback"
-                    "(IRP_MJ_DEVICE_CONTROL) Failed. 0x%x\n",
-                    Status);
-
+         DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDeviceInitAssignWdmIrpPreprocessCallback(IRP_MJ_DEVICE_CONTROL) Failed. 0x%x"), Status);
          goto DriverDeviceAddEnd;
     }
 
@@ -74,11 +70,7 @@ Arguments:
                  0);
 
     if (!NT_SUCCESS(Status)) {
-         DebugPrint(DPFLTR_ERROR_LEVEL,
-                    "WdfDeviceInitAssignWdmIrpPreprocessCallback"
-                    "(IRP_MJ_SYSTEM_CONTROL) Failed. 0x%x\n",
-                    Status);
-
+         DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDeviceInitAssignWdmIrpPreprocessCallback(IRP_MJ_SYSTEM_CONTROL) Failed. 0x%x"), Status);
          goto DriverDeviceAddEnd;
     }
 
@@ -93,7 +85,7 @@ Arguments:
     WDFDEVICE DeviceHandle;
     Status = WdfDeviceCreate(&DeviceInit, &DeviceAttributes, &DeviceHandle);
     if (!NT_SUCCESS(Status)) {
-        DebugPrint(DPFLTR_ERROR_LEVEL, "WdfDeviceCreate() Failed. 0x%x\n", Status);
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDeviceCreate() Failed. 0x%x"), Status);
         goto DriverDeviceAddEnd;
     }
 
@@ -114,7 +106,7 @@ Arguments:
                               &Queue);
 
     if (!NT_SUCCESS(Status)) {
-        DebugPrint(DPFLTR_ERROR_LEVEL, "WdfIoQueueCreate() Failed. 0x%x\n", Status);
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfIoQueueCreate() Failed. 0x%x"), Status);
         goto DriverDeviceAddEnd;
     }
 
@@ -139,9 +131,7 @@ Arguments:
                                &DevExt->ClassInitLock);
 
     if (!NT_SUCCESS(Status)) {
-        DebugPrint(DPFLTR_ERROR_LEVEL,
-                   "WdfWaitLockCreate(ClassInitLock) Failed. Status 0x%x\n",
-                   Status);
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfWaitLockCreate(ClassInitLock) Failed. Status 0x%x"), Status);
 
         goto DriverDeviceAddEnd;
     }
@@ -152,10 +142,7 @@ Arguments:
                                &DevExt->StateLock);
 
     if (!NT_SUCCESS(Status)) {
-        DebugPrint(DPFLTR_ERROR_LEVEL,
-                   "WdfWaitLockCreate(StateLock) Failed. Status 0x%x\n",
-                   Status);
-
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfWaitLockCreate(StateLock) Failed. Status 0x%x"), Status);
         goto DriverDeviceAddEnd;
     }
 

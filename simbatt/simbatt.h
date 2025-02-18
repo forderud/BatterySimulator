@@ -10,6 +10,8 @@ extern "C" {
 
 //------------------------------------------------------------- Debug Facilities
 
+// DML macro for white text (wbg) on red background (changed)
+#define DML_ERR(msg) ("<?dml?><col fg=\"wbg\" bg=\"changed\">"##msg##"</col>\n")
 
 #if DBG
 /** Print debugger message.
