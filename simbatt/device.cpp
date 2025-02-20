@@ -82,14 +82,14 @@ Arguments:
     // Create a framework device object.  This call will in turn create
     // a WDM device object, attach to the lower stack, and set the
     // appropriate flags and attributes.
-    WDFDEVICE DeviceHandle;
+    WDFDEVICE DeviceHandle = 0;
     Status = WdfDeviceCreate(&DeviceInit, &DeviceAttributes, &DeviceHandle);
     if (!NT_SUCCESS(Status)) {
         DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDeviceCreate() Failed. 0x%x"), Status);
         goto DriverDeviceAddEnd;
     }
 
-    DebugPrint(DPFLTR_INFO_LEVEL, "Device PDO=0x%p, FDO=0x%p\n", WdfDeviceWdmGetPhysicalDevice(DeviceHandle), WdfDeviceWdmGetDeviceObject(DeviceHandle));
+    DebugPrint(DPFLTR_INFO_LEVEL, "Device PDO(0x%p) FDO(0x%p), Lower(0x%p)\n", WdfDeviceWdmGetPhysicalDevice(DeviceHandle), WdfDeviceWdmGetDeviceObject(DeviceHandle), WdfDeviceWdmGetAttachedDevice(DeviceHandle));
 
     // Configure a default queue for IO requests that are not handled by the
     // class driver. For the simulated battery, this queue processes requests
