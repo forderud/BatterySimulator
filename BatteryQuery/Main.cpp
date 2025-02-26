@@ -110,70 +110,17 @@ int AccessBattery(const std::wstring& devInstPath, bool verbose, unsigned int ne
         return -1;
     }
 
-    DellBattery dellBatt(devInstPath);
-    hid::HidPowerDevice hidpd(dev.GetPDOPath().c_str(), true);
-
     wprintf(L"\n");
     {
         BatteryParameters params(battery.Get(), verbose);
-        dellBatt.Initialize(params.DeviceName);
 
         wprintf(L"Misc. IOCTL_BATTERY_QUERY_INFORMATION parameters:\n");
-
-        if (!params.Temperature && hidpd.IsValid()) {
-            // fallback for HidBatt driver limitation
-            ULONG hidTemp = hidpd.GetTemperature();
-            if (hidTemp) {
-                if (verbose)
-                    wprintf(L"WARNING: Retrieving Temperature directly from the HID device since it's not parsed by the HidBatt driver.\n");
-                params.Temperature = hidTemp;
-            }
-        }
-        if (!params.Temperature && dellBatt.IsValid()) {
-            // fallback to Dell WMI interface
-            ULONG dellTemp = dellBatt.GetTemperature();
-            if (dellTemp) {
-                if (verbose)
-                    wprintf(L"WARNING: Retrieving Temperature directly from Dell WMI since it's not parsed by the CmBatt driver.\n");
-                params.Temperature = dellTemp;
-            }
-        }
-
-        if (!params.ManufactureDate.Year && dellBatt.IsValid()) {
-            // fallback to Dell WMI interface
-            BATTERY_MANUFACTURE_DATE date = dellBatt.GetManufactureDat();
-            if (date.Year) {
-                if (verbose)
-                    wprintf(L"WARNING: Retrieving ManufactureDate directly from Dell WMI since it's not parsed by the CmBatt driver.\n");
-
-                params.ManufactureDate = date;
-            }
-        }
-
         params.Print();
     }
     wprintf(L"\n");
 
     BatteryInformationWrap info(battery.Get());
     wprintf(L"BATTERY_INFORMATION parameters:\n");
-
-    if (!info.CycleCount && hidpd.IsValid()) {
-        // fallback for HidBatt driver limitation
-        auto hidCycleCount = hidpd.GetCycleCount();
-        if (hidCycleCount) {
-            if (verbose)
-                wprintf(L"WARNING: Retrieving CycleCount directly from the HID device since it's not parsed by the HidBatt driver.\n");
-            info.CycleCount = hidCycleCount;
-        }
-    }
-    if (!info.CycleCount && dellBatt.IsValid()) {
-        auto cycleCount = dellBatt.GetCycleCount();
-        if (cycleCount) {
-            if (verbose)
-                wprintf(L"WARNING: Retrieving CycleCount directly from Dell WMI since it's not parsed by the CmBatt driver.\n");
-            info.CycleCount = cycleCount;
-        }
-    }
     info.Print();
     wprintf(L"\n");
 
