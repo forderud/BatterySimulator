@@ -282,7 +282,7 @@ void BatteryVisitor(int /*idx*/, HDEVINFO devInfo, SP_DEVINFO_DATA& devInfoData)
     std::wstring devInstPath = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_InstanceId);
 
     try {
-        AccessBattery(devInstPath, false);
+        AccessBattery(devInstPath, /*verbose*/true);
 
 #if 0
         std::wstring PDOName = GetDevPropStr(devInfo, devInfoData, &DEVPKEY_Device_PDOName); // Physical Device Object
@@ -327,7 +327,7 @@ int wmain(int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    int res = AccessBattery(instanceId, true, newCharge); // access battery APIs
+    int res = AccessBattery(instanceId, /*verbose*/true, newCharge); // access battery APIs
 #if 0
     AccessHidDevice(pdoPath); // check if it's also a HID device
 #endif
