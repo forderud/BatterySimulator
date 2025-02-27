@@ -196,8 +196,10 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
         else
             wprintf(L"  CycleCount=<unknown>\n");
     }
+
+    BYTE padding[4];
 };
-static_assert(sizeof(BatteryInformationWrap) == sizeof(BATTERY_INFORMATION));
+static_assert(sizeof(BatteryInformationWrap) == sizeof(BATTERY_INFORMATION)+4);
 
 
 std::wstring GetBatteryInfoStr(HANDLE device, BATTERY_QUERY_INFORMATION_LEVEL level) {
@@ -224,7 +226,7 @@ bool GetBatteryInfoUlong(HANDLE device, BATTERY_QUERY_INFORMATION_LEVEL level, U
     bqi.BatteryTag = GetBatteryTag(device);
 
     DWORD bytes_returned = 0;
-    BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &value, sizeof(value), &bytes_returned, nullptr);
+    BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &value, sizeof(value)+2, &bytes_returned, nullptr);
     if (!ok && verbose) {
         DWORD err = GetLastError();
         wprintf(L"WARNING: IOCTL_BATTERY_QUERY_INFORMATION with InformationLevel=%u failed (err=%u)\n", level, err);
