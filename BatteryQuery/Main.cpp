@@ -45,14 +45,14 @@ private:
 
 
 struct BatteryParameters {
-    BatteryParameters(HANDLE dev) {
+    BatteryParameters(HANDLE dev, bool verbose) {
         DeviceName = GetBatteryInfoStr(dev, BatteryDeviceName);
-        GetBatteryInfoUlong(dev, BatteryEstimatedTime, EstimatedTime);
+        GetBatteryInfoUlong(dev, BatteryEstimatedTime, EstimatedTime, verbose);
         GranularityInformation_len = GetBatteryInfoGranularity(dev, GranularityInformation);
         GetBatteryInfoDate(dev, ManufactureDate);
         ManufactureName = GetBatteryInfoStr(dev, BatteryManufactureName);
         SerialNumber = GetBatteryInfoStr(dev, BatterySerialNumber);
-        GetBatteryInfoUlong(dev, BatteryTemperature, Temperature);
+        GetBatteryInfoUlong(dev, BatteryTemperature, Temperature, verbose);
         UniqueID = GetBatteryInfoStr(dev, BatteryUniqueID);
     }
 
@@ -115,7 +115,7 @@ int AccessBattery(const std::wstring& devInstPath, bool verbose, unsigned int ne
 
     wprintf(L"\n");
     {
-        BatteryParameters params(battery.Get());
+        BatteryParameters params(battery.Get(), verbose);
         dellBatt.Initialize(params.DeviceName);
 
         wprintf(L"Misc. IOCTL_BATTERY_QUERY_INFORMATION parameters:\n");

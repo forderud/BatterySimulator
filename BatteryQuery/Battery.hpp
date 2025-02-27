@@ -217,7 +217,7 @@ std::wstring GetBatteryInfoStr(HANDLE device, BATTERY_QUERY_INFORMATION_LEVEL le
     return std::wstring(buffer);
 }
 
-bool GetBatteryInfoUlong(HANDLE device, BATTERY_QUERY_INFORMATION_LEVEL level, ULONG& value) {
+bool GetBatteryInfoUlong(HANDLE device, BATTERY_QUERY_INFORMATION_LEVEL level, ULONG& value, bool verbose) {
     assert((level == BatteryEstimatedTime) || (level == BatteryTemperature));
     BATTERY_QUERY_INFORMATION bqi = {};
     bqi.InformationLevel = level;
@@ -225,6 +225,10 @@ bool GetBatteryInfoUlong(HANDLE device, BATTERY_QUERY_INFORMATION_LEVEL level, U
 
     DWORD bytes_returned = 0;
     BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_QUERY_INFORMATION, &bqi, sizeof(bqi), &value, sizeof(value), &bytes_returned, nullptr);
+    if (!ok && verbose) {
+        DWORD err = GetLastError();
+        wprintf(L"WARNING: IOCTL_BATTERY_QUERY_INFORMATION with InformationLevel=%u failed (err=%u)\n", level, err);
+    }
     return ok;
 }
 
