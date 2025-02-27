@@ -147,7 +147,7 @@ public:
         }
         if (!ok) {
             DWORD err = GetLastError();
-            wprintf(L"ERROR: HidD_GetFeature or HidD_GetInputReport failure (err %d).\n", err);
+            wprintf(L"ERROR: HidD_GetFeature or HidD_GetInputReport failure (err %u).\n", err);
             assert(ok);
             return {};
         }
@@ -173,7 +173,7 @@ public:
         }
         if (!ok) {
             DWORD err = GetLastError();
-            wprintf(L"ERROR: HidD_GetFeature or HidD_GetInputReport failure (err %d).\n", err);
+            wprintf(L"ERROR: HidD_GetFeature or HidD_GetInputReport failure (err %u).\n", err);
             assert(ok);
             return {};
         }
@@ -194,7 +194,7 @@ public:
         }
         if (!ok) {
             DWORD err = GetLastError();
-            wprintf(L"ERROR: HidD_SetFeature failure (err %d).\n", err);
+            wprintf(L"ERROR: HidD_SetFeature failure (err %u).\n", err);
             assert(ok);
             return {};
         }

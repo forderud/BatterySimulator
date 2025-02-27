@@ -106,7 +106,7 @@ int AccessBattery(const std::wstring& devInstPath, bool verbose, unsigned int ne
     Microsoft::WRL::Wrappers::FileHandle battery(CreateFileW(dev.GetPDOPath().c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL));
     if (!battery.IsValid()) {
         DWORD err = GetLastError();
-        wprintf(L"ERROR: CreateFileW (err=%u).\n", err);
+        wprintf(L"ERROR: CreateFileW (err %u).\n", err);
         return -1;
     }
 

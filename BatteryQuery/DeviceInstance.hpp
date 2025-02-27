@@ -75,7 +75,7 @@ public:
         BOOL ok = FileTimeToSystemTime(&fileTime, &time);
         if (!ok) {
             DWORD err = GetLastError();
-            wprintf(L"ERROR: FileTimeToSystemTime failure (res=%u).\n", err);
+            wprintf(L"ERROR: FileTimeToSystemTime failure (err %u).\n", err);
             return {};
         }
 
