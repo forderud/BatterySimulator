@@ -1,6 +1,7 @@
 ;/*++
 ; Simulated Battery driver.
 ; Built from https://github.com/forderud/BatterySimulator
+; Require Windows 10 build 16299 (1709) or newer due to DefaultDestDir=13 usage.
 ;--*/
 
 [Version]
