@@ -274,16 +274,16 @@ public:
     std::vector<BYTE> CreateReportValue(HIDP_REPORT_TYPE type, CAPS caps, ULONG value) const {
         ULONG reportLen = 0;
         if (type == HidP_Input)
-            reportLen == m_caps.InputReportByteLength;
+            reportLen = m_caps.InputReportByteLength;
         if (type == HidP_Output)
-            reportLen == m_caps.OutputReportByteLength;
+            reportLen = m_caps.OutputReportByteLength;
         else if (type == HidP_Feature)
-            reportLen == m_caps.FeatureReportByteLength;
+            reportLen = m_caps.FeatureReportByteLength;
         else
             abort();
 
         std::vector<BYTE> report(reportLen, (BYTE)0);
-        NTSTATUS status = HidP_SetUsageValue(type, caps.UsagePage, caps.LinkCollection, caps.NotRange.Usage, &value, m_preparsed, (CHAR*)report.data(), (ULONG)report.size());
+        NTSTATUS status = HidP_SetUsageValue(type, caps.UsagePage, caps.LinkCollection, caps.NotRange.Usage, value, m_preparsed, (CHAR*)report.data(), (ULONG)report.size());
         assert(status == HIDP_STATUS_SUCCESS); status;
         return report;
     }
