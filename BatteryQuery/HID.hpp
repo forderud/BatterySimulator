@@ -269,6 +269,25 @@ public:
         return value;
     }
 
+    /** Create a HID report with a given usage value. */
+    template <class CAPS> // CAPS might be HIDP_VALUE_CAPS or HIDP_BUTTON_CAPS
+    std::vector<BYTE> CreateReportValue(HIDP_REPORT_TYPE type, CAPS caps, ULONG value) const {
+        ULONG reportLen = 0;
+        if (type == HidP_Input)
+            reportLen == caps.InputReportByteLength;
+        if (type == HidP_Output)
+            reportLen == caps.OutputReportByteLength;
+        else if (type == HidP_Feature)
+            reportLen == caps.FeatureReportByteLength;
+        else
+            abort();
+
+        std::vector<BYTE> report(reportLen, (BYTE)0);
+        NTSTATUS status = HidP_SetUsageValue(type, caps.UsagePage, caps.LinkCollection, caps.NotRange.Usage, &value, preparsed, (CHAR*)report.data(), (ULONG)report.size());
+        assert(status == HIDP_STATUS_SUCCESS); status;
+        return report;
+    }
+
     std::wstring Name() const {
         std::wstring prod = GetProduct();
         if (prod.empty())
