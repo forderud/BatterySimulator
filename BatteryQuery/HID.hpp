@@ -54,15 +54,15 @@ class Device {
 public:
     Device() = default;
 
-    Device(const wchar_t* deviceName, bool verbose) : devName(deviceName) {
-        dev.Attach(CreateFileW(deviceName,
+    Device(const wchar_t* deviceName, bool verbose) : m_devName(deviceName) {
+        m_dev.Attach(CreateFileW(deviceName,
             GENERIC_READ | GENERIC_WRITE,
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             NULL,
             OPEN_EXISTING,
             0,
             NULL));
-        if (!dev.IsValid()) {
+        if (!m_dev.IsValid()) {
             DWORD err = GetLastError();
             if (verbose) {
                 // ERROR_ACCESS_DENIED (5) expected for keyboard and mouse since Windows opens them for exclusive use (https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/keyboard-and-mouse-hid-client-drivers#important-notes)
@@ -72,57 +72,57 @@ public:
             return;
         }
 
-        if (!HidD_GetAttributes(dev.Get(), &attr)) {
+        if (!HidD_GetAttributes(m_dev.Get(), &m_attr)) {
             DWORD err = GetLastError(); err;
             assert((err == ERROR_NOT_FOUND) || (err == ERROR_INVALID_PARAMETER));
-            dev.Close(); // invalidate object
+            m_dev.Close(); // invalidate object
             return;
         }
 
-        if (!preparsed.Open(dev.Get())) {
+        if (!m_preparsed.Open(m_dev.Get())) {
             // Have never encountered this problem
-            dev.Close(); // invalidate object
+            m_dev.Close(); // invalidate object
             return;
         }
 
-        if (HidP_GetCaps(preparsed, &caps) != HIDP_STATUS_SUCCESS) {
+        if (HidP_GetCaps(m_preparsed, &m_caps) != HIDP_STATUS_SUCCESS) {
             // Have never encountered this problem
-            dev.Close(); // invalidate object
+            m_dev.Close(); // invalidate object
             return;
         }
 
 #ifndef NDEBUG
-        Manufacturer = GetManufacturer();
-        Product = GetProduct();
-        SerialNumber = GetSerialNumber();
+        m_Manufacturer = GetManufacturer();
+        m_Product = GetProduct();
+        m_SerialNumber = GetSerialNumber();
 #endif
     }
 
     bool IsValid() const {
-        return dev.IsValid();
+        return m_dev.IsValid();
     }
 
     std::wstring GetManufacturer() const {
         wchar_t man_buffer[128] = L""; // max USB length is 126 wchar's
-        HidD_GetManufacturerString(dev.Get(), man_buffer, (ULONG)std::size(man_buffer)); // ignore errors
+        HidD_GetManufacturerString(m_dev.Get(), man_buffer, (ULONG)std::size(man_buffer)); // ignore errors
         return man_buffer;
     }
 
     std::wstring GetProduct() const {
         wchar_t prod_buffer[128] = L""; // max USB length is 126 wchar's
-        HidD_GetProductString(dev.Get(), prod_buffer, (ULONG)std::size(prod_buffer)); // ignore erorrs
+        HidD_GetProductString(m_dev.Get(), prod_buffer, (ULONG)std::size(prod_buffer)); // ignore erorrs
         return prod_buffer;
     }
 
     std::wstring GetSerialNumber() const {
         wchar_t sn_buffer[128] = L""; // max USB length is 126 wchar's
-        HidD_GetSerialNumberString(dev.Get(), sn_buffer, (ULONG)std::size(sn_buffer)); // ignore erorrs
+        HidD_GetSerialNumberString(m_dev.Get(), sn_buffer, (ULONG)std::size(sn_buffer)); // ignore erorrs
         return sn_buffer;
     }
 
     std::wstring GetString(ULONG idx) const {
         wchar_t buffer[128] = L""; // max USB length is 126 wchar's
-        BOOLEAN ok = HidD_GetIndexedString(dev.Get(), idx, buffer, (ULONG)std::size(buffer));
+        BOOLEAN ok = HidD_GetIndexedString(m_dev.Get(), idx, buffer, (ULONG)std::size(buffer));
         assert(ok); ok;
         return buffer;
     }
@@ -136,11 +136,11 @@ public:
 
         BOOLEAN ok = false;
         if (type == HidP_Input) {
-            assert(sizeof(report) == caps.InputReportByteLength);
-            ok = HidD_GetInputReport(dev.Get(), &report, sizeof(report));
+            assert(sizeof(report) == m_caps.InputReportByteLength);
+            ok = HidD_GetInputReport(m_dev.Get(), &report, sizeof(report));
         }  else if (type == HidP_Feature) {
-            assert(sizeof(report) == caps.FeatureReportByteLength);
-            ok = HidD_GetFeature(dev.Get(), &report, sizeof(report));
+            assert(sizeof(report) == m_caps.FeatureReportByteLength);
+            ok = HidD_GetFeature(m_dev.Get(), &report, sizeof(report));
         } else {
             // there's no HidD_GetOutputReport function
             abort();
@@ -162,11 +162,11 @@ public:
 
         BOOLEAN ok = false;
         if (type == HidP_Input) {
-            report.resize(caps.InputReportByteLength, (BYTE)0);
-            ok = HidD_GetInputReport(dev.Get(), report.data(), (ULONG)report.size());
+            report.resize(m_caps.InputReportByteLength, (BYTE)0);
+            ok = HidD_GetInputReport(m_dev.Get(), report.data(), (ULONG)report.size());
         } else if (type == HidP_Feature) {
-            report.resize(caps.FeatureReportByteLength, (BYTE)0);
-            ok = HidD_GetFeature(dev.Get(), report.data(), (ULONG)report.size());
+            report.resize(m_caps.FeatureReportByteLength, (BYTE)0);
+            ok = HidD_GetFeature(m_dev.Get(), report.data(), (ULONG)report.size());
         } else {
             // there's no HidD_GetOutputReport function
             abort();
@@ -186,11 +186,11 @@ public:
     bool SetReport(HIDP_REPORT_TYPE type, const REPORT& report) {
         BOOLEAN ok = false;
         if (type == HidP_Output) {
-            assert(sizeof(report) == caps.OutputReportByteLength);
-            ok = HidD_SetOutputReport(dev.Get(), const_cast<void*>(static_cast<const void*>(&report)), sizeof(report));
+            assert(sizeof(report) == m_caps.OutputReportByteLength);
+            ok = HidD_SetOutputReport(m_dev.Get(), const_cast<void*>(static_cast<const void*>(&report)), sizeof(report));
         } else if (type == HidP_Feature) {
-            assert(sizeof(report) == caps.FeatureReportByteLength);
-            ok = HidD_SetFeature(dev.Get(), const_cast<void*>(static_cast<const void*>(&report)), sizeof(report));
+            assert(sizeof(report) == m_caps.FeatureReportByteLength);
+            ok = HidD_SetFeature(m_dev.Get(), const_cast<void*>(static_cast<const void*>(&report)), sizeof(report));
         }
         if (!ok) {
             DWORD err = GetLastError();
@@ -205,16 +205,16 @@ public:
     std::vector<HIDP_VALUE_CAPS> GetValueCaps(HIDP_REPORT_TYPE type) const {
         USHORT valueCapsLen = 0;
         if (type == HidP_Input)
-            valueCapsLen = caps.NumberInputValueCaps;
+            valueCapsLen = m_caps.NumberInputValueCaps;
         else if (type == HidP_Output)
-            valueCapsLen = caps.NumberOutputValueCaps;
+            valueCapsLen = m_caps.NumberOutputValueCaps;
         else if (type == HidP_Feature)
-            valueCapsLen = caps.NumberFeatureValueCaps;
+            valueCapsLen = m_caps.NumberFeatureValueCaps;
         if (valueCapsLen == 0)
             return {};
 
         std::vector<HIDP_VALUE_CAPS> valueCaps(valueCapsLen, HIDP_VALUE_CAPS{});
-        NTSTATUS status = HidP_GetValueCaps(type, valueCaps.data(), &valueCapsLen, preparsed);
+        NTSTATUS status = HidP_GetValueCaps(type, valueCaps.data(), &valueCapsLen, m_preparsed);
         if (status == HIDP_STATUS_INVALID_PREPARSED_DATA) {
             wprintf(L"WARNING: Invalid preparsed data.\n");
             return {};
@@ -227,16 +227,16 @@ public:
     std::vector<HIDP_BUTTON_CAPS> GetButtonCaps(HIDP_REPORT_TYPE type) const {
         USHORT buttonCapsLen = 0;
         if (type == HidP_Input)
-            buttonCapsLen = caps.NumberInputButtonCaps;
+            buttonCapsLen = m_caps.NumberInputButtonCaps;
         else if (type == HidP_Output)
-            buttonCapsLen = caps.NumberOutputButtonCaps;
+            buttonCapsLen = m_caps.NumberOutputButtonCaps;
         else if (type == HidP_Feature)
-            buttonCapsLen = caps.NumberFeatureButtonCaps;
+            buttonCapsLen = m_caps.NumberFeatureButtonCaps;
         if (buttonCapsLen == 0)
             return {};
 
         std::vector<HIDP_BUTTON_CAPS> buttonCaps(buttonCapsLen, HIDP_BUTTON_CAPS{});
-        NTSTATUS status = HidP_GetButtonCaps(type, buttonCaps.data(), &buttonCapsLen, preparsed);
+        NTSTATUS status = HidP_GetButtonCaps(type, buttonCaps.data(), &buttonCapsLen, m_preparsed);
         if (status == HIDP_STATUS_INVALID_PREPARSED_DATA) {
             wprintf(L"WARNING: Invalid preparsed data.\n");
             return {};
@@ -264,7 +264,7 @@ public:
     template <class CAPS> // CAPS might be HIDP_VALUE_CAPS or HIDP_BUTTON_CAPS
     ULONG GetUsageValue(HIDP_REPORT_TYPE type, CAPS caps, const std::vector<BYTE>& report) const {
         ULONG value = 0;
-        NTSTATUS status = HidP_GetUsageValue(type, caps.UsagePage, caps.LinkCollection, caps.NotRange.Usage, &value, preparsed, (CHAR*)report.data(), (ULONG)report.size());
+        NTSTATUS status = HidP_GetUsageValue(type, caps.UsagePage, caps.LinkCollection, caps.NotRange.Usage, &value, m_preparsed, (CHAR*)report.data(), (ULONG)report.size());
         assert(status == HIDP_STATUS_SUCCESS); status;
         return value;
     }
@@ -274,16 +274,16 @@ public:
     std::vector<BYTE> CreateReportValue(HIDP_REPORT_TYPE type, CAPS caps, ULONG value) const {
         ULONG reportLen = 0;
         if (type == HidP_Input)
-            reportLen == caps.InputReportByteLength;
+            reportLen == m_caps.InputReportByteLength;
         if (type == HidP_Output)
-            reportLen == caps.OutputReportByteLength;
+            reportLen == m_caps.OutputReportByteLength;
         else if (type == HidP_Feature)
-            reportLen == caps.FeatureReportByteLength;
+            reportLen == m_caps.FeatureReportByteLength;
         else
             abort();
 
         std::vector<BYTE> report(reportLen, (BYTE)0);
-        NTSTATUS status = HidP_SetUsageValue(type, caps.UsagePage, caps.LinkCollection, caps.NotRange.Usage, &value, preparsed, (CHAR*)report.data(), (ULONG)report.size());
+        NTSTATUS status = HidP_SetUsageValue(type, caps.UsagePage, caps.LinkCollection, caps.NotRange.Usage, &value, m_preparsed, (CHAR*)report.data(), (ULONG)report.size());
         assert(status == HIDP_STATUS_SUCCESS); status;
         return report;
     }
@@ -297,7 +297,7 @@ public:
             manuf = L"<unknown>";
 
         wchar_t vid_pid[] = L"VID_0000&PID_0000";
-        swprintf_s(vid_pid, L"VID_%04X&PID_%04X", attr.VendorID, attr.ProductID);
+        swprintf_s(vid_pid, L"VID_%04X&PID_%04X", m_attr.VendorID, m_attr.ProductID);
 
         std::wstring result = L"\"" + prod + L"\"";
         result += L" by ";
@@ -310,28 +310,28 @@ public:
 
     void PrintInfo() const {
         wprintf(L"Device capabilities:\n");
-        wprintf(L"  Usage=0x%04X, UsagePage=0x%04X\n", caps.Usage, caps.UsagePage);
-        wprintf(L"  InputReportByteLength=%u, OutputReportByteLength=%u, FeatureReportByteLength=%u, NumberLinkCollectionNodes=%u\n", caps.InputReportByteLength, caps.OutputReportByteLength, caps.FeatureReportByteLength, caps.NumberLinkCollectionNodes);
-        wprintf(L"  NumberInputButtonCaps=%u, NumberInputValueCaps=%u, NumberInputDataIndices=%u\n", caps.NumberInputButtonCaps, caps.NumberInputValueCaps, caps.NumberInputDataIndices);
-        wprintf(L"  NumberOutputButtonCaps=%u, NumberOutputValueCaps=%u, NumberOutputDataIndices=%u\n", caps.NumberOutputButtonCaps, caps.NumberOutputValueCaps, caps.NumberOutputDataIndices);
-        wprintf(L"  NumberFeatureButtonCaps=%u, NumberFeatureValueCaps=%u, NumberFeatureDataIndices=%u\n", caps.NumberFeatureButtonCaps, caps.NumberFeatureValueCaps, caps.NumberFeatureDataIndices);
+        wprintf(L"  Usage=0x%04X, UsagePage=0x%04X\n", m_caps.Usage, m_caps.UsagePage);
+        wprintf(L"  InputReportByteLength=%u, OutputReportByteLength=%u, FeatureReportByteLength=%u, NumberLinkCollectionNodes=%u\n", m_caps.InputReportByteLength, m_caps.OutputReportByteLength, m_caps.FeatureReportByteLength, m_caps.NumberLinkCollectionNodes);
+        wprintf(L"  NumberInputButtonCaps=%u, NumberInputValueCaps=%u, NumberInputDataIndices=%u\n", m_caps.NumberInputButtonCaps, m_caps.NumberInputValueCaps, m_caps.NumberInputDataIndices);
+        wprintf(L"  NumberOutputButtonCaps=%u, NumberOutputValueCaps=%u, NumberOutputDataIndices=%u\n", m_caps.NumberOutputButtonCaps, m_caps.NumberOutputValueCaps, m_caps.NumberOutputDataIndices);
+        wprintf(L"  NumberFeatureButtonCaps=%u, NumberFeatureValueCaps=%u, NumberFeatureDataIndices=%u\n", m_caps.NumberFeatureButtonCaps, m_caps.NumberFeatureValueCaps, m_caps.NumberFeatureDataIndices);
     }
 
 private:
-    std::wstring devName;
-    Microsoft::WRL::Wrappers::FileHandle dev;
+    std::wstring                         m_devName;
+    Microsoft::WRL::Wrappers::FileHandle m_dev;
 public:
-    HIDD_ATTRIBUTES attr = {}; // VendorID, ProductID, VersionNumber
+    HIDD_ATTRIBUTES                      m_attr = {}; // VendorID, ProductID, VersionNumber
 private:
-    PreparsedData preparsed; // opaque ptr
+    PreparsedData                        m_preparsed; // opaque ptr
 public:
-    HIDP_CAPS caps = {}; // Usage, UsagePage, report sizes
+    HIDP_CAPS                            m_caps = {}; // Usage, UsagePage, report sizes
 
 #ifndef NDEBUG
     // fields to aid debugging
-    std::wstring Manufacturer;
-    std::wstring Product;
-    std::wstring SerialNumber;
+    std::wstring                         m_Manufacturer;
+    std::wstring                         m_Product;
+    std::wstring                         m_SerialNumber;
 #endif
 };
 
@@ -374,20 +374,20 @@ private:
             return false;
 
         if (crit.VendorID) {
-            if (crit.VendorID != dev.attr.VendorID)
+            if (crit.VendorID != dev.m_attr.VendorID)
                 return false;
         }
         if (crit.ProductID) {
-            if (crit.ProductID != dev.attr.ProductID)
+            if (crit.ProductID != dev.m_attr.ProductID)
                 return false;
         }
 
         if (crit.Usage) {
-            if (crit.Usage != dev.caps.Usage)
+            if (crit.Usage != dev.m_caps.Usage)
                 return false;
         }
         if (crit.UsagePage) {
-            if (crit.UsagePage != dev.caps.UsagePage)
+            if (crit.UsagePage != dev.m_caps.UsagePage)
                 return false;
         }
 

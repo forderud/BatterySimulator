@@ -23,9 +23,9 @@ public:
             return false;
 
         // HID power device check
-        if (caps.UsagePage != 0x84) // Power Device
+        if (m_caps.UsagePage != 0x84) // Power Device
             return false;
-        if (caps.Usage != 0x04) // UPS
+        if (m_caps.Usage != 0x04) // UPS
             return false;
 
         return true; // we have a match
