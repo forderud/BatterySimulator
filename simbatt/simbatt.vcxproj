@@ -78,6 +78,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies);battc.lib</AdditionalDependencies>
+      <AdditionalOptions>/brepro %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
@@ -108,6 +109,7 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies);battc.lib</AdditionalDependencies>
+      <AdditionalOptions>/brepro %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <DriverSign>
       <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
