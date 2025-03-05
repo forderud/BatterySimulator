@@ -51,6 +51,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/brepro %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>VERSION_MAJOR=$(MajorVer);VERSION_MINOR=$(MinorVer);VERSION_PATCH=$(PatchVer);VERSION_BUILD=$(BuildVer);%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -71,6 +72,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/brepro %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <ResourceCompile>
       <PreprocessorDefinitions>VERSION_MAJOR=$(MajorVer);VERSION_MINOR=$(MinorVer);VERSION_PATCH=$(PatchVer);VERSION_BUILD=$(BuildVer);%(PreprocessorDefinitions)</PreprocessorDefinitions>
