@@ -4,6 +4,7 @@
     <ClCompile Include="miniclass.cpp" />
     <ClCompile Include="device.cpp" />
     <ClCompile Include="wmi.cpp" />
+    <ClCompile Include="driver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="simbatt.rc" />
