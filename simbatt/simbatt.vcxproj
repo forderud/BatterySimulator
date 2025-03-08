@@ -1,9 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -30,7 +38,23 @@
     <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
     <ConfigurationType>Driver</ConfigurationType>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <TargetVersion>Windows10</TargetVersion>
+    <UseDebugLibraries>False</UseDebugLibraries>
+    <DriverTargetPlatform>Windows Driver</DriverTargetPlatform>
+    <DriverType>KMDF</DriverType>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
+    <ConfigurationType>Driver</ConfigurationType>
+  </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetVersion>Windows10</TargetVersion>
+    <UseDebugLibraries>True</UseDebugLibraries>
+    <DriverTargetPlatform>Windows Driver</DriverTargetPlatform>
+    <DriverType>KMDF</DriverType>
+    <PlatformToolset>WindowsKernelModeDriver10.0</PlatformToolset>
+    <ConfigurationType>Driver</ConfigurationType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
     <UseDebugLibraries>True</UseDebugLibraries>
     <DriverTargetPlatform>Windows Driver</DriverTargetPlatform>
@@ -42,7 +66,13 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
   </ImportGroup>
   <ItemGroup Label="WrappedTaskItems">
@@ -54,7 +84,15 @@
     <TargetName>simbatt</TargetName>
     <Inf2CatUseLocalTime>true</Inf2CatUseLocalTime>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <TargetName>simbatt</TargetName>
+    <Inf2CatUseLocalTime>true</Inf2CatUseLocalTime>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>simbatt</TargetName>
+    <Inf2CatUseLocalTime>true</Inf2CatUseLocalTime>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <TargetName>simbatt</TargetName>
     <Inf2CatUseLocalTime>true</Inf2CatUseLocalTime>
   </PropertyGroup>
@@ -89,7 +127,69 @@ copy $(OutDir)\simbatt.cer $(PackageDir)
 copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)\devgen.exe" $(PackageDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <ClCompile>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);DRIVER</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc</AdditionalIncludeDirectories>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Midl>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);DRIVER</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc</AdditionalIncludeDirectories>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);DRIVER;MAJOR=$(MajorVer);MINOR=$(MinorVer);PATCH=$(PatchVer);BUILD=$(BuildVer)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies);battc.lib</AdditionalDependencies>
+      <AdditionalOptions>/brepro %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <DriverSign>
+      <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
+    </DriverSign>
+    <PostBuildEvent>
+      <Command>copy *.bat $(PackageDir)
+copy $(OutDir)\simbatt.cer $(PackageDir)
+copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)\devgen.exe" $(PackageDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);DRIVER</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc</AdditionalIncludeDirectories>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Midl>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);DRIVER</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc</AdditionalIncludeDirectories>
+    </Midl>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);DRIVER;MAJOR=$(MajorVer);MINOR=$(MinorVer);PATCH=$(PatchVer);BUILD=$(BuildVer)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\inc</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies);battc.lib</AdditionalDependencies>
+      <AdditionalOptions>/brepro %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <DriverSign>
+      <FileDigestAlgorithm>sha256</FileDigestAlgorithm>
+    </DriverSign>
+    <PostBuildEvent>
+      <Command>copy *.bat $(PackageDir)
+copy $(OutDir)\simbatt.cer $(PackageDir)
+copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)\devgen.exe" $(PackageDir)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
       <TreatWarningAsError>true</TreatWarningAsError>
       <WarningLevel>Level4</WarningLevel>
