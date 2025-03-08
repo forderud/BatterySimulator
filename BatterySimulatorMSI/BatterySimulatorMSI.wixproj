@@ -7,10 +7,10 @@
     <BuildVer>0</BuildVer>
     <OutputName>BatterySimulator-$(MajorVer).$(MinorVer).$(PatchVer).$(BuildVer)</OutputName>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>Debug;Version=$(MajorVer).$(MinorVer).$(PatchVer).$(BuildVer)</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>Version=$(MajorVer).$(MinorVer).$(PatchVer).$(BuildVer)</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
