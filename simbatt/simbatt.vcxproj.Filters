@@ -10,7 +10,7 @@
     <ResourceCompile Include="simbatt.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="simbatt.hpp" />
+    <ClInclude Include="device.hpp" />
     <ClInclude Include="simbattdriverif.h" />
     <ClInclude Include="wmi.hpp" />
   </ItemGroup>
