@@ -2,14 +2,9 @@
 #include "device.hpp"
 
 
+NTSTATUS InitializeBattery(_In_ WDFDEVICE Device);
+
 _IRQL_requires_same_
 void InitializeBatteryState(_In_ WDFDEVICE Device);
 
-
 EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL BattIoDeviceControl;
-BCLASS_QUERY_TAG_CALLBACK QueryTag;
-BCLASS_QUERY_INFORMATION_CALLBACK QueryInformation;
-BCLASS_SET_INFORMATION_CALLBACK SetInformation;
-BCLASS_QUERY_STATUS_CALLBACK QueryStatus;
-BCLASS_SET_STATUS_NOTIFY_CALLBACK SetStatusNotify;
-BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK DisableStatusNotify;

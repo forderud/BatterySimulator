@@ -28,6 +28,33 @@ NTSTATUS SetBatteryInformation (_In_ WDFDEVICE Device, _In_ BATTERY_INFORMATION*
 
 //------------------------------------------------------------ Battery Interface
 
+
+NTSTATUS InitializeBattery(_In_ WDFDEVICE Device)
+{
+    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+
+    // Attach to the battery class driver
+    BATTERY_MINIPORT_INFO_V1_1 BattInit = {};
+    BattInit.MajorVersion = BATTERY_CLASS_MAJOR_VERSION;
+    BattInit.MinorVersion = BATTERY_CLASS_MINOR_VERSION_1;
+    BattInit.Context = DevExt;
+    BattInit.QueryTag = QueryTag;
+    BattInit.QueryInformation = QueryInformation;
+    BattInit.SetInformation = SetInformation;
+    BattInit.QueryStatus = QueryStatus;
+    BattInit.SetStatusNotify = SetStatusNotify;
+    BattInit.DisableStatusNotify = DisableStatusNotify;
+    BattInit.Pdo = WdfDeviceWdmGetPhysicalDevice(Device);
+    BattInit.DeviceName = NULL;
+    BattInit.Fdo = WdfDeviceWdmGetDeviceObject(Device);
+
+    WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
+    NTSTATUS status = BatteryClassInitializeDevice((BATTERY_MINIPORT_INFO*)&BattInit, &DevExt->ClassHandle);
+    WdfWaitLockRelease(DevExt->ClassInitLock);
+
+    return status;
+}
+
 _Use_decl_annotations_
 void InitializeBatteryState (WDFDEVICE Device)
 /*++
