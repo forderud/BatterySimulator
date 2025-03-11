@@ -1,5 +1,4 @@
 #include "wmi.hpp"
-#include "simbattdriverif.h"
 
 
 void RegisterWMI(WDFDEVICE Device)
