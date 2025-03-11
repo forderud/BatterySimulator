@@ -13,6 +13,7 @@
     <ClInclude Include="device.hpp" />
     <ClInclude Include="simbattdriverif.h" />
     <ClInclude Include="wmi.hpp" />
+    <ClInclude Include="battery.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Inf Include="simbatt.inx" />

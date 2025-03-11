@@ -4,7 +4,7 @@
     battery class driver.
 --*/
 
-#include "device.hpp"
+#include "battery.hpp"
 #include "simbattdriverif.h"
 #include "wmi.hpp"
 

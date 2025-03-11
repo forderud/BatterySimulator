@@ -87,17 +87,4 @@ struct BATT_FDO_DATA {
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(BATT_GLOBAL_DATA, GetGlobalData);
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(BATT_FDO_DATA, GetDeviceExtension);
 
-//----------------------------------------------------- Prototypes (miniclass.cpp)
-
-_IRQL_requires_same_
-void InitializeBatteryState (_In_ WDFDEVICE Device);
-
 EVT_WDF_DRIVER_DEVICE_ADD BattDriverDeviceAdd;
-
-EVT_WDF_IO_QUEUE_IO_DEVICE_CONTROL BattIoDeviceControl;
-BCLASS_QUERY_TAG_CALLBACK QueryTag;
-BCLASS_QUERY_INFORMATION_CALLBACK QueryInformation;
-BCLASS_SET_INFORMATION_CALLBACK SetInformation;
-BCLASS_QUERY_STATUS_CALLBACK QueryStatus;
-BCLASS_SET_STATUS_NOTIFY_CALLBACK SetStatusNotify;
-BCLASS_DISABLE_STATUS_NOTIFY_CALLBACK DisableStatusNotify;
