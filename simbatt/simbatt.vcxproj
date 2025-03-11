@@ -227,7 +227,7 @@ copy "C:\Program Files (x86)\Windows Kits\10\tools\$(WDKBuildFolder)\$(Platform)
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="driver.cpp" />
-    <ClCompile Include="miniclass.cpp" />
+    <ClCompile Include="battery.cpp" />
     <ClCompile Include="device.cpp" />
     <ClCompile Include="wmi.cpp" />
     <ResourceCompile Include="simbatt.rc" />
