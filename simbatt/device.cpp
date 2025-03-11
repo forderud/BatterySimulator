@@ -4,9 +4,9 @@
     battery class driver.
 --*/
 
-#include "simbatt.h"
+#include "simbatt.hpp"
 #include "simbattdriverif.h"
-#include "wmi.h"
+#include "wmi.hpp"
 
 //------------------------------------------------------------------- Prototypes
 

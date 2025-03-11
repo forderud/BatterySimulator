@@ -1,5 +1,5 @@
 #pragma once
-#include "simbatt.h"
+#include "simbatt.hpp"
 
 void RegisterWMI(WDFDEVICE Device);
 void UnregisterWMI(WDFDEVICE Device);

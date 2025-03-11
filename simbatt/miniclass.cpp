@@ -3,7 +3,7 @@
     simulated battery driver.
 --*/
 
-#include "simbatt.h"
+#include "simbatt.hpp"
 #include "simbattdriverif.h"
 
 //------------------------------------------------------------------- Prototypes

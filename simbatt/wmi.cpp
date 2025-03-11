@@ -1,4 +1,4 @@
-#include "wmi.h"
+#include "wmi.hpp"
 #include "simbattdriverif.h"
 
 

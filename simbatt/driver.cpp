@@ -1,4 +1,4 @@
-#include "simbatt.h"
+#include "simbatt.hpp"
 
 extern "C" DRIVER_INITIALIZE DriverEntry;
 
