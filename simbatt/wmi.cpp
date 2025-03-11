@@ -1,4 +1,5 @@
 #include "wmi.hpp"
+#include "battery.hpp"
 
 
 void RegisterWMI(WDFDEVICE Device)
