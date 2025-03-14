@@ -14,8 +14,6 @@ EVT_WDF_DEVICE_SELF_MANAGED_IO_INIT  BattSelfManagedIoInit;
 EVT_WDF_DEVICE_SELF_MANAGED_IO_CLEANUP  BattSelfManagedIoCleanup;
 EVT_WDF_DEVICE_QUERY_STOP BattQueryStop;
 EVT_WDF_DEVICE_PREPARE_HARDWARE BattDevicePrepareHardware;
-EVT_WDFDEVICE_WDM_IRP_PREPROCESS BattWdmIrpPreprocessDeviceControl;
-EVT_WDFDEVICE_WDM_IRP_PREPROCESS BattWdmIrpPreprocessSystemControl;
 
 //-------------------------------------------------------------------- Functions
 
@@ -254,122 +252,6 @@ Arguments:
 
     InitializeBatteryState(Device);
     NTSTATUS Status = STATUS_SUCCESS;
-    DebugExitStatus(Status);
-    return Status;
-}
-
-_Use_decl_annotations_
-NTSTATUS BattWdmIrpPreprocessDeviceControl (WDFDEVICE Device, IRP* Irp)
-/*++
-Routine Description:
-    This event is called when the framework receives IRP_MJ_DEVICE_CONTROL
-    requests from the system.
-
-    N.B. Battery stack requires the device IOCTLs be sent to it at
-         PASSIVE_LEVEL only, any IOCTL comming from user mode is therefore
-         fine, kernel components, such as filter drivers sitting on top of
-         the battery drivers should be careful to not voilate this
-         requirement.
-
-Arguments:
-    Device - Supplies a handle to a framework device object.
-
-    Irp - Supplies the IO request being processed.
---*/
-{
-    DebugEnter();
-
-    ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",
-              (KeGetCurrentIrql() == PASSIVE_LEVEL));
-
-    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
-    NTSTATUS Status = STATUS_NOT_SUPPORTED;
-
-    // Suppress 28118:Irq Exceeds Caller, see Routine Description for
-    // explaination.
-    #pragma warning(suppress: 28118)
-    WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
-
-    // N.B. An attempt to queue the IRP with the port driver should happen
-    //      before WDF assumes ownership of this IRP, i.e. before
-    //      WdfDeviceWdmDispatchPreprocessedIrp is called, this is so that the
-    //      Battery port driver, which is a WDM driver, may complete the IRP if
-    //      it does endup procesing it.
-    if (DevExt->ClassHandle != NULL) {
-        // Suppress 28118:Irq Exceeds Caller, see above N.B.
-        #pragma warning(suppress: 28118)
-        Status = BatteryClassIoctl(DevExt->ClassHandle, Irp);
-    }
-
-    WdfWaitLockRelease(DevExt->ClassInitLock);
-    if (Status == STATUS_NOT_SUPPORTED) {
-        IoSkipCurrentIrpStackLocation(Irp);
-        Status = WdfDeviceWdmDispatchPreprocessedIrp(Device, Irp);
-    }
-
-    DebugExitStatus(Status);
-    return Status;
-}
-
-_Use_decl_annotations_
-NTSTATUS BattWdmIrpPreprocessSystemControl (WDFDEVICE Device, IRP* Irp)
-/*++
-Routine Description:
-    This event is called when the framework receives IRP_MJ_SYSTEM_CONTROL
-    requests from the system.
-
-    N.B. Battery stack requires the device IOCTLs be sent to it at
-         PASSIVE_LEVEL only, any IOCTL comming from user mode is therefore
-         fine, kernel components, such as filter drivers sitting on top of
-         the battery drivers should be careful to not voilate this
-         requirement.
-
-Arguments:
-    Device - Supplies a handle to a framework device object.
-
-    Irp - Supplies the IO request being processed.
---*/
-{
-    DebugEnter();
-    ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",(KeGetCurrentIrql() == PASSIVE_LEVEL));
-
-    NTSTATUS Status = STATUS_NOT_IMPLEMENTED;
-    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
-    SYSCTL_IRP_DISPOSITION Disposition = IrpForward;
-
-    // Acquire the class initialization lock and attempt to queue the IRP with
-    // the class driver.
-    //
-    // Suppress 28118:Irq Exceeds Caller, see Routine Description for
-    // explaination.
-    #pragma warning(suppress: 28118)
-    WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
-    if (DevExt->ClassHandle != NULL) {
-        DEVICE_OBJECT* DeviceObject = WdfDeviceWdmGetDeviceObject(Device);
-        Status = BatteryClassSystemControl(DevExt->ClassHandle,
-                                           &DevExt->WmiLibContext,
-                                           DeviceObject,
-                                           Irp,
-                                           &Disposition);
-    }
-
-    WdfWaitLockRelease(DevExt->ClassInitLock);
-    switch (Disposition) {
-    case IrpProcessed:
-        break;
-
-    case IrpNotCompleted:
-        IoCompleteRequest(Irp, IO_NO_INCREMENT);
-        break;
-
-    case IrpForward:
-    case IrpNotWmi:
-    default:
-        IoSkipCurrentIrpStackLocation(Irp);
-        Status = WdfDeviceWdmDispatchPreprocessedIrp(Device, Irp);
-        break;
-    }
-
     DebugExitStatus(Status);
     return Status;
 }
