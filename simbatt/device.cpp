@@ -50,27 +50,25 @@ Arguments:
     // Register WDM preprocess callbacks for IRP_MJ_DEVICE_CONTROL and
     // IRP_MJ_SYSTEM_CONTROL. The battery class driver needs to handle these IO
     // requests directly.
-    NTSTATUS Status = WdfDeviceInitAssignWdmIrpPreprocessCallback(
+    NTSTATUS status = WdfDeviceInitAssignWdmIrpPreprocessCallback(
                  DeviceInit,
                  BattWdmIrpPreprocessDeviceControl,
                  IRP_MJ_DEVICE_CONTROL,
                  NULL,
                  0);
-
-    if (!NT_SUCCESS(Status)) {
-         DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDeviceInitAssignWdmIrpPreprocessCallback(IRP_MJ_DEVICE_CONTROL) Failed. 0x%x"), Status);
+    if (!NT_SUCCESS(status)) {
+         DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDeviceInitAssignWdmIrpPreprocessCallback(IRP_MJ_DEVICE_CONTROL) Failed. 0x%x"), status);
          goto DriverDeviceAddEnd;
     }
 
-    Status = WdfDeviceInitAssignWdmIrpPreprocessCallback(
+    status = WdfDeviceInitAssignWdmIrpPreprocessCallback(
                  DeviceInit,
                  BattWdmIrpPreprocessSystemControl,
                  IRP_MJ_SYSTEM_CONTROL,
                  NULL,
                  0);
-
-    if (!NT_SUCCESS(Status)) {
-         DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDeviceInitAssignWdmIrpPreprocessCallback(IRP_MJ_SYSTEM_CONTROL) Failed. 0x%x"), Status);
+    if (!NT_SUCCESS(status)) {
+         DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDeviceInitAssignWdmIrpPreprocessCallback(IRP_MJ_SYSTEM_CONTROL) Failed. 0x%x"), status);
          goto DriverDeviceAddEnd;
     }
 
@@ -83,9 +81,9 @@ Arguments:
     // a WDM device object, attach to the lower stack, and set the
     // appropriate flags and attributes.
     WDFDEVICE DeviceHandle = 0;
-    Status = WdfDeviceCreate(&DeviceInit, &DeviceAttributes, &DeviceHandle);
-    if (!NT_SUCCESS(Status)) {
-        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDeviceCreate() Failed. 0x%x"), Status);
+    status = WdfDeviceCreate(&DeviceInit, &DeviceAttributes, &DeviceHandle);
+    if (!NT_SUCCESS(status)) {
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfDeviceCreate() Failed. 0x%x"), status);
         goto DriverDeviceAddEnd;
     }
 
@@ -100,23 +98,21 @@ Arguments:
 
     QueueConfig.EvtIoDeviceControl = BattIoDeviceControl;
     WDFQUEUE Queue;
-    Status = WdfIoQueueCreate(DeviceHandle,
+    status = WdfIoQueueCreate(DeviceHandle,
                               &QueueConfig,
                               WDF_NO_OBJECT_ATTRIBUTES,
                               &Queue);
-
-    if (!NT_SUCCESS(Status)) {
-        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfIoQueueCreate() Failed. 0x%x"), Status);
+    if (!NT_SUCCESS(status)) {
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfIoQueueCreate() Failed. 0x%x"), status);
         goto DriverDeviceAddEnd;
     }
 
     // Create a device interface for this device to advertise the simulated
     // battery IO interface.
-    Status = WdfDeviceCreateDeviceInterface(DeviceHandle,
+    status = WdfDeviceCreateDeviceInterface(DeviceHandle,
                                             &SIMBATT_DEVINTERFACE_GUID,
                                             NULL);
-
-    if (!NT_SUCCESS(Status)) {
+    if (!NT_SUCCESS(status)) {
         goto DriverDeviceAddEnd;
     }
 
@@ -129,24 +125,24 @@ Arguments:
     WDF_OBJECT_ATTRIBUTES_INIT(&LockAttributes);
     LockAttributes.ParentObject = DeviceHandle;
 
-    Status = WdfWaitLockCreate(&LockAttributes, &DevExt->ClassInitLock);
-    if (!NT_SUCCESS(Status)) {
-        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfWaitLockCreate(ClassInitLock) Failed. Status 0x%x"), Status);
+    status = WdfWaitLockCreate(&LockAttributes, &DevExt->ClassInitLock);
+    if (!NT_SUCCESS(status)) {
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfWaitLockCreate(ClassInitLock) Failed. Status 0x%x"), status);
         goto DriverDeviceAddEnd;
     }
 
     WDF_OBJECT_ATTRIBUTES_INIT(&LockAttributes);
     LockAttributes.ParentObject = DeviceHandle;
 
-    Status = WdfWaitLockCreate(&LockAttributes, &DevExt->StateLock);
-    if (!NT_SUCCESS(Status)) {
-        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfWaitLockCreate(StateLock) Failed. Status 0x%x"), Status);
+    status = WdfWaitLockCreate(&LockAttributes, &DevExt->StateLock);
+    if (!NT_SUCCESS(status)) {
+        DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfWaitLockCreate(StateLock) Failed. Status 0x%x"), status);
         goto DriverDeviceAddEnd;
     }
 
 DriverDeviceAddEnd:
-    DebugExitStatus(Status);
-    return Status;
+    DebugExitStatus(status);
+    return status;
 }
 
 _Use_decl_annotations_
