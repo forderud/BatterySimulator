@@ -121,7 +121,7 @@ Arguments:
     }
 
     // Finish initializing the device context area.
-    DEVICE_CONTEXT* DevExt = GetDeviceExtension(DeviceHandle);
+    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(DeviceHandle);
     DevExt->BatteryTag = BATTERY_TAG_INVALID;
     DevExt->ClassHandle = NULL;
     WDF_OBJECT_ATTRIBUTES LockAttributes;
@@ -288,7 +288,7 @@ Arguments:
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",
               (KeGetCurrentIrql() == PASSIVE_LEVEL));
 
-    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
     NTSTATUS Status = STATUS_NOT_SUPPORTED;
 
     // Suppress 28118:Irq Exceeds Caller, see Routine Description for
@@ -340,7 +340,7 @@ Arguments:
     ASSERTMSG("Must be called at IRQL = PASSIVE_LEVEL",(KeGetCurrentIrql() == PASSIVE_LEVEL));
 
     NTSTATUS Status = STATUS_NOT_IMPLEMENTED;
-    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
     SYSCTL_IRP_DISPOSITION Disposition = IrpForward;
 
     // Acquire the class initialization lock and attempt to queue the IRP with

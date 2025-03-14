@@ -32,7 +32,7 @@ struct DEVICE_CONTEXT {
     BATT_STATE                      State;
 };
 
-WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(DEVICE_CONTEXT, GetDeviceExtension);
+WDF_DECLARE_CONTEXT_TYPE(DEVICE_CONTEXT);
 
 
 NTSTATUS InitializeBatteryClass(_In_ WDFDEVICE Device);

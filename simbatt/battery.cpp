@@ -31,7 +31,7 @@ NTSTATUS SetBatteryInformation (_In_ WDFDEVICE Device, _In_ BATTERY_INFORMATION*
 
 NTSTATUS InitializeBatteryClass(_In_ WDFDEVICE Device)
 {
-    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
 
     // Attach to the battery class driver
     BATTERY_MINIPORT_INFO_V1_1 BattInit = {};
@@ -57,7 +57,7 @@ NTSTATUS InitializeBatteryClass(_In_ WDFDEVICE Device)
 
 NTSTATUS UnloadBatteryClass(_In_ WDFDEVICE Device)
 {
-    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
 
     NTSTATUS status = STATUS_SUCCESS;
@@ -85,7 +85,7 @@ Arguments:
 {
     DebugEnter();
 
-    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
 
     // Get this battery's state - use defaults.
     {
@@ -601,7 +601,7 @@ Arguments:
 --*/
 {
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
-    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
     ULONG ValidPowerState = BATTERY_CHARGING |
                       BATTERY_DISCHARGING |
                       BATTERY_CRITICAL |
@@ -636,7 +636,7 @@ Arguments:
 --*/
 {
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
-    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
     ULONG ValidCapabilities = BATTERY_CAPACITY_RELATIVE |
                         BATTERY_IS_SHORT_TERM |
                         BATTERY_SYSTEM_BATTERY;

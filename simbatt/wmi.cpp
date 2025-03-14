@@ -4,7 +4,7 @@
 
 void RegisterWMI(WDFDEVICE Device)
 {
-    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
 
     // Register the device as a WMI data provider. This is done using WDM
     // methods because the battery class driver uses WDM methods to complete
@@ -155,7 +155,7 @@ NTSTATUS QueryWmiDataBlock(
     }
 
     WDFDEVICE Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
-    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(Device);
 
     // The class driver guarantees that all outstanding IO requests will be
     // completed before it finishes unregistering. As a result, the class
