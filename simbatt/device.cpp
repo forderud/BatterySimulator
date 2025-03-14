@@ -164,7 +164,7 @@ Arguments:
 --*/
 {
     DebugEnter();
-    NTSTATUS Status = InitializeBattery(Device);
+    NTSTATUS Status = InitializeBatteryClass(Device);
     if (!NT_SUCCESS(Status)) {
         goto DevicePrepareHardwareEnd;
     }
@@ -194,17 +194,9 @@ Return Value:
 
     UnregisterWMI(Device);
 
-    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
-    WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
+    NTSTATUS status = UnloadBatteryClass(Device);
 
-    NTSTATUS Status = STATUS_SUCCESS;
-    if (DevExt->ClassHandle != NULL) {
-        Status = BatteryClassUnload(DevExt->ClassHandle);
-        DevExt->ClassHandle = NULL;
-    }
-
-    WdfWaitLockRelease(DevExt->ClassInitLock);
-    DebugExitStatus(Status);
+    DebugExitStatus(status);
 }
 
 _Use_decl_annotations_

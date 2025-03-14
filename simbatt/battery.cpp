@@ -29,7 +29,7 @@ NTSTATUS SetBatteryInformation (_In_ WDFDEVICE Device, _In_ BATTERY_INFORMATION*
 //------------------------------------------------------------ Battery Interface
 
 
-NTSTATUS InitializeBattery(_In_ WDFDEVICE Device)
+NTSTATUS InitializeBatteryClass(_In_ WDFDEVICE Device)
 {
     BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
 
@@ -52,6 +52,21 @@ NTSTATUS InitializeBattery(_In_ WDFDEVICE Device)
     NTSTATUS status = BatteryClassInitializeDevice((BATTERY_MINIPORT_INFO*)&BattInit, &DevExt->ClassHandle);
     WdfWaitLockRelease(DevExt->ClassInitLock);
 
+    return status;
+}
+
+NTSTATUS UnloadBatteryClass(_In_ WDFDEVICE Device)
+{
+    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+    WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
+
+    NTSTATUS status = STATUS_SUCCESS;
+    if (DevExt->ClassHandle != NULL) {
+        status = BatteryClassUnload(DevExt->ClassHandle);
+        DevExt->ClassHandle = NULL;
+    }
+
+    WdfWaitLockRelease(DevExt->ClassInitLock);
     return status;
 }
 

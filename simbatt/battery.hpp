@@ -35,7 +35,8 @@ struct BATT_FDO_DATA {
 WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(BATT_FDO_DATA, GetDeviceExtension);
 
 
-NTSTATUS InitializeBattery(_In_ WDFDEVICE Device);
+NTSTATUS InitializeBatteryClass(_In_ WDFDEVICE Device);
+NTSTATUS UnloadBatteryClass(_In_ WDFDEVICE Device);
 
 _IRQL_requires_same_
 void InitializeBatteryState(_In_ WDFDEVICE Device);
