@@ -9,7 +9,7 @@
 //------------------------------------------------------------------- Prototypes
 
 _IRQL_requires_same_
-void UpdateTag (_Inout_ BATT_FDO_DATA* DevExt);
+void UpdateTag (_Inout_ DEVICE_CONTEXT* DevExt);
 
 BCLASS_QUERY_TAG_CALLBACK QueryTag;
 BCLASS_QUERY_INFORMATION_CALLBACK QueryInformation;
@@ -31,7 +31,7 @@ NTSTATUS SetBatteryInformation (_In_ WDFDEVICE Device, _In_ BATTERY_INFORMATION*
 
 NTSTATUS InitializeBatteryClass(_In_ WDFDEVICE Device)
 {
-    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
 
     // Attach to the battery class driver
     BATTERY_MINIPORT_INFO_V1_1 BattInit = {};
@@ -57,7 +57,7 @@ NTSTATUS InitializeBatteryClass(_In_ WDFDEVICE Device)
 
 NTSTATUS UnloadBatteryClass(_In_ WDFDEVICE Device)
 {
-    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
     WdfWaitLockAcquire(DevExt->ClassInitLock, NULL);
 
     NTSTATUS status = STATUS_SUCCESS;
@@ -85,7 +85,7 @@ Arguments:
 {
     DebugEnter();
 
-    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
 
     // Get this battery's state - use defaults.
     {
@@ -138,7 +138,7 @@ Arguments:
 }
 
 _Use_decl_annotations_
-void UpdateTag (BATT_FDO_DATA* DevExt)
+void UpdateTag (DEVICE_CONTEXT* DevExt)
 /*++
 Routine Description:
     This routine is called when static battery properties have changed to
@@ -166,7 +166,7 @@ Arguments:
 
     DebugEnter();
 
-    BATT_FDO_DATA* DevExt = (BATT_FDO_DATA*)Context;
+    DEVICE_CONTEXT* DevExt = (DEVICE_CONTEXT*)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     *BatteryTag = DevExt->BatteryTag;
     WdfWaitLockRelease(DevExt->StateLock);
@@ -225,7 +225,7 @@ Return Value:
 
     DebugEnter();
 
-    BATT_FDO_DATA* DevExt = (BATT_FDO_DATA*)Context;
+    DEVICE_CONTEXT* DevExt = (DEVICE_CONTEXT*)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     if (BatteryTag != DevExt->BatteryTag) {
         Status = STATUS_NO_SUCH_DEVICE;
@@ -385,7 +385,7 @@ Return Value:
 
     DebugEnter();
 
-    BATT_FDO_DATA* DevExt = (BATT_FDO_DATA*)Context;
+    DEVICE_CONTEXT* DevExt = (DEVICE_CONTEXT*)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     if (BatteryTag != DevExt->BatteryTag) {
         Status = STATUS_NO_SUCH_DEVICE;
@@ -432,7 +432,7 @@ Return Value:
 
     DebugEnter();
 
-    BATT_FDO_DATA* DevExt = (BATT_FDO_DATA*)Context;
+    DEVICE_CONTEXT* DevExt = (DEVICE_CONTEXT*)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     if (BatteryTag != DevExt->BatteryTag) {
         Status = STATUS_NO_SUCH_DEVICE;
@@ -498,7 +498,7 @@ Arguments:
 
     DebugEnter();
 
-    BATT_FDO_DATA* DevExt = (BATT_FDO_DATA*)Context;
+    DEVICE_CONTEXT* DevExt = (DEVICE_CONTEXT*)Context;
     WdfWaitLockAcquire(DevExt->StateLock, NULL);
     if (BatteryTag != DevExt->BatteryTag) {
         Status = STATUS_NO_SUCH_DEVICE;
@@ -601,7 +601,7 @@ Arguments:
 --*/
 {
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
-    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
     ULONG ValidPowerState = BATTERY_CHARGING |
                       BATTERY_DISCHARGING |
                       BATTERY_CRITICAL |
@@ -636,7 +636,7 @@ Arguments:
 --*/
 {
     NTSTATUS Status = STATUS_INVALID_PARAMETER;
-    BATT_FDO_DATA* DevExt = GetDeviceExtension(Device);
+    DEVICE_CONTEXT* DevExt = GetDeviceExtension(Device);
     ULONG ValidCapabilities = BATTERY_CAPACITY_RELATIVE |
                         BATTERY_IS_SHORT_TERM |
                         BATTERY_SYSTEM_BATTERY;

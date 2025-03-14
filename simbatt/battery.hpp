@@ -20,19 +20,19 @@ struct BATT_STATE {
     WCHAR                           UniqueId[MAX_BATTERY_STRING_SIZE];
 };
 
-struct BATT_FDO_DATA {
+struct DEVICE_CONTEXT {
     // Battery class registration
-    void* ClassHandle;
+    void*                           ClassHandle;
     WDFWAITLOCK                     ClassInitLock;
     WMILIB_CONTEXT                  WmiLibContext;
 
     // Battery state
     WDFWAITLOCK                     StateLock;
     ULONG                           BatteryTag;
-    BATT_STATE                   State;
+    BATT_STATE                      State;
 };
 
-WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(BATT_FDO_DATA, GetDeviceExtension);
+WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(DEVICE_CONTEXT, GetDeviceExtension);
 
 
 NTSTATUS InitializeBatteryClass(_In_ WDFDEVICE Device);
