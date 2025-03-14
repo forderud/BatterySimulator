@@ -48,11 +48,11 @@ inline void DebugPrint(ULONG Level, PCSTR Format, ...) {
 
 //------------------------------------------------------------------ Definitions
 
-struct BATT_GLOBAL_DATA {
+struct DRIVER_CONTEXT {
     UNICODE_STRING                  RegistryPath;
 };
 
-WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(BATT_GLOBAL_DATA, GetGlobalData);
+WDF_DECLARE_CONTEXT_TYPE_WITH_NAME(DRIVER_CONTEXT, GetGlobalData);
 
 
 EVT_WDF_DRIVER_DEVICE_ADD BattDriverDeviceAdd;

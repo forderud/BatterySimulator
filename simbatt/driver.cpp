@@ -34,7 +34,7 @@ Parameters Description:
     //      how the callbacks are required to be synchronized in your driver.
     WDF_OBJECT_ATTRIBUTES DriverAttributes;
     WDF_OBJECT_ATTRIBUTES_INIT(&DriverAttributes);
-    WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DriverAttributes, BATT_GLOBAL_DATA);
+    WDF_OBJECT_ATTRIBUTES_SET_CONTEXT_TYPE(&DriverAttributes, DRIVER_CONTEXT);
 
     DriverAttributes.ExecutionLevel = WdfExecutionLevelPassive;
 
@@ -45,7 +45,7 @@ Parameters Description:
         goto DriverEntryEnd;
     }
 
-    BATT_GLOBAL_DATA* GlobalData = GetGlobalData(WdfGetDriver());
+    DRIVER_CONTEXT* GlobalData = GetGlobalData(WdfGetDriver());
     GlobalData->RegistryPath.MaximumLength = RegistryPath->Length + sizeof(UNICODE_NULL);
     GlobalData->RegistryPath.Length = RegistryPath->Length;
     GlobalData->RegistryPath.Buffer = WdfDriverGetRegistryPath(WdfGetDriver());

@@ -89,7 +89,7 @@ NTSTATUS QueryWmiRegInfo(
     DebugEnter();
 
     WDFDEVICE Device = WdfWdmDeviceGetWdfDeviceHandle(DeviceObject);
-    BATT_GLOBAL_DATA* GlobalData = GetGlobalData(WdfGetDriver());
+    DRIVER_CONTEXT* GlobalData = GetGlobalData(WdfGetDriver());
     *RegFlags = WMIREG_FLAG_INSTANCE_PDO;
     *RegistryPath = &GlobalData->RegistryPath;
     *Pdo = WdfDeviceWdmGetPhysicalDevice(Device);
