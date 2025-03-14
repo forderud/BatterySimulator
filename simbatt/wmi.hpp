@@ -1,5 +1,5 @@
 #pragma once
-#include "device.hpp"
+#include "battery.hpp"
 
 void RegisterWMI(WDFDEVICE Device);
 void UnregisterWMI(WDFDEVICE Device);

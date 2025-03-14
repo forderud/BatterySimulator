@@ -1,5 +1,6 @@
 #pragma once
 #include "device.hpp"
+#include <wmilib.h>
 extern "C" {
 #include <batclass.h>
 }

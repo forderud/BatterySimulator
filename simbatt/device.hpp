@@ -2,7 +2,6 @@
 #include <wdm.h>
 #include <wdf.h>
 #include <wmistr.h>
-#include <wmilib.h>
 #include <ntstrsafe.h>
 
 //------------------------------------------------------------- Debug Facilities
