@@ -45,7 +45,7 @@ Parameters Description:
         goto DriverEntryEnd;
     }
 
-    DRIVER_CONTEXT* GlobalData = GetGlobalData(WdfGetDriver());
+    DRIVER_CONTEXT* GlobalData = WdfObjectGet_DRIVER_CONTEXT(WdfGetDriver());
     GlobalData->RegistryPath.MaximumLength = RegistryPath->Length + sizeof(UNICODE_NULL);
     GlobalData->RegistryPath.Length = RegistryPath->Length;
     GlobalData->RegistryPath.Buffer = WdfDriverGetRegistryPath(WdfGetDriver());
