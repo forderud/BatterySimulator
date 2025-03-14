@@ -1,5 +1,8 @@
 #pragma once
 #include "device.hpp"
+extern "C" {
+#include <batclass.h>
+}
 
 
 struct BATT_STATE {
