@@ -124,23 +124,21 @@ Arguments:
     DEVICE_CONTEXT* DevExt = WdfObjectGet_DEVICE_CONTEXT(DeviceHandle);
     DevExt->BatteryTag = BATTERY_TAG_INVALID;
     DevExt->ClassHandle = NULL;
+
     WDF_OBJECT_ATTRIBUTES LockAttributes;
     WDF_OBJECT_ATTRIBUTES_INIT(&LockAttributes);
     LockAttributes.ParentObject = DeviceHandle;
-    Status = WdfWaitLockCreate(&LockAttributes,
-                               &DevExt->ClassInitLock);
 
+    Status = WdfWaitLockCreate(&LockAttributes, &DevExt->ClassInitLock);
     if (!NT_SUCCESS(Status)) {
         DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfWaitLockCreate(ClassInitLock) Failed. Status 0x%x"), Status);
-
         goto DriverDeviceAddEnd;
     }
 
     WDF_OBJECT_ATTRIBUTES_INIT(&LockAttributes);
     LockAttributes.ParentObject = DeviceHandle;
-    Status = WdfWaitLockCreate(&LockAttributes,
-                               &DevExt->StateLock);
 
+    Status = WdfWaitLockCreate(&LockAttributes, &DevExt->StateLock);
     if (!NT_SUCCESS(Status)) {
         DebugPrint(DPFLTR_ERROR_LEVEL, DML_ERR("WdfWaitLockCreate(StateLock) Failed. Status 0x%x"), Status);
         goto DriverDeviceAddEnd;
