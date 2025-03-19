@@ -184,7 +184,7 @@ int AccessBattery(const std::wstring& devInstPath, bool verbose, unsigned int ne
 
 #if 0
     // update battery information
-    info.Set(battery.Get());
+    info.SimbattSet(battery.Get());
 #endif
 
     // update battery charge level
