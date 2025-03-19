@@ -113,7 +113,7 @@ Arguments:
         DevExt->State.BatteryStatus.PowerState = BATTERY_POWER_ON_LINE;
         DevExt->State.BatteryStatus.Capacity = 5*1000; // [mWh]
         DevExt->State.BatteryStatus.Voltage = 15000; // [mV]
-        DevExt->State.BatteryStatus.Rate = 0;
+        DevExt->State.BatteryStatus.Rate = BATTERY_UNKNOWN_RATE; // >0 when charging and <0 when discharging [mW]
 
         //DevExt->State.GranularityCount = 0;
         //for (unsigned int i = 0; i < DevExt->State.GranularityCount; ++i) {
