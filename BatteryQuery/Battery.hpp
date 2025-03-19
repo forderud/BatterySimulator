@@ -120,19 +120,26 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
         }
     }
 
-    /** SimBatt-specific setter. */
-    void Set(HANDLE device) {
-#if 0
+    /** SimBatt-specific setter that allows changing all fields. */
+    void SimbattSet(HANDLE device) {
+        BOOL ok = DeviceIoControl(device, IOCTL_SIMBATT_SET_INFORMATION, this, sizeof(*this), nullptr, 0, nullptr, nullptr);
+        if (!ok) {
+            //DWORD err = GetLastError();
+            throw std::runtime_error("IOCTL_SIMBATT_SET_INFORMATION error");
+        }
+    }
+
+    /** Standard setter that only allow changing some fields. */
+    void Set(HANDLE device, BATTERY_SET_INFORMATION_LEVEL il) {
+        assert((il == BatteryCharge) || (il == BatteryCriticalBias) || (il == BatteryDischarge));
         // code for force-(dis)charge
-        BATTERY_SET_INFORMATION  bsi = {};
+        BATTERY_SET_INFORMATION bsi = {};
         bsi.BatteryTag = GetBatteryTag(device);
-        bsi.InformationLevel = BatteryCharge; // or BatteryDischarge;
-        //bsi.Buffer = ;
+        bsi.InformationLevel = il;
+        bsi.Buffer[0] = 0; // TODO: add buffer data if/when needed
+
         DWORD bytes_returned = 0;
         BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_SET_INFORMATION, &bsi, sizeof(bsi), nullptr, 0, &bytes_returned, nullptr);
-#else
-        BOOL ok = DeviceIoControl(device, IOCTL_SIMBATT_SET_INFORMATION, this, sizeof(*this), nullptr, 0, nullptr, nullptr);
-#endif
         if (!ok) {
             //DWORD err = GetLastError();
             throw std::runtime_error("IOCTL_SIMBATT_SET_INFORMATION error");
