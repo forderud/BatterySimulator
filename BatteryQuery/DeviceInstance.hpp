@@ -38,6 +38,11 @@ public:
         return std::get<std::wstring>(res);
     }
 
+    std::wstring GetDriverProvider() const {
+        auto res = GetProperty(DEVPKEY_Device_DriverProvider);
+        return std::get<std::wstring>(res);
+    }
+
     std::wstring GetDriverVersion() const {
         auto res = GetProperty(DEVPKEY_Device_DriverVersion);
         return std::get<std::wstring>(res);

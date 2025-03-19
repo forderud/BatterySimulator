@@ -317,6 +317,8 @@ int wmain(int argc, wchar_t* argv[]) {
 
         auto desc = dev.GetDriverDesc();
         wprintf(L"  Driver description: %s\n", desc.c_str());
+        auto prov = dev.GetDriverProvider();
+        wprintf(L"  Driver provider: %s\n", prov.c_str());
         auto ver = dev.GetDriverVersion();
         wprintf(L"  Driver version: %s\n", ver.c_str());
         auto time = dev.GetDriverDate();
