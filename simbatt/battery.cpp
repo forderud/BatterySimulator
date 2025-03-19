@@ -123,7 +123,7 @@ Arguments:
 
         DevExt->State.EstimatedTime = BATTERY_UNKNOWN_TIME; // battery run time, in seconds
 
-        DevExt->State.Temperature = 2981; // 25 degree Celsius [10ths of a degree Kelvin]
+        DevExt->State.Temperature = 999*10; // [10ths of a degree Kelvin]
 
         RtlStringCchCopyW(DevExt->State.DeviceName, MAX_BATTERY_STRING_SIZE, L"SimulatedBattery");
 
