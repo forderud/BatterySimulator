@@ -33,6 +33,11 @@ public:
     ~DeviceInstance() {
     }
 
+    std::wstring GetDriverDesc() const {
+        auto res = GetProperty(DEVPKEY_Device_DriverDesc);
+        return std::get<std::wstring>(res);
+    }
+
     std::wstring GetDriverVersion() const {
         auto res = GetProperty(DEVPKEY_Device_DriverVersion);
         return std::get<std::wstring>(res);
