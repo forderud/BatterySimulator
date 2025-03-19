@@ -316,11 +316,11 @@ int wmain(int argc, wchar_t* argv[]) {
         DeviceInstance dev(instanceId);
 
         auto desc = dev.GetDriverDesc();
-        wprintf(L"  Driver description: %s.\n", desc.c_str());
+        wprintf(L"  Driver description: %s\n", desc.c_str());
         auto ver = dev.GetDriverVersion();
-        wprintf(L"  Driver version: %s.\n", ver.c_str());
+        wprintf(L"  Driver version: %s\n", ver.c_str());
         auto time = dev.GetDriverDate();
-        wprintf(L"  Driver date: %s.\n", DeviceInstance::FileTimeToDateStr(time).c_str());
+        wprintf(L"  Driver date: %s\n", DeviceInstance::FileTimeToDateStr(time).c_str());
 
         pdoPath = dev.GetPDOPath();
     } catch (std::exception& e) {
