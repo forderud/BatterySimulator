@@ -110,10 +110,10 @@ Arguments:
         DevExt->State.BatteryInfo.CriticalBias = 0;
         DevExt->State.BatteryInfo.CycleCount = 100;
 
-        DevExt->State.BatteryStatus.PowerState = BATTERY_POWER_ON_LINE;
+        DevExt->State.BatteryStatus.PowerState = BATTERY_DISCHARGING | BATTERY_CRITICAL;
         DevExt->State.BatteryStatus.Capacity = 5*1000; // [mWh]
         DevExt->State.BatteryStatus.Voltage = 15000; // [mV]
-        DevExt->State.BatteryStatus.Rate = BATTERY_UNKNOWN_RATE; // >0 when charging and <0 when discharging [mW]
+        DevExt->State.BatteryStatus.Rate = -20*1000; // >0 when charging and <0 when discharging [mW]
 
         //DevExt->State.GranularityCount = 0;
         //for (unsigned int i = 0; i < DevExt->State.GranularityCount; ++i) {
