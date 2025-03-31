@@ -98,7 +98,7 @@ Arguments:
         DevExt->State.ManufactureDate.Year = 2024;
 
         DevExt->State.BatteryInfo.Capabilities = BATTERY_SYSTEM_BATTERY;
-        DevExt->State.BatteryInfo.Technology = 1;
+        DevExt->State.BatteryInfo.Technology = 1; // rechargeable
         DevExt->State.BatteryInfo.Chemistry[0] = 'F';
         DevExt->State.BatteryInfo.Chemistry[1] = 'a';
         DevExt->State.BatteryInfo.Chemistry[2] = 'k';
