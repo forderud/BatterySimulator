@@ -269,6 +269,16 @@ public:
         return value;
     }
 
+    /** Get list of all usages set to ON. */
+    std::vector<USAGE> GetUsages(HIDP_REPORT_TYPE type, HIDP_BUTTON_CAPS caps, const std::vector<BYTE>& report) const {
+        ULONG usage_count = HidP_MaxUsageListLength(type, caps.UsagePage, m_preparsed);
+        std::vector<USAGE> usages(usage_count, 0);
+        NTSTATUS res = HidP_GetUsages(type, caps.UsagePage, caps.LinkCollection, usages.data(), &usage_count, m_preparsed, (CHAR*)report.data(), (ULONG)report.size());
+        assert(res == HIDP_STATUS_SUCCESS);
+        usages.resize(usage_count);
+        return usages;
+    }
+
     /** Create a HID report with a given usage value. */
     template <class CAPS> // CAPS might be HIDP_VALUE_CAPS or HIDP_BUTTON_CAPS
     std::vector<BYTE> CreateReportValue(HIDP_REPORT_TYPE type, CAPS caps, ULONG value) const {
