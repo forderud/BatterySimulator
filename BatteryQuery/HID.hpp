@@ -131,6 +131,24 @@ public:
         return buffer;
     }
 
+    /** Get the next INPUT report as byte array with ReportID prefix.
+        WARNING: Will fail with error 1 (Incorrect function) if another driver or application is already continuously obtaining HID input reports. */
+    std::vector<BYTE> Read () const {
+        std::vector<BYTE> report(m_caps.InputReportByteLength, (BYTE)0);
+
+        DWORD bytesRead = 0;
+        BOOL ok = ReadFile(m_dev.Get(), report.data(), (DWORD)report.size(), &bytesRead, nullptr);
+        if (!ok) {
+            DWORD err = GetLastError();
+            wprintf(L"ERROR: ReadFile failure (err %u).\n", err);
+            assert(ok);
+            return {};
+        }
+
+        report.resize(bytesRead);
+        return report;
+    }
+
     /** Get typed FEATURE or INPUT report with ReportID prefix. */
     template <class REPORT>
     REPORT GetReport(HIDP_REPORT_TYPE type, BYTE reportId = 0) const {
