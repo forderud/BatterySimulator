@@ -139,7 +139,7 @@ int WINAPI wmain () {
     PrintPowerStatus();
 
     // run message loop
-    MSG msg = {};
+    MSG msg{};
     while (BOOL ret = GetMessageW(&msg, NULL, 0, 0) > 0) {
         if (ret == -1) // error occured
             break;
