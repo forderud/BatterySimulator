@@ -140,7 +140,8 @@ int WINAPI wmain () {
 
     // run message loop
     MSG msg{};
-    while (BOOL ret = GetMessageW(&msg, NULL, 0, 0) > 0) {
+    BOOL ret = 0;
+    while ((ret = GetMessageW(&msg, NULL, 0, 0)) != 0) {
         if (ret == -1) // error occured
             break;
 
