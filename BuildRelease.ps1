@@ -19,7 +19,7 @@ $MinorVer = $ver_tokens[1]
 $PatchVer = $ver_tokens[2]
 $BuildVer = $ver_tokens[3]
 
-### Build solution in Release for x64 and ARM64
+# Build solution in Release for x64 and ARM64
 msbuild /nologo /verbosity:minimal /property:Configuration="Release"`;Platform="x64"`;MajorVer=$MajorVer`;MinorVer=$MinorVer`;PatchVer=$PatchVer`;BuildVer=$BuildVer BatterySimulator.sln
 if ($LastExitCode -ne 0) {
     throw "msbuild failure"
