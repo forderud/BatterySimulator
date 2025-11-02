@@ -151,3 +151,6 @@ Windows applications receive [`WM_POWERBROADCAST`](https://learn.microsoft.com/e
 
 The [PowerMonitor](./PowerMonitor) project demonstrates how to handle power events and query system power state.  
 ![image](https://github.com/user-attachments/assets/5df449cd-e2af-47c4-b127-da6505207a8e)
+
+
+[`SetThreadExecutionState`](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setthreadexecutionstate) can be called to temporarily prevent the system from entering sleep or turning off the display. 
