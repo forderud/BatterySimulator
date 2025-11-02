@@ -38,7 +38,7 @@ void PrintPowerStatus() {
 }
 
 
-void TimerCallback(HWND, UINT, UINT_PTR, DWORD) {
+void TimerCallback(HWND /*hWnd*/, UINT /*uMsg*/, UINT_PTR /*idEvent*/, DWORD /*dwTime*/) {
     PrintPowerStatus();
 }
 
