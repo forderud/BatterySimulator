@@ -52,6 +52,7 @@ void ProcessPowerEvent(WPARAM wParam) {
         PrintPowerStatus();
     } else if (wParam == PBT_APMSUSPEND) {
         wprintf(L"  Suspending to low-power state.\n");
+        // the application now have approx. 2 seconds to complete tasks and save data
     } else if (wParam == PBT_APMRESUMEAUTOMATIC) {
         wprintf(L"  Resuming from low-power state.\n");
         // followed by PBT_APMRESUMESUSPEND _if_ triggered by user interaction
