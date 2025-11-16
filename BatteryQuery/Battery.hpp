@@ -142,7 +142,7 @@ struct BatteryInformationWrap : BATTERY_INFORMATION {
         BOOL ok = DeviceIoControl(device, IOCTL_BATTERY_SET_INFORMATION, &bsi, sizeof(bsi), nullptr, 0, &bytes_returned, nullptr);
         if (!ok) {
             //DWORD err = GetLastError();
-            throw std::runtime_error("IOCTL_SIMBATT_SET_INFORMATION error");
+            throw std::runtime_error("IOCTL_BATTERY_SET_INFORMATION error");
         }
     }
 
