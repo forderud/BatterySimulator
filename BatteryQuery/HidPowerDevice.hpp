@@ -1,6 +1,22 @@
 #pragma once
+#include <atlbase.h>
 #include "HID.hpp"
 
+
+/** Values >=22000 mean Windows 11. */
+int WindowsBuildNumber() {
+    CRegKey reg;
+    LSTATUS res = reg.Open(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", KEY_READ);
+    assert(res == ERROR_SUCCESS);
+
+    wchar_t buildStr[128] = {};
+    ULONG charCount = std::size(buildStr);
+    res = reg.QueryStringValue(L"CurrentBuild", buildStr, &charCount);
+    assert(res == ERROR_SUCCESS);
+
+    int buildNum = _wtoi(buildStr);
+    return buildNum;
+}
 
 namespace hid {
 
@@ -18,6 +34,9 @@ public:
     }
 
     bool IsValid() const {
+        if (WindowsBuildNumber() >= 29550)
+            return false; // Inbuilt HidBatt driver has been improved. Class therefore no longer needed.
+
         if (!Device::IsValid())
             return false;
 
