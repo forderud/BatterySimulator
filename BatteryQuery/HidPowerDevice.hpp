@@ -5,9 +5,8 @@
 namespace hid {
 
 /** HID Power Device (https://www.usb.org/sites/default/files/pdcv11.pdf) parser.
-    Parses standard parameters that are not already parsed by the Windows HidBatt driver.
-    Please delete this class if the HidBatt driver is either updated (requests: https://aka.ms/AAu4w9g , https://aka.ms/AAu4w8p),
-    or another driver-based alternative becomes available. */
+    Parses standard parameters that are not already parsed by the Windows HidBatt driver in old Windows versions.
+    The class is no longer needed in Windows 11 builds >= 29550.1000. */
 class HidPowerDevice : public Device {
 public:
     HidPowerDevice(const wchar_t* deviceName, bool verbose) : Device(deviceName, verbose) {
