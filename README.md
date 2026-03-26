@@ -146,7 +146,7 @@ Per-battery parameters can either be accessed through a high-level WMI or low-le
 * See the [BatteryQuery](./BatteryQuery) project for how to retrieve battery parameters through [`IOCTL_BATTERY_QUERY_INFORMATION`](https://learn.microsoft.com/en-us/windows/win32/power/ioctl-battery-query-information) and [`IOCTL_BATTERY_QUERY_STATUS`](https://learn.microsoft.com/en-us/windows/win32/power/ioctl-battery-query-status) control codes.
 
 ### Battery reports
-Starting with Win11 build 29550 it's possible to run `powercfg /batteryreport /verbose` to generate a HTML battery report that also include HID batteries:  
+Starting with Win11 build 29550 it's possible to run `PowerCfg.exe /batteryreport /verbose` to generate a HTML battery report that include HID batteries:  
 <img width="865" height="281" alt="image" src="https://github.com/user-attachments/assets/adfea816-2baf-4f8a-8c48-3cb0409bfb70" />
 
 ### Windows power events and aggregated parameters
