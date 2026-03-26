@@ -187,7 +187,7 @@ Return Value:
     UnregisterWMI(Device);
 
     NTSTATUS status = UnloadBatteryClass(Device);
-
+    UNREFERENCED_PARAMETER(status);
     DebugExitStatus(status);
 }
 
