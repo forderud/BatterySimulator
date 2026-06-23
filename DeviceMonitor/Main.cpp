@@ -1,7 +1,10 @@
 #include <windows.h>
+#include <Cfgmgr32.h>
 #include <dbt.h> // for DEV_BROADCAST_HDR
 #include <cstdio>
 #include <cassert>
+
+#pragma comment(lib, "Cfgmgr32.lib") // for CM_Register_Notification
 
 // USB serial host GUID
 GUID WCE_USB_SH_GUID = { 0x25dbce51, 0x6c8f, 0x4a72, 0x8a,0x6d,0xb5,0x4c,0x2b,0x4f,0xc8,0x35 };
@@ -56,7 +59,51 @@ INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 }
 
 
+DWORD PnP_callback (
+    _In_ HCMNOTIFICATION       /*hNotify*/,
+    _In_opt_ PVOID             /*Context*/,
+    _In_ CM_NOTIFY_ACTION      /*Action*/,
+    _In_reads_bytes_(EventDataSize) PCM_NOTIFY_EVENT_DATA EventData,
+    _In_ DWORD                 /*EventDataSize*/
+) {
+    if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE) {
+        auto data = &EventData->u.DeviceInterface;
+        wchar_t guid_str[39]{};
+        StringFromGUID2(data->ClassGuid, guid_str, 39);
+        wprintf(L"CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE, ClassGuid=%s, SymbolicLink=%s\n", guid_str, data->SymbolicLink);
+    } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE) {
+        auto data = &EventData->u.DeviceHandle;
+
+        wchar_t guid_str[39]{};
+        StringFromGUID2(data->EventGuid, guid_str, 39);
+        
+        wprintf(L"CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE, EventGuid=%s, NameOffset=%u, DataSize=%u\n", guid_str, data->NameOffset, data->DataSize);
+    } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE) {
+        auto data = &EventData->u.DeviceInstance;
+        wprintf(L"CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE, InstanceId=%s\n", data->InstanceId);
+    }
+
+    return 0;
+}
+
+
 int wmain (int /*argc*/, wchar_t* argv[]) {
+#if 1
+    CM_NOTIFY_FILTER filter{};
+    filter.cbSize = sizeof(filter);
+    filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES;
+    filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE;
+    filter.u.DeviceInterface.ClassGuid = {};
+
+    void* context = nullptr;
+    HCMNOTIFICATION hNotify = 0;
+    CONFIGRET ret = CM_Register_Notification(&filter, context, PnP_callback, &hNotify);
+    assert(ret == CR_SUCCESS);
+
+    Sleep(30 * 1000); // wait for 30sec
+
+    CM_Unregister_Notification(hNotify);
+#else
     static const wchar_t WND_CLASS_NAME[] = L"DeviceMonitorClass";
 
     // register custom window class
@@ -126,6 +173,7 @@ int wmain (int /*argc*/, wchar_t* argv[]) {
     if (!UnregisterDeviceNotification(hDeviceNotify)) {
         LogError(L"UnregisterDeviceNotification");
     }
+#endif
 
     return 1;
 }
