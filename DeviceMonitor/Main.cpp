@@ -186,7 +186,6 @@ INT_PTR WINAPI WinProcCallback(
 {
     LRESULT lRet = 1;
     static HDEVNOTIFY hDeviceNotify;
-    static HWND hEditWnd;
 
     switch (message)
     {
@@ -205,43 +204,6 @@ INT_PTR WINAPI WinProcCallback(
             ErrorHandler(L"DoRegisterDeviceInterfaceToHwnd");
             ExitProcess(1);
         }
-
-
-        // Make the child window for output.
-        hEditWnd = CreateWindow(TEXT("EDIT"),// predefined class 
-            NULL,        // no window title 
-            WS_CHILD | WS_VISIBLE | WS_VSCROLL |
-            ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
-            0, 0, 0, 0,  // set size in WM_SIZE message 
-            hWnd,        // parent window 
-            (HMENU)1,    // edit control ID 
-            (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
-            NULL);       // pointer not needed 
-
-        if (hEditWnd == NULL)
-        {
-            // Terminate on failure.
-            ErrorHandler(L"CreateWindow: Edit Control");
-            ExitProcess(1);
-        }
-        // Add text to the window. 
-        SendMessage(hEditWnd, WM_SETTEXT, 0,
-            (LPARAM)TEXT("Registered for USB device notification...\n"));
-
-        break;
-
-    case WM_SETFOCUS:
-        SetFocus(hEditWnd);
-
-        break;
-
-    case WM_SIZE:
-        // Make the edit control the size of the window's client area. 
-        MoveWindow(hEditWnd,
-            0, 0,                  // starting x- and y-coordinates 
-            LOWORD(lParam),        // width of client area 
-            HIWORD(lParam),        // height of client area 
-            TRUE);                 // repaint window 
 
         break;
 
