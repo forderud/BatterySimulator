@@ -77,7 +77,7 @@ INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
     return lRet;
 }
 
-#define WND_CLASS_NAME TEXT("SampleAppWindowClass")
+#define WND_CLASS_NAME L"SampleAppWindowClass"
 
 int wmain (int /*argc*/, wchar_t* argv[]) {
     // register custom window class
@@ -98,9 +98,10 @@ int wmain (int /*argc*/, wchar_t* argv[]) {
         argv[0], // EXE name
         0, // style
         0, 0, 0, 0, // pos & size
-        NULL, NULL,
-        GetModuleHandleW(nullptr),
-        NULL);
+        NULL, // parent
+        NULL, // menu
+        GetModuleHandleW(nullptr), // instance
+        NULL); // app. data
     if (hWnd == NULL) {
         LogError(L"CreateWindowEx: main appwindow hWnd");
         return -1;
