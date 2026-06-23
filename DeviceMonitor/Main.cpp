@@ -61,35 +61,6 @@ BOOL DoRegisterDeviceInterfaceToHwnd(
     return TRUE;
 }
 
-void MessagePump(HWND hWnd)
-// Routine Description:
-//     Simple main thread message pump.
-//
-
-// Parameters:
-//     hWnd - handle to the window whose messages are being dispatched
-
-// Return Value:
-//     None.
-{
-    MSG msg;
-    int retVal;
-
-    // Get all messages for any window that belongs to this thread,
-    // without any filtering. Potential optimization could be
-    // obtained via use of filter values if desired.
-
-    while ((retVal = GetMessage(&msg, NULL, 0, 0)) != 0) {
-        if (retVal == -1) {
-            ErrorHandler(L"GetMessage");
-            break;
-        } else {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
-}
-
 INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 // Routine Description:
 //     Simple Windows callback for handling messages.
@@ -200,7 +171,24 @@ int wmain (int argc, wchar_t* argv[]) {
 
 
     // The message pump loops until the window is destroyed.
-    MessagePump(hWnd);
+    {
+        MSG msg;
+        int retVal;
+
+        // Get all messages for any window that belongs to this thread,
+        // without any filtering. Potential optimization could be
+        // obtained via use of filter values if desired.
+
+        while ((retVal = GetMessage(&msg, NULL, 0, 0)) != 0) {
+            if (retVal == -1) {
+                ErrorHandler(L"GetMessage");
+                break;
+            } else {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+    }
 
     if (!UnregisterDeviceNotification(hDeviceNotify)) {
         ErrorHandler(L"UnregisterDeviceNotification");
