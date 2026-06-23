@@ -93,13 +93,13 @@ int wmain (int /*argc*/, wchar_t* argv[]) {
     {
         DEV_BROADCAST_DEVICEINTERFACE_W NotificationFilter{};
         NotificationFilter.dbcc_size = sizeof(NotificationFilter);
-        NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
-        NotificationFilter.dbcc_classguid = WCE_USB_SH_GUID;
+        NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE; // or DBT_DEVTYP_HANDLE
+        NotificationFilter.dbcc_classguid = {}; // ignored when DEVICE_NOTIFY_ALL_INTERFACE_CLASSES is set
 
         hDeviceNotify = RegisterDeviceNotificationW(
             hWnd,                       // events recipient
             &NotificationFilter,        // type of device
-            DEVICE_NOTIFY_WINDOW_HANDLE // or DEVICE_NOTIFY_SERVICE_HANDLE
+            DEVICE_NOTIFY_WINDOW_HANDLE | DEVICE_NOTIFY_ALL_INTERFACE_CLASSES // or DEVICE_NOTIFY_SERVICE_HANDLE
         );
         if (NULL == hDeviceNotify) {
             LogError(L"RegisterDeviceNotification");
