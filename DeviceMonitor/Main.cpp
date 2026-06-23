@@ -8,77 +8,6 @@
 // with any valid device class guid.
 GUID WceusbshGUID = { 0x25dbce51, 0x6c8f, 0x4a72, 0x8a,0x6d,0xb5,0x4c,0x2b,0x4f,0xc8,0x35 };
 
-void OutputMessage(
-    HWND hOutWnd,
-    WPARAM wParam,
-    LPARAM lParam)
-// Routine Description:
-//     Support routine.
-//     Send text to the output window, scrolling if necessary.
-
-// Parameters:
-//     hOutWnd - Handle to the output window.
-//     wParam  - Standard windows message code, not used.
-//     lParam  - String message to send to the window.
-
-// Return Value:
-//     None
-
-// Note:
-//     This routine assumes the output window is an edit control
-//     with vertical scrolling enabled.
-
-//     This routine has no error-checking.
-{
-    LRESULT   lResult;
-    LONG      bufferLen;
-    LONG      numLines;
-    LONG      firstVis;
-
-    // Make writable and turn off redraw.
-    lResult = SendMessage(hOutWnd, EM_SETREADONLY, FALSE, 0L);
-    lResult = SendMessage(hOutWnd, WM_SETREDRAW, FALSE, 0L);
-
-    // Obtain current text length in the window.
-    bufferLen = SendMessage(hOutWnd, WM_GETTEXTLENGTH, 0, 0L);
-    numLines = SendMessage(hOutWnd, EM_GETLINECOUNT, 0, 0L);
-    firstVis = SendMessage(hOutWnd, EM_GETFIRSTVISIBLELINE, 0, 0L);
-    lResult = SendMessage(hOutWnd, EM_SETSEL, bufferLen, bufferLen);
-
-    // Write the new text.
-    lResult = SendMessage(hOutWnd, EM_REPLACESEL, 0, lParam);
-
-    // See whether scrolling is necessary.
-    if (numLines > (firstVis + 1)) {
-        int        lineLen = 0;
-        int        lineCount = 0;
-        int        charPos;
-
-        // Find the last nonblank line.
-        numLines--;
-        while (!lineLen)
-        {
-            charPos = SendMessage(
-                hOutWnd, EM_LINEINDEX, (WPARAM)numLines, 0L);
-            lineLen = SendMessage(
-                hOutWnd, EM_LINELENGTH, charPos, 0L);
-            if (!lineLen)
-                numLines--;
-        }
-        // Prevent negative value finding min.
-        lineCount = numLines - firstVis;
-        lineCount = (lineCount >= 0) ? lineCount : 0;
-
-        // Scroll the window.
-        lResult = SendMessage(
-            hOutWnd, EM_LINESCROLL, 0, (LPARAM)lineCount);
-    }
-
-    // Done, make read-only and allow redraw.
-    lResult = SendMessage(hOutWnd, WM_SETREDRAW, TRUE, 0L);
-    lResult = SendMessage(hOutWnd, EM_SETREADONLY, TRUE, 0L);
-}
-
 void ErrorHandler(LPCTSTR lpszFunction) {
     DWORD dw = GetLastError();
 
@@ -161,12 +90,7 @@ void MessagePump(HWND hWnd)
     }
 }
 
-INT_PTR WINAPI WinProcCallback(
-    HWND hWnd,
-    UINT message,
-    WPARAM wParam,
-    LPARAM lParam
-)
+INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 // Routine Description:
 //     Simple Windows callback for handling messages.
 //     This is where all the work is done because the example
