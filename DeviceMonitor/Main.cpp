@@ -86,23 +86,27 @@ DWORD PnP_callback (
     _In_reads_bytes_(EventDataSize) PCM_NOTIFY_EVENT_DATA EventData,
     _In_ DWORD                 /*EventDataSize*/
 ) {
-    wprintf(L"Action: %s\n", ActionStr(Action));
-
     if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE) {
         auto data = &EventData->u.DeviceInterface;
         wchar_t guid_str[39]{};
         StringFromGUID2(data->ClassGuid, guid_str, 39);
-        wprintf(L"  DEVICEINTERFACE, ClassGuid=%s, SymbolicLink=%s\n", guid_str, data->SymbolicLink);
+        wprintf(L"%s\n", ActionStr(Action));
+        wprintf(L"  ClassGuid=%s\n", guid_str);
+        wprintf(L"  SymbolicLink=%s\n", data->SymbolicLink);
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE) {
         auto data = &EventData->u.DeviceHandle;
 
         wchar_t guid_str[39]{};
         StringFromGUID2(data->EventGuid, guid_str, 39);
         
-        wprintf(L"  DEVICEHANDLE, EventGuid=%s, NameOffset=%u, DataSize=%u\n", guid_str, data->NameOffset, data->DataSize);
+        wprintf(L"%s\n", ActionStr(Action));
+        wprintf(L"  EventGuid=%s\n", guid_str);
+        wprintf(L"  NameOffset=%u\n", data->NameOffset);
+        wprintf(L"  DataSize=%u\n", data->DataSize);
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE) {
         auto data = &EventData->u.DeviceInstance;
-        wprintf(L"  DEVICEINSTANCE, InstanceId=%s\n", data->InstanceId);
+        wprintf(L"%s\n", ActionStr(Action));
+        wprintf(L"  InstanceId=%s\n", data->InstanceId);
     }
 
     return 0;
