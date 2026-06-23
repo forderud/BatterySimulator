@@ -127,7 +127,7 @@ int wmain (int argc, wchar_t* argv[]) {
         hDeviceNotify = RegisterDeviceNotificationW(
             hWnd,                       // events recipient
             &NotificationFilter,        // type of device
-            DEVICE_NOTIFY_WINDOW_HANDLE // type of recipient handle
+            DEVICE_NOTIFY_WINDOW_HANDLE // or DEVICE_NOTIFY_SERVICE_HANDLE
         );
         if (NULL == hDeviceNotify) {
             LogError(L"RegisterDeviceNotification");
