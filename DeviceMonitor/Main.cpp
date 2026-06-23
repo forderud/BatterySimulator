@@ -421,20 +421,9 @@ BOOL InitWindowClass()
     return TRUE;
 }
 
-int __stdcall _tWinMain(
-    _In_ HINSTANCE hInstanceExe,
-    _In_opt_ HINSTANCE, // should not reference this parameter
-    _In_ PTSTR lpstrCmdLine,
-    _In_ int nCmdShow)
-{
-    //
-    // To enable a console project to compile this code, set
-    // Project->Properties->Linker->System->Subsystem: Windows.
-    //
-
-    int nArgC = 0;
-    PWSTR* ppArgV = CommandLineToArgvW(lpstrCmdLine, &nArgC);
-    g_pszAppName = ppArgV[0];
+int wmain (int argc, wchar_t* argv[]) {
+    HINSTANCE hInstanceExe = nullptr;
+    g_pszAppName = argv[0];
 
     if (!InitWindowClass())
     {
@@ -444,7 +433,7 @@ int __stdcall _tWinMain(
 
     // Main app window
 
-    HWND hWnd = CreateWindowEx(
+    HWND hWnd = CreateWindowExW(
         WS_EX_CLIENTEDGE | WS_EX_APPWINDOW,
         WND_CLASS_NAME,
         g_pszAppName,
