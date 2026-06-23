@@ -83,7 +83,7 @@ int wmain (int argc, wchar_t* argv[]) {
     WNDCLASSEXW wndClass{};
     wndClass.cbSize = sizeof(wndClass);
     wndClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-    wndClass.hInstance = reinterpret_cast<HINSTANCE>(GetModuleHandle(0));
+    wndClass.hInstance = reinterpret_cast<HINSTANCE>(GetModuleHandleW(nullptr));
     wndClass.lpfnWndProc = reinterpret_cast<WNDPROC>(WinProcCallback);
     wndClass.cbClsExtra = 0;
     wndClass.cbWndExtra = 0;
@@ -108,7 +108,7 @@ int wmain (int argc, wchar_t* argv[]) {
         CW_USEDEFAULT, 0,
         640, 480,
         NULL, NULL,
-        nullptr,
+        GetModuleHandleW(nullptr),
         NULL);
     if (hWnd == NULL) {
         LogError(L"CreateWindowEx: main appwindow hWnd");
