@@ -185,28 +185,9 @@ INT_PTR WINAPI WinProcCallback(
 //     see the documentation for WNDCLASSEX and CreateWindowEx.
 {
     LRESULT lRet = 1;
-    static HDEVNOTIFY hDeviceNotify;
 
     switch (message)
     {
-    case WM_CREATE:
-        // This is the actual registration., In this example, registration 
-        // should happen only once, at application startup when the window
-        // is created.
-        //
-        // If you were using a service, you would put this in your main code 
-        // path as part of your service initialization.
-        if (!DoRegisterDeviceInterfaceToHwnd(
-            WceusbshGUID,
-            hWnd,
-            &hDeviceNotify)) {
-            // Terminate on failure.
-            ErrorHandler(L"DoRegisterDeviceInterfaceToHwnd");
-            ExitProcess(1);
-        }
-
-        break;
-
     case WM_DEVICECHANGE:
     {
         // This is the actual message from the interface via Windows messaging.
@@ -235,18 +216,6 @@ INT_PTR WINAPI WinProcCallback(
         }
     }
     break;
-    case WM_CLOSE:
-        if (!UnregisterDeviceNotification(hDeviceNotify))
-        {
-            ErrorHandler(L"UnregisterDeviceNotification");
-        }
-        DestroyWindow(hWnd);
-        break;
-
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
-
     default:
         // Send all other messages on to the default windows handler.
         lRet = DefWindowProc(hWnd, message, wParam, lParam);
@@ -294,8 +263,24 @@ int wmain (int argc, wchar_t* argv[]) {
         return -1;
     }
 
+    // Subscribe to PnP device notifications
+    HDEVNOTIFY hDeviceNotify;
+    if (!DoRegisterDeviceInterfaceToHwnd(
+        WceusbshGUID,
+        hWnd,
+        &hDeviceNotify)) {
+        // Terminate on failure.
+        ErrorHandler(L"DoRegisterDeviceInterfaceToHwnd");
+        ExitProcess(1);
+    }
+
+
     // The message pump loops until the window is destroyed.
     MessagePump(hWnd);
+
+    if (!UnregisterDeviceNotification(hDeviceNotify)) {
+        ErrorHandler(L"UnregisterDeviceNotification");
+    }
 
     return 1;
 }
