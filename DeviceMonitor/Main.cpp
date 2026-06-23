@@ -55,6 +55,7 @@ DWORD PnP_callback (
         wprintf(L"  EventGuid=%s\n", guid_str);
         wprintf(L"  NameOffset=%u\n", data->NameOffset);
         wprintf(L"  DataSize=%u\n", data->DataSize);
+        data->Data;
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE) {
         assert(EventDataSize >= sizeof(EventData->u.DeviceInstance));
         auto data = &EventData->u.DeviceInstance;
