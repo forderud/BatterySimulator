@@ -30,9 +30,9 @@ const wchar_t* ActionStr(CM_NOTIFY_ACTION action) {
 
 DWORD PnP_callback (
     _In_ HCMNOTIFICATION       /*hNotify*/,
-    _In_opt_ PVOID             /*Context*/,
+    _In_opt_ void*             /*Context*/,
     _In_ CM_NOTIFY_ACTION      Action,
-    _In_reads_bytes_(EventDataSize) PCM_NOTIFY_EVENT_DATA EventData,
+    _In_reads_bytes_(EventDataSize) CM_NOTIFY_EVENT_DATA* EventData,
     _In_ DWORD                 EventDataSize
 ) {
     if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE) {
