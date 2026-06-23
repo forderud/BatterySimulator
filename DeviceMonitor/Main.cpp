@@ -9,10 +9,9 @@
 // with any valid device class guid.
 GUID WceusbshGUID = { 0x25dbce51, 0x6c8f, 0x4a72, 0x8a,0x6d,0xb5,0x4c,0x2b,0x4f,0xc8,0x35 };
 
-void ErrorHandler(LPCTSTR lpszFunction) {
-    DWORD dw = GetLastError();
-
-    wprintf(L"ERROR: %s (err %u)\n", lpszFunction, dw);
+void LogError (const wchar_t* message) {
+    DWORD err = GetLastError();
+    wprintf(L"ERROR: %s (err %u)\n", message, err);
 }
 
 
@@ -97,7 +96,7 @@ int wmain (int argc, wchar_t* argv[]) {
     wndClass.hIconSm = wndClass.hIcon;
 
     if (!RegisterClassExW(&wndClass)) {
-        ErrorHandler(L"RegisterClassEx");
+        LogError(L"RegisterClassEx");
         return -1;
     }
 
@@ -113,7 +112,7 @@ int wmain (int argc, wchar_t* argv[]) {
         nullptr,
         NULL);
     if (hWnd == NULL) {
-        ErrorHandler(L"CreateWindowEx: main appwindow hWnd");
+        LogError(L"CreateWindowEx: main appwindow hWnd");
         return -1;
     }
 
@@ -131,7 +130,7 @@ int wmain (int argc, wchar_t* argv[]) {
             DEVICE_NOTIFY_WINDOW_HANDLE // type of recipient handle
         );
         if (NULL == hDeviceNotify) {
-            ErrorHandler(L"RegisterDeviceNotification");
+            LogError(L"RegisterDeviceNotification");
             return -1;
         }
     }
@@ -141,11 +140,11 @@ int wmain (int argc, wchar_t* argv[]) {
         // Get all messages for any window that belongs to this thread,
         // without any filtering. Potential optimization could be
         // obtained via use of filter values if desired.
-        MSG msg;
-        int retVal;
+        MSG msg{};
+        int retVal = 0;
         while ((retVal = GetMessageW(&msg, NULL, 0, 0)) != 0) {
             if (retVal == -1) {
-                ErrorHandler(L"GetMessage");
+                LogError(L"GetMessage");
                 break;
             } else {
                 TranslateMessage(&msg);
@@ -155,7 +154,7 @@ int wmain (int argc, wchar_t* argv[]) {
     }
 
     if (!UnregisterDeviceNotification(hDeviceNotify)) {
-        ErrorHandler(L"UnregisterDeviceNotification");
+        LogError(L"UnregisterDeviceNotification");
     }
 
     return 1;
