@@ -406,10 +406,6 @@ int wmain (int argc, wchar_t* argv[]) {
         return -1;
     }
 
-    // Actually draw the window.
-    ShowWindow(hWnd, SW_SHOWNORMAL);
-    UpdateWindow(hWnd);
-
     // The message pump loops until the window is destroyed.
     MessagePump(hWnd);
 
