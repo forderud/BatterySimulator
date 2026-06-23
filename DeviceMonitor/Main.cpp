@@ -80,8 +80,8 @@ INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 #define WND_CLASS_NAME TEXT("SampleAppWindowClass")
 
 int wmain (int argc, wchar_t* argv[]) {
-    WNDCLASSEX wndClass{};
-    wndClass.cbSize = sizeof(WNDCLASSEX);
+    WNDCLASSEXW wndClass{};
+    wndClass.cbSize = sizeof(wndClass);
     wndClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
     wndClass.hInstance = reinterpret_cast<HINSTANCE>(GetModuleHandle(0));
     wndClass.lpfnWndProc = reinterpret_cast<WNDPROC>(WinProcCallback);
@@ -94,7 +94,7 @@ int wmain (int argc, wchar_t* argv[]) {
     wndClass.lpszMenuName = NULL;
     wndClass.hIconSm = wndClass.hIcon;
 
-    if (!RegisterClassEx(&wndClass)) {
+    if (!RegisterClassExW(&wndClass)) {
         ErrorHandler(L"RegisterClassEx");
         return -1;
     }
@@ -118,12 +118,12 @@ int wmain (int argc, wchar_t* argv[]) {
     // Subscribe to PnP device notifications
     HDEVNOTIFY hDeviceNotify = nullptr;
     {
-        DEV_BROADCAST_DEVICEINTERFACE NotificationFilter{};
-        NotificationFilter.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
+        DEV_BROADCAST_DEVICEINTERFACE_W NotificationFilter{};
+        NotificationFilter.dbcc_size = sizeof(NotificationFilter);
         NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
         NotificationFilter.dbcc_classguid = WceusbshGUID;
 
-        hDeviceNotify = RegisterDeviceNotification(
+        hDeviceNotify = RegisterDeviceNotificationW(
             hWnd,                       // events recipient
             &NotificationFilter,        // type of device
             DEVICE_NOTIFY_WINDOW_HANDLE // type of recipient handle
@@ -141,7 +141,7 @@ int wmain (int argc, wchar_t* argv[]) {
         // obtained via use of filter values if desired.
         MSG msg;
         int retVal;
-        while ((retVal = GetMessage(&msg, NULL, 0, 0)) != 0) {
+        while ((retVal = GetMessageW(&msg, NULL, 0, 0)) != 0) {
             if (retVal == -1) {
                 ErrorHandler(L"GetMessage");
                 break;
