@@ -316,7 +316,7 @@ INT_PTR WINAPI WinProcCallback(
             wprintf(L"Message: DBT_DEVNODES_CHANGED\n");
             break;
         default:
-            wprintf(L"Message: WM_DEVICECHANGE message received, value %u unhandled.\n", wParam);
+            wprintf(L"Message: WM_DEVICECHANGE message received, value %Iu unhandled.\n", wParam);
             break;
         }
     }
