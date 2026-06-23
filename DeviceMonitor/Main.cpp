@@ -1,8 +1,6 @@
 #include <windows.h>
-#include <stdio.h>
-#include <tchar.h>
-#include <strsafe.h>
-#include <dbt.h>
+#include <dbt.h> // for DEV_BROADCAST_HDR
+#include <cstdio>
 #include <cassert>
 
 // USB serial host GUID
