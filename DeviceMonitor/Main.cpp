@@ -1,4 +1,3 @@
-// RegisterDeviceNotification.cpp
 #include <windows.h>
 #include <stdio.h>
 #include <tchar.h>
@@ -235,7 +234,6 @@ INT_PTR WINAPI WinProcCallback(
     LRESULT lRet = 1;
     static HDEVNOTIFY hDeviceNotify;
     static HWND hEditWnd;
-    static ULONGLONG msgCount = 0;
 
     switch (message)
     {
@@ -304,38 +302,23 @@ INT_PTR WINAPI WinProcCallback(
         // way. Refer to the extended information for your particular device type 
         // specified by your GUID.
         PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE)lParam;
-        TCHAR strBuff[256];
 
         // Output some messages to the window.
         switch (wParam)
         {
         case DBT_DEVICEARRIVAL:
-            msgCount++;
-            StringCchPrintf(
-                strBuff, 256,
-                TEXT("Message %d: DBT_DEVICEARRIVAL\n"), (int)msgCount);
+            wprintf(L"Message: DBT_DEVICEARRIVAL\n");
             break;
         case DBT_DEVICEREMOVECOMPLETE:
-            msgCount++;
-            StringCchPrintf(
-                strBuff, 256,
-                TEXT("Message %d: DBT_DEVICEREMOVECOMPLETE\n"), (int)msgCount);
+            wprintf(L"Message: DBT_DEVICEREMOVECOMPLETE\n");
             break;
         case DBT_DEVNODES_CHANGED:
-            msgCount++;
-            StringCchPrintf(
-                strBuff, 256,
-                TEXT("Message %d: DBT_DEVNODES_CHANGED\n"), (int)msgCount);
+            wprintf(L"Message: DBT_DEVNODES_CHANGED\n");
             break;
         default:
-            msgCount++;
-            StringCchPrintf(
-                strBuff, 256,
-                TEXT("Message %d: WM_DEVICECHANGE message received, value %d unhandled.\n"),
-                (int)msgCount, wParam);
+            wprintf(L"Message: WM_DEVICECHANGE message received, value %u unhandled.\n", wParam);
             break;
         }
-        OutputMessage(hEditWnd, wParam, (LPARAM)strBuff);
     }
     break;
     case WM_CLOSE:
