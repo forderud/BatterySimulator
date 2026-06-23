@@ -8,9 +8,6 @@
 // with any valid device class guid.
 GUID WceusbshGUID = { 0x25dbce51, 0x6c8f, 0x4a72, 0x8a,0x6d,0xb5,0x4c,0x2b,0x4f,0xc8,0x35 };
 
-// For informational messages and window titles.
-PWSTR g_pszAppName;
-
 void OutputMessage(
     HWND hOutWnd,
     WPARAM wParam,
@@ -82,54 +79,10 @@ void OutputMessage(
     lResult = SendMessage(hOutWnd, EM_SETREADONLY, TRUE, 0L);
 }
 
-void ErrorHandler(LPCTSTR lpszFunction)
-// Routine Description:
-//     Support routine.
-//     Retrieve the system error message for the last-error code
-//     and pop a modal alert box with usable info.
-
-// Parameters:
-//     lpszFunction - String containing the function name where 
-//     the error occurred plus any other relevant data you'd 
-//     like to appear in the output. 
-
-// Return Value:
-//     None
-
-// Note:
-//     This routine is independent of the other windowing routines
-//     in this application and can be used in a regular console
-//     application without modification.
-{
-    LPVOID lpMsgBuf;
-    LPVOID lpDisplayBuf;
+void ErrorHandler(LPCTSTR lpszFunction) {
     DWORD dw = GetLastError();
 
-    FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_SYSTEM |
-        FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL,
-        dw,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        (LPTSTR)&lpMsgBuf,
-        0, NULL);
-
-    // Display the error message and exit the process.
-
-    lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
-        (lstrlen((LPCTSTR)lpMsgBuf)
-            + lstrlen((LPCTSTR)lpszFunction) + 40)
-        * sizeof(TCHAR));
-    if (!lpDisplayBuf) return;
-    StringCchPrintf((LPTSTR)lpDisplayBuf,
-        LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-        TEXT("%s failed with error %d: %s"),
-        lpszFunction, dw, (LPCTSTR)lpMsgBuf);
-    MessageBox(NULL, (LPCTSTR)lpDisplayBuf, g_pszAppName, MB_OK);
-
-    LocalFree(lpMsgBuf);
-    LocalFree(lpDisplayBuf);
+    wprintf(L"ERROR: %s (err %u)\n", lpszFunction, dw);
 }
 
 BOOL DoRegisterDeviceInterfaceToHwnd(
@@ -345,9 +298,6 @@ INT_PTR WINAPI WinProcCallback(
 #define WND_CLASS_NAME TEXT("SampleAppWindowClass")
 
 int wmain (int argc, wchar_t* argv[]) {
-    HINSTANCE hInstanceExe = nullptr;
-    g_pszAppName = argv[0];
-
     WNDCLASSEX wndClass{};
     wndClass.cbSize = sizeof(WNDCLASSEX);
     wndClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
@@ -371,12 +321,12 @@ int wmain (int argc, wchar_t* argv[]) {
     HWND hWnd = CreateWindowExW(
         WS_EX_CLIENTEDGE | WS_EX_APPWINDOW,
         WND_CLASS_NAME,
-        g_pszAppName,
+        argv[0], // EXE name
         WS_OVERLAPPEDWINDOW, // style
         CW_USEDEFAULT, 0,
         640, 480,
         NULL, NULL,
-        hInstanceExe,
+        nullptr,
         NULL);
     if (hWnd == NULL) {
         ErrorHandler(L"CreateWindowEx: main appwindow hWnd");
