@@ -77,9 +77,10 @@ INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
     return lRet;
 }
 
-#define WND_CLASS_NAME L"SampleAppWindowClass"
 
 int wmain (int /*argc*/, wchar_t* argv[]) {
+    static const wchar_t WND_CLASS_NAME[] = L"DeviceMonitorClass";
+
     // register custom window class
     WNDCLASSEXW wndClass{};
     wndClass.cbSize = sizeof(wndClass);
@@ -91,7 +92,7 @@ int wmain (int /*argc*/, wchar_t* argv[]) {
         return -1;
     }
 
-    // Main app window
+    // offscreen window for PnP events
     HWND hWnd = CreateWindowExW(
         0, // ext. style
         WND_CLASS_NAME,
@@ -107,7 +108,7 @@ int wmain (int /*argc*/, wchar_t* argv[]) {
         return -1;
     }
 
-    // Subscribe to PnP device notifications
+    // subscribe to PnP device notifications
     HDEVNOTIFY hDeviceNotify = nullptr;
     {
         DEV_BROADCAST_DEVICEINTERFACE_W NotificationFilter{};
