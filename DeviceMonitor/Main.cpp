@@ -92,17 +92,17 @@ DWORD PnP_callback (
         auto data = &EventData->u.DeviceInterface;
         wchar_t guid_str[39]{};
         StringFromGUID2(data->ClassGuid, guid_str, 39);
-        wprintf(L"CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE, ClassGuid=%s, SymbolicLink=%s\n", guid_str, data->SymbolicLink);
+        wprintf(L"  DEVICEINTERFACE, ClassGuid=%s, SymbolicLink=%s\n", guid_str, data->SymbolicLink);
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE) {
         auto data = &EventData->u.DeviceHandle;
 
         wchar_t guid_str[39]{};
         StringFromGUID2(data->EventGuid, guid_str, 39);
         
-        wprintf(L"CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE, EventGuid=%s, NameOffset=%u, DataSize=%u\n", guid_str, data->NameOffset, data->DataSize);
+        wprintf(L"  DEVICEHANDLE, EventGuid=%s, NameOffset=%u, DataSize=%u\n", guid_str, data->NameOffset, data->DataSize);
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE) {
         auto data = &EventData->u.DeviceInstance;
-        wprintf(L"CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE, InstanceId=%s\n", data->InstanceId);
+        wprintf(L"  DEVICEINSTANCE, InstanceId=%s\n", data->InstanceId);
     }
 
     return 0;
