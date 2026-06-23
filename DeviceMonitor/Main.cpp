@@ -48,11 +48,14 @@ INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
         // specified by your GUID.
         auto b = (DEV_BROADCAST_DEVICEINTERFACE_W*)lParam;
 
-        // Output some messages to the window.
         switch (wParam) {
         case DBT_DEVICEARRIVAL:
-            wprintf(L"Message: DBT_DEVICEARRIVAL\n");
+        {
+            WCHAR guid_str[39];
+            StringFromGUID2(b->dbcc_classguid, guid_str, 39);
+            wprintf(L"Message: DBT_DEVICEARRIVAL (class: %s)\n", guid_str);
             break;
+        }
         case DBT_DEVICEREMOVECOMPLETE:
             wprintf(L"Message: DBT_DEVICEREMOVECOMPLETE\n");
             break;
@@ -63,8 +66,8 @@ INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
             wprintf(L"Message: WM_DEVICECHANGE message received, value %Iu unhandled.\n", wParam);
             break;
         }
+        break;
     }
-    break;
     default:
         // Send all other messages on to the default windows handler.
         lRet = DefWindowProc(hWnd, message, wParam, lParam);
@@ -133,13 +136,11 @@ int wmain (int argc, wchar_t* argv[]) {
 
     // The message pump loops until the window is destroyed.
     {
-        MSG msg;
-        int retVal;
-
         // Get all messages for any window that belongs to this thread,
         // without any filtering. Potential optimization could be
         // obtained via use of filter values if desired.
-
+        MSG msg;
+        int retVal;
         while ((retVal = GetMessage(&msg, NULL, 0, 0)) != 0) {
             if (retVal == -1) {
                 ErrorHandler(L"GetMessage");
