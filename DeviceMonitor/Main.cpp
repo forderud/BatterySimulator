@@ -74,9 +74,17 @@ int wmain (int /*argc*/, wchar_t* /*argv*/[]) {
         // subscribe to PnP events
         CM_NOTIFY_FILTER filter{};
         filter.cbSize = sizeof(filter);
+#if 0
+        // receive notifications for PnP events for all devices
+        filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_DEVICE_INSTANCES;
+        filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE;
+        filter.u.DeviceInstance.InstanceId[0] = '\0'; // empty string
+#else
+        // receive notifications for PnP events for all device interface classes
         filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES;
         filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE;
         filter.u.DeviceInterface.ClassGuid = {};
+#endif
 
         CONFIGRET ret = CM_Register_Notification(&filter, nullptr, PnP_callback, &hNotify);
         assert(ret == CR_SUCCESS);
