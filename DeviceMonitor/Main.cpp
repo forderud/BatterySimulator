@@ -3,6 +3,7 @@
 #include <tchar.h>
 #include <strsafe.h>
 #include <dbt.h>
+#include <cassert>
 
 // This GUID is for all USB serial host PnP drivers, but you can replace it 
 // with any valid device class guid.
@@ -51,6 +52,7 @@ INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
         switch (wParam) {
         case DBT_DEVICEARRIVAL:
         {
+            assert(b->dbcc_devicetype == DBT_DEVTYP_PORT); // TODO: Should have been DBT_DEVTYP_DEVICEINTERFACE
             WCHAR guid_str[39];
             StringFromGUID2(b->dbcc_classguid, guid_str, 39);
             wprintf(L"Message: DBT_DEVICEARRIVAL (class: %s, name %s)\n", guid_str, b->dbcc_name); // TODO: Name appear corrupted
