@@ -53,7 +53,7 @@ INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
         {
             WCHAR guid_str[39];
             StringFromGUID2(b->dbcc_classguid, guid_str, 39);
-            wprintf(L"Message: DBT_DEVICEARRIVAL (class: %s)\n", guid_str);
+            wprintf(L"Message: DBT_DEVICEARRIVAL (class: %s, name %s)\n", guid_str, b->dbcc_name); // TODO: Name appear corrupted
             break;
         }
         case DBT_DEVICEREMOVECOMPLETE:
