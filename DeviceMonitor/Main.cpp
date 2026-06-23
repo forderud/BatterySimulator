@@ -79,7 +79,7 @@ int wmain (int /*argc*/, wchar_t* argv[]) {
     CONFIGRET ret = CM_Register_Notification(&filter, context, PnP_callback, &hNotify);
     assert(ret == CR_SUCCESS);
 
-    Sleep(30 * 1000); // wait for 30sec
+    Sleep(INFINITE);
 
     ret = CM_Unregister_Notification(hNotify);
     assert(ret == CR_SUCCESS);
