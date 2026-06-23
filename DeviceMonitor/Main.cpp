@@ -101,12 +101,11 @@ int wmain (int /*argc*/, wchar_t* argv[]) {
 
     // Main app window
     HWND hWnd = CreateWindowExW(
-        WS_EX_CLIENTEDGE | WS_EX_APPWINDOW,
+        0, // ext. style
         WND_CLASS_NAME,
         argv[0], // EXE name
-        WS_OVERLAPPEDWINDOW, // style
-        CW_USEDEFAULT, 0,
-        640, 480,
+        0, // style
+        0, 0, 0, 0, // pos & size
         NULL, NULL,
         GetModuleHandleW(nullptr),
         NULL);
