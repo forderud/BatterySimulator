@@ -14,52 +14,6 @@ void ErrorHandler(LPCTSTR lpszFunction) {
     wprintf(L"ERROR: %s (err %u)\n", lpszFunction, dw);
 }
 
-BOOL DoRegisterDeviceInterfaceToHwnd(
-    IN GUID InterfaceClassGuid,
-    IN HWND hWnd,
-    OUT HDEVNOTIFY* hDeviceNotify
-)
-// Routine Description:
-//     Registers an HWND for notification of changes in the device interfaces
-//     for the specified interface class GUID. 
-
-// Parameters:
-//     InterfaceClassGuid - The interface class GUID for the device 
-//         interfaces. 
-
-//     hWnd - Window handle to receive notifications.
-
-//     hDeviceNotify - Receives the device notification handle. On failure, 
-//         this value is NULL.
-
-// Return Value:
-//     If the function succeeds, the return value is TRUE.
-//     If the function fails, the return value is FALSE.
-
-// Note:
-//     RegisterDeviceNotification also allows a service handle be used,
-//     so a similar wrapper function to this one supporting that scenario
-//     could be made from this template.
-{
-    DEV_BROADCAST_DEVICEINTERFACE NotificationFilter;
-
-    ZeroMemory(&NotificationFilter, sizeof(NotificationFilter));
-    NotificationFilter.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
-    NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
-    NotificationFilter.dbcc_classguid = InterfaceClassGuid;
-
-    *hDeviceNotify = RegisterDeviceNotification(
-        hWnd,                       // events recipient
-        &NotificationFilter,        // type of device
-        DEVICE_NOTIFY_WINDOW_HANDLE // type of recipient handle
-    );
-    if (NULL == *hDeviceNotify) {
-        ErrorHandler(L"RegisterDeviceNotification");
-        return FALSE;
-    }
-
-    return TRUE;
-}
 
 INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 // Routine Description:
@@ -159,16 +113,23 @@ int wmain (int argc, wchar_t* argv[]) {
     }
 
     // Subscribe to PnP device notifications
-    HDEVNOTIFY hDeviceNotify;
-    if (!DoRegisterDeviceInterfaceToHwnd(
-        WceusbshGUID,
-        hWnd,
-        &hDeviceNotify)) {
-        // Terminate on failure.
-        ErrorHandler(L"DoRegisterDeviceInterfaceToHwnd");
-        ExitProcess(1);
-    }
+    HDEVNOTIFY hDeviceNotify = nullptr;
+    {
+        DEV_BROADCAST_DEVICEINTERFACE NotificationFilter{};
+        NotificationFilter.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
+        NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
+        NotificationFilter.dbcc_classguid = WceusbshGUID;
 
+        hDeviceNotify = RegisterDeviceNotification(
+            hWnd,                       // events recipient
+            &NotificationFilter,        // type of device
+            DEVICE_NOTIFY_WINDOW_HANDLE // type of recipient handle
+        );
+        if (NULL == hDeviceNotify) {
+            ErrorHandler(L"RegisterDeviceNotification");
+            return -1;
+        }
+    }
 
     // The message pump loops until the window is destroyed.
     {
