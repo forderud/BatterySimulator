@@ -79,11 +79,11 @@ INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 
 #define WND_CLASS_NAME TEXT("SampleAppWindowClass")
 
-int wmain (int argc, wchar_t* argv[]) {
+int wmain (int /*argc*/, wchar_t* argv[]) {
     WNDCLASSEXW wndClass{};
     wndClass.cbSize = sizeof(wndClass);
     wndClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
-    wndClass.hInstance = reinterpret_cast<HINSTANCE>(GetModuleHandleW(nullptr));
+    wndClass.hInstance = GetModuleHandleW(nullptr);
     wndClass.lpfnWndProc = reinterpret_cast<WNDPROC>(WinProcCallback);
     wndClass.cbClsExtra = 0;
     wndClass.cbWndExtra = 0;
