@@ -344,21 +344,10 @@ INT_PTR WINAPI WinProcCallback(
 
 #define WND_CLASS_NAME TEXT("SampleAppWindowClass")
 
-BOOL InitWindowClass()
-// Routine Description:
-//      Simple wrapper to initialize and register a window class.
+int wmain (int argc, wchar_t* argv[]) {
+    HINSTANCE hInstanceExe = nullptr;
+    g_pszAppName = argv[0];
 
-// Parameters:
-//     None
-
-// Return Value:
-//     TRUE on success, FALSE on failure.
-
-// Note: 
-//     wndClass.lpfnWndProc and wndClass.lpszClassName are the
-//     important unique values used with CreateWindowEx and the
-//     Windows message pump.
-{
     WNDCLASSEX wndClass{};
     wndClass.cbSize = sizeof(WNDCLASSEX);
     wndClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
@@ -373,20 +362,8 @@ BOOL InitWindowClass()
     wndClass.lpszMenuName = NULL;
     wndClass.hIconSm = wndClass.hIcon;
 
-
     if (!RegisterClassEx(&wndClass)) {
         ErrorHandler(L"RegisterClassEx");
-        return FALSE;
-    }
-    return TRUE;
-}
-
-int wmain (int argc, wchar_t* argv[]) {
-    HINSTANCE hInstanceExe = nullptr;
-    g_pszAppName = argv[0];
-
-    if (!InitWindowClass()) {
-        // InitWindowClass displays any errors
         return -1;
     }
 
