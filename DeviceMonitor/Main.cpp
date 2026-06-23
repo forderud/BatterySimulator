@@ -102,7 +102,8 @@ int wmain (int /*argc*/, wchar_t* argv[]) {
 
     Sleep(30 * 1000); // wait for 30sec
 
-    CM_Unregister_Notification(hNotify);
+    ret = CM_Unregister_Notification(hNotify);
+    assert(ret == CR_SUCCESS);
 #else
     static const wchar_t WND_CLASS_NAME[] = L"DeviceMonitorClass";
 
