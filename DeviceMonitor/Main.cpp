@@ -216,11 +216,10 @@ INT_PTR WINAPI WinProcCallback(
         // Note that not all devices utilize these optional parameters in the same
         // way. Refer to the extended information for your particular device type 
         // specified by your GUID.
-        PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE)lParam;
+        auto b = (DEV_BROADCAST_DEVICEINTERFACE_W*)lParam;
 
         // Output some messages to the window.
-        switch (wParam)
-        {
+        switch (wParam) {
         case DBT_DEVICEARRIVAL:
             wprintf(L"Message: DBT_DEVICEARRIVAL\n");
             break;
