@@ -7,8 +7,7 @@
 
 // This GUID is for all USB serial host PnP drivers, but you can replace it 
 // with any valid device class guid.
-GUID WceusbshGUID = { 0x25dbce51, 0x6c8f, 0x4a72,
-                      0x8a,0x6d,0xb5,0x4c,0x2b,0x4f,0xc8,0x35 };
+GUID WceusbshGUID = { 0x25dbce51, 0x6c8f, 0x4a72, 0x8a,0x6d,0xb5,0x4c,0x2b,0x4f,0xc8,0x35 };
 
 // For informational messages and window titles.
 PWSTR g_pszAppName;
@@ -16,8 +15,7 @@ PWSTR g_pszAppName;
 void OutputMessage(
     HWND hOutWnd,
     WPARAM wParam,
-    LPARAM lParam
-)
+    LPARAM lParam)
 // Routine Description:
 //     Support routine.
 //     Send text to the output window, scrolling if necessary.
@@ -55,8 +53,7 @@ void OutputMessage(
     lResult = SendMessage(hOutWnd, EM_REPLACESEL, 0, lParam);
 
     // See whether scrolling is necessary.
-    if (numLines > (firstVis + 1))
-    {
+    if (numLines > (firstVis + 1)) {
         int        lineLen = 0;
         int        lineCount = 0;
         int        charPos;
@@ -86,9 +83,7 @@ void OutputMessage(
     lResult = SendMessage(hOutWnd, EM_SETREADONLY, TRUE, 0L);
 }
 
-void ErrorHandler(
-    LPCTSTR lpszFunction
-)
+void ErrorHandler(LPCTSTR lpszFunction)
 // Routine Description:
 //     Support routine.
 //     Retrieve the system error message for the last-error code
@@ -107,7 +102,6 @@ void ErrorHandler(
 //     in this application and can be used in a regular console
 //     application without modification.
 {
-
     LPVOID lpMsgBuf;
     LPVOID lpDisplayBuf;
     DWORD dw = GetLastError();
@@ -178,9 +172,7 @@ BOOL DoRegisterDeviceInterfaceToHwnd(
         &NotificationFilter,        // type of device
         DEVICE_NOTIFY_WINDOW_HANDLE // type of recipient handle
     );
-
-    if (NULL == *hDeviceNotify)
-    {
+    if (NULL == *hDeviceNotify) {
         ErrorHandler(L"RegisterDeviceNotification");
         return FALSE;
     }
@@ -188,9 +180,7 @@ BOOL DoRegisterDeviceInterfaceToHwnd(
     return TRUE;
 }
 
-void MessagePump(
-    HWND hWnd
-)
+void MessagePump(HWND hWnd)
 // Routine Description:
 //     Simple main thread message pump.
 //
@@ -208,15 +198,11 @@ void MessagePump(
     // without any filtering. Potential optimization could be
     // obtained via use of filter values if desired.
 
-    while ((retVal = GetMessage(&msg, NULL, 0, 0)) != 0)
-    {
-        if (retVal == -1)
-        {
+    while ((retVal = GetMessage(&msg, NULL, 0, 0)) != 0) {
+        if (retVal == -1) {
             ErrorHandler(L"GetMessage");
             break;
-        }
-        else
-        {
+        } else {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
@@ -254,28 +240,23 @@ INT_PTR WINAPI WinProcCallback(
     switch (message)
     {
     case WM_CREATE:
-        //
         // This is the actual registration., In this example, registration 
         // should happen only once, at application startup when the window
         // is created.
         //
         // If you were using a service, you would put this in your main code 
         // path as part of your service initialization.
-        //
         if (!DoRegisterDeviceInterfaceToHwnd(
             WceusbshGUID,
             hWnd,
-            &hDeviceNotify))
-        {
+            &hDeviceNotify)) {
             // Terminate on failure.
             ErrorHandler(L"DoRegisterDeviceInterfaceToHwnd");
             ExitProcess(1);
         }
 
 
-        //
         // Make the child window for output.
-        //
         hEditWnd = CreateWindow(TEXT("EDIT"),// predefined class 
             NULL,        // no window title 
             WS_CHILD | WS_VISIBLE | WS_VSCROLL |
@@ -315,7 +296,6 @@ INT_PTR WINAPI WinProcCallback(
 
     case WM_DEVICECHANGE:
     {
-        //
         // This is the actual message from the interface via Windows messaging.
         // This code includes some additional decoding for this particular device type
         // and some common validation checks.
@@ -323,7 +303,6 @@ INT_PTR WINAPI WinProcCallback(
         // Note that not all devices utilize these optional parameters in the same
         // way. Refer to the extended information for your particular device type 
         // specified by your GUID.
-        //
         PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE)lParam;
         TCHAR strBuff[256];
 
@@ -397,8 +376,7 @@ BOOL InitWindowClass()
 //     important unique values used with CreateWindowEx and the
 //     Windows message pump.
 {
-    WNDCLASSEX wndClass;
-
+    WNDCLASSEX wndClass{};
     wndClass.cbSize = sizeof(WNDCLASSEX);
     wndClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
     wndClass.hInstance = reinterpret_cast<HINSTANCE>(GetModuleHandle(0));
@@ -413,8 +391,7 @@ BOOL InitWindowClass()
     wndClass.hIconSm = wndClass.hIcon;
 
 
-    if (!RegisterClassEx(&wndClass))
-    {
+    if (!RegisterClassEx(&wndClass)) {
         ErrorHandler(L"RegisterClassEx");
         return FALSE;
     }
@@ -425,14 +402,12 @@ int wmain (int argc, wchar_t* argv[]) {
     HINSTANCE hInstanceExe = nullptr;
     g_pszAppName = argv[0];
 
-    if (!InitWindowClass())
-    {
+    if (!InitWindowClass()) {
         // InitWindowClass displays any errors
         return -1;
     }
 
     // Main app window
-
     HWND hWnd = CreateWindowExW(
         WS_EX_CLIENTEDGE | WS_EX_APPWINDOW,
         WND_CLASS_NAME,
@@ -443,20 +418,16 @@ int wmain (int argc, wchar_t* argv[]) {
         NULL, NULL,
         hInstanceExe,
         NULL);
-
-    if (hWnd == NULL)
-    {
+    if (hWnd == NULL) {
         ErrorHandler(L"CreateWindowEx: main appwindow hWnd");
         return -1;
     }
 
     // Actually draw the window.
-
     ShowWindow(hWnd, SW_SHOWNORMAL);
     UpdateWindow(hWnd);
 
     // The message pump loops until the window is destroyed.
-
     MessagePump(hWnd);
 
     return 1;
