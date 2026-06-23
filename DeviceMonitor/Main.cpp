@@ -68,20 +68,22 @@ DWORD PnP_callback (
 
 
 int wmain (int /*argc*/, wchar_t* argv[]) {
-    CM_NOTIFY_FILTER filter{};
-    filter.cbSize = sizeof(filter);
-    filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES;
-    filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE;
-    filter.u.DeviceInterface.ClassGuid = {};
-
-    void* context = nullptr;
     HCMNOTIFICATION hNotify = 0;
-    CONFIGRET ret = CM_Register_Notification(&filter, context, PnP_callback, &hNotify);
-    assert(ret == CR_SUCCESS);
+    {
+        // subscribe to PnP events
+        CM_NOTIFY_FILTER filter{};
+        filter.cbSize = sizeof(filter);
+        filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES;
+        filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE;
+        filter.u.DeviceInterface.ClassGuid = {};
+
+        CONFIGRET ret = CM_Register_Notification(&filter, nullptr, PnP_callback, &hNotify);
+        assert(ret == CR_SUCCESS);
+    }
 
     Sleep(INFINITE);
 
-    ret = CM_Unregister_Notification(hNotify);
+    CONFIGRET ret = CM_Unregister_Notification(hNotify);
     assert(ret == CR_SUCCESS);
 
     return 1;
