@@ -5,9 +5,8 @@
 #include <dbt.h>
 #include <cassert>
 
-// This GUID is for all USB serial host PnP drivers, but you can replace it 
-// with any valid device class guid.
-GUID WceusbshGUID = { 0x25dbce51, 0x6c8f, 0x4a72, 0x8a,0x6d,0xb5,0x4c,0x2b,0x4f,0xc8,0x35 };
+// USB serial host GUID
+GUID WCE_USB_SH_GUID = { 0x25dbce51, 0x6c8f, 0x4a72, 0x8a,0x6d,0xb5,0x4c,0x2b,0x4f,0xc8,0x35 };
 
 void LogError (const wchar_t* message) {
     DWORD err = GetLastError();
@@ -122,7 +121,7 @@ int wmain (int argc, wchar_t* argv[]) {
         DEV_BROADCAST_DEVICEINTERFACE_W NotificationFilter{};
         NotificationFilter.dbcc_size = sizeof(NotificationFilter);
         NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
-        NotificationFilter.dbcc_classguid = WceusbshGUID;
+        NotificationFilter.dbcc_classguid = WCE_USB_SH_GUID;
 
         hDeviceNotify = RegisterDeviceNotificationW(
             hWnd,                       // events recipient
