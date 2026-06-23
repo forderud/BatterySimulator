@@ -80,20 +80,12 @@ INT_PTR WINAPI WinProcCallback(HWND hWnd, UINT message, WPARAM wParam, LPARAM lP
 #define WND_CLASS_NAME TEXT("SampleAppWindowClass")
 
 int wmain (int /*argc*/, wchar_t* argv[]) {
+    // register custom window class
     WNDCLASSEXW wndClass{};
     wndClass.cbSize = sizeof(wndClass);
-    wndClass.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+    wndClass.lpfnWndProc = WinProcCallback;
     wndClass.hInstance = GetModuleHandleW(nullptr);
-    wndClass.lpfnWndProc = reinterpret_cast<WNDPROC>(WinProcCallback);
-    wndClass.cbClsExtra = 0;
-    wndClass.cbWndExtra = 0;
-    wndClass.hIcon = LoadIcon(0, IDI_APPLICATION);
-    wndClass.hbrBackground = CreateSolidBrush(RGB(192, 192, 192));
-    wndClass.hCursor = LoadCursor(0, IDC_ARROW);
     wndClass.lpszClassName = WND_CLASS_NAME;
-    wndClass.lpszMenuName = NULL;
-    wndClass.hIconSm = wndClass.hIcon;
-
     if (!RegisterClassExW(&wndClass)) {
         LogError(L"RegisterClassEx");
         return -1;
