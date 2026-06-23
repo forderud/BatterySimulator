@@ -67,7 +67,7 @@ DWORD PnP_callback (
 }
 
 
-int wmain (int /*argc*/, wchar_t* argv[]) {
+int wmain (int /*argc*/, wchar_t* /*argv*/[]) {
     HCMNOTIFICATION hNotify = 0;
     {
         // subscribe to PnP events
