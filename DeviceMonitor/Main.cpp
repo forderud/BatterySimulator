@@ -13,8 +13,8 @@ const wchar_t* ActionStr(CM_NOTIFY_ACTION action) {
     case CM_NOTIFY_ACTION_DEVICEINTERFACEARRIVAL: return L"DEVICE INTERFACE ARRIVAL";
     case CM_NOTIFY_ACTION_DEVICEINTERFACEREMOVAL: return L"DEVICE INTERFACE REMOVAL";
     /* Filter type: CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE */
-    case CM_NOTIFY_ACTION_DEVICEQUERYREMOVE: return L"DEVICEQUERY REMOVE";
-    case CM_NOTIFY_ACTION_DEVICEQUERYREMOVEFAILED: return L"DEVICEQUERY REMOVEFAILED";
+    case CM_NOTIFY_ACTION_DEVICEQUERYREMOVE: return L"DEVICE QUERY REMOVE";
+    case CM_NOTIFY_ACTION_DEVICEQUERYREMOVEFAILED: return L"DEVICE QUERY REMOVEFAILED";
     case CM_NOTIFY_ACTION_DEVICEREMOVEPENDING: return L"DEVICE REMOVE PENDING";
     case CM_NOTIFY_ACTION_DEVICEREMOVECOMPLETE: return L"DEVICE REMOVE COMPLETE";
     case CM_NOTIFY_ACTION_DEVICECUSTOMEVENT: return L"DEVICE CUSTOMEVENT";
@@ -33,16 +33,19 @@ DWORD PnP_callback (
     _In_opt_ PVOID             /*Context*/,
     _In_ CM_NOTIFY_ACTION      Action,
     _In_reads_bytes_(EventDataSize) PCM_NOTIFY_EVENT_DATA EventData,
-    _In_ DWORD                 /*EventDataSize*/
+    _In_ DWORD                 EventDataSize
 ) {
     if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE) {
+        assert(EventDataSize >= sizeof(EventData->u.DeviceInterface));
         auto data = &EventData->u.DeviceInterface;
+        
         wchar_t guid_str[39]{};
         StringFromGUID2(data->ClassGuid, guid_str, 39);
         wprintf(L"%s\n", ActionStr(Action));
         wprintf(L"  ClassGuid=%s\n", guid_str);
         wprintf(L"  SymbolicLink=%s\n", data->SymbolicLink);
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE) {
+        assert(EventDataSize >= sizeof(EventData->u.DeviceHandle));
         auto data = &EventData->u.DeviceHandle;
 
         wchar_t guid_str[39]{};
@@ -53,7 +56,9 @@ DWORD PnP_callback (
         wprintf(L"  NameOffset=%u\n", data->NameOffset);
         wprintf(L"  DataSize=%u\n", data->DataSize);
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE) {
+        assert(EventDataSize >= sizeof(EventData->u.DeviceInstance));
         auto data = &EventData->u.DeviceInstance;
+
         wprintf(L"%s\n", ActionStr(Action));
         wprintf(L"  InstanceId=%s\n", data->InstanceId);
     }
