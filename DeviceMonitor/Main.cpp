@@ -283,7 +283,7 @@ INT_PTR WINAPI WinProcCallback(
             0, 0, 0, 0,  // set size in WM_SIZE message 
             hWnd,        // parent window 
             (HMENU)1,    // edit control ID 
-            (HINSTANCE)GetWindowLong(hWnd, GWL_HINSTANCE),
+            (HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),
             NULL);       // pointer not needed 
 
         if (hEditWnd == NULL)
