@@ -116,13 +116,13 @@ int wmain (int argc, wchar_t* argv[]) {
             wprintf(L"Listening to PnP events for all devices...\n");
             filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_DEVICE_INSTANCES;
             filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE;
-            filter.u.DeviceInstance.InstanceId[0] = '\0'; // empty string
+            filter.u.DeviceInstance.InstanceId[0] = '\0'; // set to filter events
             calback = PnP_callback_device;
         } else {
             wprintf(L"Listening to PnP events for all device interface classes...\n");
             filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES;
             filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE;
-            filter.u.DeviceInterface.ClassGuid = {};
+            filter.u.DeviceInterface.ClassGuid = {}; // set to filter events
             calback = PnP_callback_interface;
         }
 
