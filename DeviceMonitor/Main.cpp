@@ -7,7 +7,7 @@
 #pragma comment(lib, "Cfgmgr32.lib") // for CM_Register_Notification
 
 
-const wchar_t* ActionStr(CM_NOTIFY_ACTION action) {
+const wchar_t* ActionToStr (CM_NOTIFY_ACTION action) {
     switch (action) {
     /* Filter type: CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE */
     case CM_NOTIFY_ACTION_DEVICEINTERFACEARRIVAL: return L"DEVICE INTERFACE ARRIVAL";
@@ -41,7 +41,7 @@ DWORD PnP_callback (
         
         wchar_t guid_str[39]{};
         StringFromGUID2(data->ClassGuid, guid_str, 39);
-        wprintf(L"%s:\n", ActionStr(Action));
+        wprintf(L"%s:\n", ActionToStr(Action));
         wprintf(L"  ClassGuid=%s\n", guid_str);
         wprintf(L"  SymbolicLink=%s\n", data->SymbolicLink);
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE) {
@@ -51,7 +51,7 @@ DWORD PnP_callback (
         wchar_t guid_str[39]{};
         StringFromGUID2(data->EventGuid, guid_str, 39);
         
-        wprintf(L"%s:\n", ActionStr(Action));
+        wprintf(L"%s:\n", ActionToStr(Action));
         wprintf(L"  EventGuid=%s\n", guid_str);
         wprintf(L"  NameOffset=%u\n", data->NameOffset);
         wprintf(L"  DataSize=%u\n", data->DataSize);
@@ -60,7 +60,7 @@ DWORD PnP_callback (
         assert(EventDataSize >= sizeof(EventData->u.DeviceInstance));
         auto data = &EventData->u.DeviceInstance;
 
-        wprintf(L"%s:\n", ActionStr(Action));
+        wprintf(L"%s:\n", ActionToStr(Action));
         wprintf(L"  InstanceId=%s\n", data->InstanceId);
     }
 
