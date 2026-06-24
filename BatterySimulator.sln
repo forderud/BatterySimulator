@@ -13,7 +13,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DevicePowerQuery", "DeviceP
 EndProject
 Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "BatterySimulatorMSI", "BatterySimulatorMSI\BatterySimulatorMSI.wixproj", "{F33F1B5E-A173-4E5E-BDB7-9CE85898A712}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeviceMonitor", "DevicePnPMonitor\DeviceMonitor.vcxproj", "{2A73EE75-AB48-4AF0-9693-A1BE4FA23203}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DevicePnPMonitor", "DevicePnPMonitor\DevicePnPMonitor.vcxproj", "{2A73EE75-AB48-4AF0-9693-A1BE4FA23203}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

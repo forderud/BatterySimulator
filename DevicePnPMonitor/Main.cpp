@@ -78,7 +78,7 @@ enum class EnumType {
 
 
 int wmain (int argc, wchar_t* argv[]) {
-    const wchar_t usage_helpstring[] = L"USAGE DeviceMonitor.exe [--devices | --interfaces]\n";
+    const wchar_t usage_helpstring[] = L"USAGE DevicePnPMonitor.exe [--devices | --interfaces]\n";
 
     // Parse command-line arguments
     if (argc < 2) {
