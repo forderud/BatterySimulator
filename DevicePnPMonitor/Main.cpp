@@ -136,6 +136,7 @@ int wmain (int argc, wchar_t* argv[]) {
     {
         CONFIGRET ret = CM_Unregister_Notification(hNotify);
         assert(ret == CR_SUCCESS); ret;
+        hNotify = 0;
     }
 
     return 0;
