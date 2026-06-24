@@ -3,6 +3,7 @@
 #include <dbt.h> // for DEV_BROADCAST_HDR
 #include <cstdio>
 #include <cassert>
+#include <string>
 
 #pragma comment(lib, "Cfgmgr32.lib") // for CM_Register_Notification
 
@@ -70,8 +71,34 @@ DWORD PnP_callback (
     return ERROR_SUCCESS;
 }
 
+enum class EnumType {
+    Devices,
+    Interfaces,
+};
 
-int wmain (int /*argc*/, wchar_t* /*argv*/[]) {
+
+int wmain (int argc, wchar_t* argv[]) {
+    const wchar_t usage_helpstring[] = L"USAGE DeviceMonitor.exe [--devices | --interfaces]\n";
+
+    // Parse command-line arguments
+    if (argc < 2) {
+        wprintf(usage_helpstring);
+        return 1;
+    }
+
+    EnumType enumerator = EnumType::Devices;
+    for (int idx = 1; idx < argc; idx++) {
+        std::wstring arg = argv[idx];
+        if (arg == L"--devices") {
+            enumerator = EnumType::Devices;
+        } else if (arg == L"--interfaces") {
+            enumerator = EnumType::Interfaces;
+        } else {
+            wprintf(usage_helpstring);
+            return 1;
+        }
+    }
+
     wprintf(L"PnP event monitor started. Press Ctrl+C to exit.\n");
     wprintf(L"\n");
 
@@ -80,17 +107,18 @@ int wmain (int /*argc*/, wchar_t* /*argv*/[]) {
         // subscribe to PnP events
         CM_NOTIFY_FILTER filter{};
         filter.cbSize = sizeof(filter);
-#if 0
-        // receive notifications for PnP events for all devices
-        filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_DEVICE_INSTANCES;
-        filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE;
-        filter.u.DeviceInstance.InstanceId[0] = '\0'; // empty string
-#else
-        // receive notifications for PnP events for all device interface classes
-        filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES;
-        filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE;
-        filter.u.DeviceInterface.ClassGuid = {};
-#endif
+
+        if (enumerator == EnumType::Devices) {
+            wprintf(L"Listening to PnP events for all devices...\n");
+            filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_DEVICE_INSTANCES;
+            filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE;
+            filter.u.DeviceInstance.InstanceId[0] = '\0'; // empty string
+        } else {
+            wprintf(L"Listening to PnP events for all device interface classes...\n");
+            filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES;
+            filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE;
+            filter.u.DeviceInterface.ClassGuid = {};
+        }
 
         CONFIGRET ret = CM_Register_Notification(&filter, nullptr, PnP_callback, &hNotify);
         assert(ret == CR_SUCCESS);
