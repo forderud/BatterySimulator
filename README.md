@@ -3,7 +3,7 @@
 | **BatteryQuery** | Tool for querying battery parameters. |
 | **DeviceMonitor** | Tool for listening to PnP device connect/disconnect events. |
 | **DevicePowerQuery** | Tool for enumerating connected devices, their power state and parameters. |
-| **PowerMonitor** | Sample code for handling power events and query system power state. |
+| **PowerMonitor** | Tool for listening to power events and query system power state. |
 | **simbatt** | Mock driver to simulate multi-battery setups and test Windows power management. Based on the Microsoft [Simulated Battery Driver Sample](https://github.com/microsoft/Windows-driver-samples/tree/main/simbatt) sample with [modifications](/simbatt) to ease multi-battery testing and failure handling without requiring physical battery packs. |
 | **[HidBattery](https://github.com/forderud/HidBattery)** | Arduino battery emulator to emulate one or more battery packs. |
 
