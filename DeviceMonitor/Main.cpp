@@ -44,8 +44,8 @@ DWORD PnP_callback (
         wchar_t guid_str[39]{};
         StringFromGUID2(data->ClassGuid, guid_str, 39);
         wprintf(L"%s:\n", ActionToStr(Action));
-        wprintf(L"  ClassGuid=%s\n", guid_str);
-        wprintf(L"  SymbolicLink=%s\n", data->SymbolicLink);
+        wprintf(L"  ClassGuid: %s\n", guid_str);
+        wprintf(L"  SymbolicLink: %s\n", data->SymbolicLink);
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE) {
         assert(EventDataSize >= sizeof(EventData->u.DeviceHandle)); EventDataSize;
         auto data = &EventData->u.DeviceHandle;
@@ -54,16 +54,16 @@ DWORD PnP_callback (
         StringFromGUID2(data->EventGuid, guid_str, 39);
         
         wprintf(L"%s:\n", ActionToStr(Action));
-        wprintf(L"  EventGuid=%s\n", guid_str);
-        wprintf(L"  NameOffset=%u\n", data->NameOffset);
-        wprintf(L"  DataSize=%u\n", data->DataSize);
+        wprintf(L"  EventGuid: %s\n", guid_str);
+        wprintf(L"  NameOffset: %u\n", data->NameOffset);
+        wprintf(L"  DataSize: %u\n", data->DataSize);
         data->Data;
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE) {
         assert(EventDataSize >= sizeof(EventData->u.DeviceInstance)); EventDataSize;
         auto data = &EventData->u.DeviceInstance;
 
         wprintf(L"%s:\n", ActionToStr(Action));
-        wprintf(L"  InstanceId=%s\n", data->InstanceId);
+        wprintf(L"  InstanceId: %s\n", data->InstanceId);
     } else {
         assert(false && "Unknown CM_NOTIFY_EVENT_DATA::FilterType");
     }
