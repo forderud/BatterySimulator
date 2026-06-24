@@ -89,13 +89,13 @@ int wmain (int argc, wchar_t* argv[]) {
         return 1;
     }
 
-    ListenerType enumerator = ListenerType::Devices;
+    ListenerType type = ListenerType::Devices;
     for (int idx = 1; idx < argc; idx++) {
         std::wstring arg = argv[idx];
         if (arg == L"--devices") {
-            enumerator = ListenerType::Devices;
+            type = ListenerType::Devices;
         } else if (arg == L"--interfaces") {
-            enumerator = ListenerType::Interfaces;
+            type = ListenerType::Interfaces;
         } else {
             wprintf(usage_helpstring);
             return 1;
@@ -112,7 +112,7 @@ int wmain (int argc, wchar_t* argv[]) {
         filter.cbSize = sizeof(filter);
         PCM_NOTIFY_CALLBACK calback = nullptr;
 
-        if (enumerator == ListenerType::Devices) {
+        if (type == ListenerType::Devices) {
             wprintf(L"Listening to PnP events for all devices...\n");
             filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_DEVICE_INSTANCES;
             filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE;
