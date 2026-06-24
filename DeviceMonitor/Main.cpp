@@ -23,7 +23,8 @@ const wchar_t* ActionToStr (CM_NOTIFY_ACTION action) {
     case CM_NOTIFY_ACTION_DEVICEINSTANCESTARTED: return L"DEVICE INSTANCE STARTED";
     case CM_NOTIFY_ACTION_DEVICEINSTANCEREMOVED: return L"DEVICE INSTANCE REMOVED";
     default:
-        abort(); // unknown
+        assert(false && "Unknown CM_NOTIFY_ACTION");
+        return L"<unknown CM_NOTIFY_ACTION>";
     }
 }
 
