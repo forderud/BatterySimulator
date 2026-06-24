@@ -36,12 +36,12 @@ DWORD PnP_callback (
     _In_ DWORD                 EventDataSize
 ) {
     if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE) {
-        assert(EventDataSize >= sizeof(EventData->u.DeviceInterface));
+        assert(EventDataSize >= sizeof(EventData->u.DeviceInterface)); EventDataSize;
         auto data = &EventData->u.DeviceInterface;
         
         wchar_t guid_str[39]{};
         StringFromGUID2(data->ClassGuid, guid_str, 39);
-        wprintf(L"%s\n", ActionStr(Action));
+        wprintf(L"%s:\n", ActionStr(Action));
         wprintf(L"  ClassGuid=%s\n", guid_str);
         wprintf(L"  SymbolicLink=%s\n", data->SymbolicLink);
     } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE) {
@@ -51,7 +51,7 @@ DWORD PnP_callback (
         wchar_t guid_str[39]{};
         StringFromGUID2(data->EventGuid, guid_str, 39);
         
-        wprintf(L"%s\n", ActionStr(Action));
+        wprintf(L"%s:\n", ActionStr(Action));
         wprintf(L"  EventGuid=%s\n", guid_str);
         wprintf(L"  NameOffset=%u\n", data->NameOffset);
         wprintf(L"  DataSize=%u\n", data->DataSize);
@@ -60,7 +60,7 @@ DWORD PnP_callback (
         assert(EventDataSize >= sizeof(EventData->u.DeviceInstance));
         auto data = &EventData->u.DeviceInstance;
 
-        wprintf(L"%s\n", ActionStr(Action));
+        wprintf(L"%s:\n", ActionStr(Action));
         wprintf(L"  InstanceId=%s\n", data->InstanceId);
     }
 
@@ -69,6 +69,9 @@ DWORD PnP_callback (
 
 
 int wmain (int /*argc*/, wchar_t* /*argv*/[]) {
+    wprintf(L"PnP event monitor started. Press Ctrl+C to exit.\n");
+    wprintf(L"\n");
+
     HCMNOTIFICATION hNotify = 0;
     {
         // subscribe to PnP events
@@ -93,7 +96,7 @@ int wmain (int /*argc*/, wchar_t* /*argv*/[]) {
     Sleep(INFINITE);
 
     CONFIGRET ret = CM_Unregister_Notification(hNotify);
-    assert(ret == CR_SUCCESS);
+    assert(ret == CR_SUCCESS); ret;
 
     return 1;
 }
