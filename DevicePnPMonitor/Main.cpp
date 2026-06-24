@@ -31,11 +31,11 @@ const wchar_t* ActionToStr (CM_NOTIFY_ACTION action) {
 
 
 DWORD PnP_callback_interface (
-    _In_ HCMNOTIFICATION       /*hNotify*/,
-    _In_opt_ void*             /*Context*/,
-    _In_ CM_NOTIFY_ACTION      Action,
-    _In_reads_bytes_(EventDataSize) CM_NOTIFY_EVENT_DATA* EventData,
-    _In_ DWORD                 EventDataSize
+    HCMNOTIFICATION       /*hNotify*/,
+    void*                 /*Context*/,
+    CM_NOTIFY_ACTION      Action,
+    CM_NOTIFY_EVENT_DATA* EventData,
+    DWORD                 EventDataSize
 ) {
     if (EventData->FilterType != CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE) {
         assert(false && "Incorrect CM_NOTIFY_EVENT_DATA::FilterType");
@@ -55,11 +55,11 @@ DWORD PnP_callback_interface (
 }
 
 DWORD PnP_callback_device (
-    _In_ HCMNOTIFICATION       /*hNotify*/,
-    _In_opt_ void*             /*Context*/,
-    _In_ CM_NOTIFY_ACTION      Action,
-    _In_reads_bytes_(EventDataSize) CM_NOTIFY_EVENT_DATA* EventData,
-    _In_ DWORD                 EventDataSize
+    HCMNOTIFICATION       /*hNotify*/,
+    void*                 /*Context*/,
+    CM_NOTIFY_ACTION      Action,
+    CM_NOTIFY_EVENT_DATA* EventData,
+    DWORD                 EventDataSize
 ) {
     if (EventData->FilterType != CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE) {
         assert(false && "Incorrect CM_NOTIFY_EVENT_DATA::FilterType");
