@@ -30,43 +30,47 @@ const wchar_t* ActionToStr (CM_NOTIFY_ACTION action) {
 }
 
 
-DWORD PnP_callback (
+DWORD PnP_callback_interface (
     _In_ HCMNOTIFICATION       /*hNotify*/,
     _In_opt_ void*             /*Context*/,
     _In_ CM_NOTIFY_ACTION      Action,
     _In_reads_bytes_(EventDataSize) CM_NOTIFY_EVENT_DATA* EventData,
     _In_ DWORD                 EventDataSize
 ) {
-    if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE) {
-        assert(EventDataSize >= sizeof(EventData->u.DeviceInterface)); EventDataSize;
-        auto data = &EventData->u.DeviceInterface;
-        
-        wchar_t guid_str[39]{};
-        StringFromGUID2(data->ClassGuid, guid_str, 39);
-        wprintf(L"%s:\n", ActionToStr(Action));
-        wprintf(L"  ClassGuid: %s\n", guid_str);
-        wprintf(L"  SymbolicLink: %s\n", data->SymbolicLink);
-    } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEHANDLE) {
-        assert(EventDataSize >= sizeof(EventData->u.DeviceHandle)); EventDataSize;
-        auto data = &EventData->u.DeviceHandle;
-
-        wchar_t guid_str[39]{};
-        StringFromGUID2(data->EventGuid, guid_str, 39);
-        
-        wprintf(L"%s:\n", ActionToStr(Action));
-        wprintf(L"  EventGuid: %s\n", guid_str);
-        wprintf(L"  NameOffset: %u\n", data->NameOffset);
-        wprintf(L"  DataSize: %u\n", data->DataSize);
-        data->Data;
-    } else if (EventData->FilterType == CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE) {
-        assert(EventDataSize >= sizeof(EventData->u.DeviceInstance)); EventDataSize;
-        auto data = &EventData->u.DeviceInstance;
-
-        wprintf(L"%s:\n", ActionToStr(Action));
-        wprintf(L"  InstanceId: %s\n", data->InstanceId);
-    } else {
-        assert(false && "Unknown CM_NOTIFY_EVENT_DATA::FilterType");
+    if (EventData->FilterType != CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE) {
+        assert(false && "Incorrect CM_NOTIFY_EVENT_DATA::FilterType");
+        return ERROR_SUCCESS;
     }
+    
+    assert(EventDataSize >= sizeof(EventData->u.DeviceInterface)); EventDataSize;
+    auto data = &EventData->u.DeviceInterface;
+        
+    wchar_t guid_str[39]{};
+    StringFromGUID2(data->ClassGuid, guid_str, 39);
+    wprintf(L"%s:\n", ActionToStr(Action));
+    wprintf(L"  ClassGuid: %s\n", guid_str);
+    wprintf(L"  SymbolicLink: %s\n", data->SymbolicLink);
+
+    return ERROR_SUCCESS;
+}
+
+DWORD PnP_callback_device (
+    _In_ HCMNOTIFICATION       /*hNotify*/,
+    _In_opt_ void*             /*Context*/,
+    _In_ CM_NOTIFY_ACTION      Action,
+    _In_reads_bytes_(EventDataSize) CM_NOTIFY_EVENT_DATA* EventData,
+    _In_ DWORD                 EventDataSize
+) {
+    if (EventData->FilterType != CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE) {
+        assert(false && "Incorrect CM_NOTIFY_EVENT_DATA::FilterType");
+        return ERROR_SUCCESS;
+    }
+
+    assert(EventDataSize >= sizeof(EventData->u.DeviceInstance)); EventDataSize;
+    auto data = &EventData->u.DeviceInstance;
+
+    wprintf(L"%s:\n", ActionToStr(Action));
+    wprintf(L"  InstanceId: %s\n", data->InstanceId);
 
     return ERROR_SUCCESS;
 }
@@ -107,20 +111,23 @@ int wmain (int argc, wchar_t* argv[]) {
         // subscribe to PnP events
         CM_NOTIFY_FILTER filter{};
         filter.cbSize = sizeof(filter);
+        PCM_NOTIFY_CALLBACK calback = nullptr;
 
         if (enumerator == EnumType::Devices) {
             wprintf(L"Listening to PnP events for all devices...\n");
             filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_DEVICE_INSTANCES;
             filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE;
             filter.u.DeviceInstance.InstanceId[0] = '\0'; // empty string
+            calback = PnP_callback_device;
         } else {
             wprintf(L"Listening to PnP events for all device interface classes...\n");
             filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES;
             filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE;
             filter.u.DeviceInterface.ClassGuid = {};
+            calback = PnP_callback_interface;
         }
 
-        CONFIGRET ret = CM_Register_Notification(&filter, nullptr, PnP_callback, &hNotify);
+        CONFIGRET ret = CM_Register_Notification(&filter, nullptr, calback, &hNotify);
         assert(ret == CR_SUCCESS);
     }
 
