@@ -126,8 +126,10 @@ int wmain (int argc, wchar_t* argv[]) {
 
     Sleep(INFINITE);
 
-    CONFIGRET ret = CM_Unregister_Notification(hNotify);
-    assert(ret == CR_SUCCESS); ret;
+    {
+        CONFIGRET ret = CM_Unregister_Notification(hNotify);
+        assert(ret == CR_SUCCESS); ret;
+    }
 
-    return 1;
+    return 0;
 }
