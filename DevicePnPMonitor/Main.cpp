@@ -110,23 +110,23 @@ int wmain (int argc, wchar_t* argv[]) {
         // subscribe to PnP events
         CM_NOTIFY_FILTER filter{};
         filter.cbSize = sizeof(filter);
-        PCM_NOTIFY_CALLBACK calback = nullptr;
+        PCM_NOTIFY_CALLBACK callback = nullptr;
 
         if (type == ListenerType::Devices) {
             wprintf(L"Listening to PnP events for all devices...\n");
             filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_DEVICE_INSTANCES;
             filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE;
             filter.u.DeviceInstance.InstanceId[0] = '\0'; // set to filter events
-            calback = PnP_callback_device;
+            callback = PnP_callback_device;
         } else {
             wprintf(L"Listening to PnP events for all device interface classes...\n");
             filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_INTERFACE_CLASSES;
             filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINTERFACE;
             filter.u.DeviceInterface.ClassGuid = {}; // set to filter events
-            calback = PnP_callback_interface;
+            callback = PnP_callback_interface;
         }
 
-        CONFIGRET ret = CM_Register_Notification(&filter, nullptr, calback, &hNotify);
+        CONFIGRET ret = CM_Register_Notification(&filter, nullptr, callback, &hNotify);
         assert(ret == CR_SUCCESS);
     }
 
