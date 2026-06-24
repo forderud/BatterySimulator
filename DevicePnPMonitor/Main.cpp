@@ -75,7 +75,7 @@ DWORD PnP_callback_device (
     return ERROR_SUCCESS;
 }
 
-enum class EnumType {
+enum class ListenerType {
     Devices,
     Interfaces,
 };
@@ -89,13 +89,13 @@ int wmain (int argc, wchar_t* argv[]) {
         return 1;
     }
 
-    EnumType enumerator = EnumType::Devices;
+    ListenerType enumerator = ListenerType::Devices;
     for (int idx = 1; idx < argc; idx++) {
         std::wstring arg = argv[idx];
         if (arg == L"--devices") {
-            enumerator = EnumType::Devices;
+            enumerator = ListenerType::Devices;
         } else if (arg == L"--interfaces") {
-            enumerator = EnumType::Interfaces;
+            enumerator = ListenerType::Interfaces;
         } else {
             wprintf(usage_helpstring);
             return 1;
@@ -112,7 +112,7 @@ int wmain (int argc, wchar_t* argv[]) {
         filter.cbSize = sizeof(filter);
         PCM_NOTIFY_CALLBACK calback = nullptr;
 
-        if (enumerator == EnumType::Devices) {
+        if (enumerator == ListenerType::Devices) {
             wprintf(L"Listening to PnP events for all devices...\n");
             filter.Flags = CM_NOTIFY_FILTER_FLAG_ALL_DEVICE_INSTANCES;
             filter.FilterType = CM_NOTIFY_FILTER_TYPE_DEVICEINSTANCE;
