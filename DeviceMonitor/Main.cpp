@@ -63,6 +63,8 @@ DWORD PnP_callback (
 
         wprintf(L"%s:\n", ActionToStr(Action));
         wprintf(L"  InstanceId=%s\n", data->InstanceId);
+    } else {
+        assert(false && "Unknown CM_NOTIFY_EVENT_DATA::FilterType");
     }
 
     return 0;
