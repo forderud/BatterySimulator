@@ -127,7 +127,7 @@ int wmain (int argc, wchar_t* argv[]) {
         }
 
         CONFIGRET ret = CM_Register_Notification(&filter, nullptr, callback, &hNotify);
-        assert(ret == CR_SUCCESS);
+        assert(ret == CR_SUCCESS); ret;
     }
 
     Sleep(INFINITE);
